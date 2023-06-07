@@ -37,7 +37,7 @@ export class Shinigami extends Madara {
 
     baseUrl: string = DOMAIN
 
-    languageCode: LanguageCode = LanguageCode.ENGLISH
+    languageCode: LanguageCode = LanguageCode.INDONESIAN
 
     override alternativeChapterAjaxEndpoint = true
     
