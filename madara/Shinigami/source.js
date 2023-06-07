@@ -1,497 +1,17 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Sources = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BadgeColor = void 0;
-var BadgeColor;
-(function (BadgeColor) {
-    BadgeColor["BLUE"] = "default";
-    BadgeColor["GREEN"] = "success";
-    BadgeColor["GREY"] = "info";
-    BadgeColor["YELLOW"] = "warning";
-    BadgeColor["RED"] = "danger";
-})(BadgeColor = exports.BadgeColor || (exports.BadgeColor = {}));
 
 },{}],2:[function(require,module,exports){
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],3:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.HomeSectionType = void 0;
-var HomeSectionType;
-(function (HomeSectionType) {
-    HomeSectionType["singleRowNormal"] = "singleRowNormal";
-    HomeSectionType["singleRowLarge"] = "singleRowLarge";
-    HomeSectionType["doubleRow"] = "doubleRow";
-    HomeSectionType["featured"] = "featured";
-})(HomeSectionType = exports.HomeSectionType || (exports.HomeSectionType = {}));
-
-},{}],4:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],5:[function(require,module,exports){
-"use strict";
-/**
- * Request objects hold information for a particular source (see sources for example)
- * This allows us to to use a generic api to make the calls against any source
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.urlEncodeObject = exports.convertTime = exports.Source = void 0;
-/**
-* @deprecated Use {@link PaperbackExtensionBase}
-*/
-class Source {
-    constructor(cheerio) {
-        this.cheerio = cheerio;
-    }
-    /**
-     * @deprecated use {@link Source.getSearchResults getSearchResults} instead
-     */
-    searchRequest(query, metadata) {
-        return this.getSearchResults(query, metadata);
-    }
-    /**
-     * @deprecated use {@link Source.getSearchTags} instead
-     */
-    async getTags() {
-        // @ts-ignore
-        return this.getSearchTags?.();
-    }
-}
-exports.Source = Source;
-// Many sites use '[x] time ago' - Figured it would be good to handle these cases in general
-function convertTime(timeAgo) {
-    let time;
-    let trimmed = Number((/\d*/.exec(timeAgo) ?? [])[0]);
-    trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
-    if (timeAgo.includes('minutes')) {
-        time = new Date(Date.now() - trimmed * 60000);
-    }
-    else if (timeAgo.includes('hours')) {
-        time = new Date(Date.now() - trimmed * 3600000);
-    }
-    else if (timeAgo.includes('days')) {
-        time = new Date(Date.now() - trimmed * 86400000);
-    }
-    else if (timeAgo.includes('year') || timeAgo.includes('years')) {
-        time = new Date(Date.now() - trimmed * 31556952000);
-    }
-    else {
-        time = new Date(Date.now());
-    }
-    return time;
-}
-exports.convertTime = convertTime;
-/**
- * When a function requires a POST body, it always should be defined as a JsonObject
- * and then passed through this function to ensure that it's encoded properly.
- * @param obj
- */
-function urlEncodeObject(obj) {
-    let ret = {};
-    for (const entry of Object.entries(obj)) {
-        ret[encodeURIComponent(entry[0])] = encodeURIComponent(entry[1]);
-    }
-    return ret;
-}
-exports.urlEncodeObject = urlEncodeObject;
-
-},{}],6:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContentRating = exports.SourceIntents = void 0;
-var SourceIntents;
-(function (SourceIntents) {
-    SourceIntents[SourceIntents["MANGA_CHAPTERS"] = 1] = "MANGA_CHAPTERS";
-    SourceIntents[SourceIntents["MANGA_TRACKING"] = 2] = "MANGA_TRACKING";
-    SourceIntents[SourceIntents["HOMEPAGE_SECTIONS"] = 4] = "HOMEPAGE_SECTIONS";
-    SourceIntents[SourceIntents["COLLECTION_MANAGEMENT"] = 8] = "COLLECTION_MANAGEMENT";
-    SourceIntents[SourceIntents["CLOUDFLARE_BYPASS_REQUIRED"] = 16] = "CLOUDFLARE_BYPASS_REQUIRED";
-    SourceIntents[SourceIntents["SETTINGS_UI"] = 32] = "SETTINGS_UI";
-})(SourceIntents = exports.SourceIntents || (exports.SourceIntents = {}));
-/**
- * A content rating to be attributed to each source.
- */
-var ContentRating;
-(function (ContentRating) {
-    ContentRating["EVERYONE"] = "EVERYONE";
-    ContentRating["MATURE"] = "MATURE";
-    ContentRating["ADULT"] = "ADULT";
-})(ContentRating = exports.ContentRating || (exports.ContentRating = {}));
-
-},{}],7:[function(require,module,exports){
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./Source"), exports);
-__exportStar(require("./ByteArray"), exports);
-__exportStar(require("./Badge"), exports);
-__exportStar(require("./interfaces"), exports);
-__exportStar(require("./SourceInfo"), exports);
-__exportStar(require("./HomeSectionType"), exports);
-__exportStar(require("./PaperbackExtensionBase"), exports);
-
-},{"./Badge":1,"./ByteArray":2,"./HomeSectionType":3,"./PaperbackExtensionBase":4,"./Source":5,"./SourceInfo":6,"./interfaces":15}],8:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],9:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],10:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],11:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],12:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],13:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],14:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],15:[function(require,module,exports){
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./ChapterProviding"), exports);
-__exportStar(require("./CloudflareBypassRequestProviding"), exports);
-__exportStar(require("./HomePageSectionsProviding"), exports);
-__exportStar(require("./MangaProgressProviding"), exports);
-__exportStar(require("./MangaProviding"), exports);
-__exportStar(require("./RequestManagerProviding"), exports);
-__exportStar(require("./SearchResultsProviding"), exports);
-
-},{"./ChapterProviding":8,"./CloudflareBypassRequestProviding":9,"./HomePageSectionsProviding":10,"./MangaProgressProviding":11,"./MangaProviding":12,"./RequestManagerProviding":13,"./SearchResultsProviding":14}],16:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],17:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],18:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],19:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],20:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],21:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],22:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],23:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],24:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],25:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],26:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],27:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],28:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],29:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],30:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],31:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],32:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],33:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],34:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],35:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],36:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],37:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],38:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],39:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],40:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],41:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],42:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],43:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],44:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],45:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],46:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],47:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],48:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],49:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],50:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],51:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],52:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],53:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],54:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],55:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],56:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],57:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],58:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],59:[function(require,module,exports){
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-
-},{}],60:[function(require,module,exports){
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./DynamicUI/Exports/DUIBinding"), exports);
-__exportStar(require("./DynamicUI/Exports/DUIForm"), exports);
-__exportStar(require("./DynamicUI/Exports/DUIFormRow"), exports);
-__exportStar(require("./DynamicUI/Exports/DUISection"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIButton"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIHeader"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIInputField"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUILabel"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUILink"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIMultilineLabel"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUINavigationButton"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIOAuthButton"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUISecureInputField"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUISelect"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUIStepper"), exports);
-__exportStar(require("./DynamicUI/Rows/Exports/DUISwitch"), exports);
-__exportStar(require("./Exports/ChapterDetails"), exports);
-__exportStar(require("./Exports/Chapter"), exports);
-__exportStar(require("./Exports/Cookie"), exports);
-__exportStar(require("./Exports/HomeSection"), exports);
-__exportStar(require("./Exports/IconText"), exports);
-__exportStar(require("./Exports/MangaInfo"), exports);
-__exportStar(require("./Exports/MangaProgress"), exports);
-__exportStar(require("./Exports/PartialSourceManga"), exports);
-__exportStar(require("./Exports/MangaUpdates"), exports);
-__exportStar(require("./Exports/PBCanvas"), exports);
-__exportStar(require("./Exports/PBImage"), exports);
-__exportStar(require("./Exports/PagedResults"), exports);
-__exportStar(require("./Exports/RawData"), exports);
-__exportStar(require("./Exports/Request"), exports);
-__exportStar(require("./Exports/SourceInterceptor"), exports);
-__exportStar(require("./Exports/RequestManager"), exports);
-__exportStar(require("./Exports/Response"), exports);
-__exportStar(require("./Exports/SearchField"), exports);
-__exportStar(require("./Exports/SearchRequest"), exports);
-__exportStar(require("./Exports/SourceCookieStore"), exports);
-__exportStar(require("./Exports/SourceManga"), exports);
-__exportStar(require("./Exports/SecureStateManager"), exports);
-__exportStar(require("./Exports/SourceStateManager"), exports);
-__exportStar(require("./Exports/Tag"), exports);
-__exportStar(require("./Exports/TagSection"), exports);
-__exportStar(require("./Exports/TrackedMangaChapterReadAction"), exports);
-__exportStar(require("./Exports/TrackerActionQueue"), exports);
-
-},{"./DynamicUI/Exports/DUIBinding":17,"./DynamicUI/Exports/DUIForm":18,"./DynamicUI/Exports/DUIFormRow":19,"./DynamicUI/Exports/DUISection":20,"./DynamicUI/Rows/Exports/DUIButton":21,"./DynamicUI/Rows/Exports/DUIHeader":22,"./DynamicUI/Rows/Exports/DUIInputField":23,"./DynamicUI/Rows/Exports/DUILabel":24,"./DynamicUI/Rows/Exports/DUILink":25,"./DynamicUI/Rows/Exports/DUIMultilineLabel":26,"./DynamicUI/Rows/Exports/DUINavigationButton":27,"./DynamicUI/Rows/Exports/DUIOAuthButton":28,"./DynamicUI/Rows/Exports/DUISecureInputField":29,"./DynamicUI/Rows/Exports/DUISelect":30,"./DynamicUI/Rows/Exports/DUIStepper":31,"./DynamicUI/Rows/Exports/DUISwitch":32,"./Exports/Chapter":33,"./Exports/ChapterDetails":34,"./Exports/Cookie":35,"./Exports/HomeSection":36,"./Exports/IconText":37,"./Exports/MangaInfo":38,"./Exports/MangaProgress":39,"./Exports/MangaUpdates":40,"./Exports/PBCanvas":41,"./Exports/PBImage":42,"./Exports/PagedResults":43,"./Exports/PartialSourceManga":44,"./Exports/RawData":45,"./Exports/Request":46,"./Exports/RequestManager":47,"./Exports/Response":48,"./Exports/SearchField":49,"./Exports/SearchRequest":50,"./Exports/SecureStateManager":51,"./Exports/SourceCookieStore":52,"./Exports/SourceInterceptor":53,"./Exports/SourceManga":54,"./Exports/SourceStateManager":55,"./Exports/Tag":56,"./Exports/TagSection":57,"./Exports/TrackedMangaChapterReadAction":58,"./Exports/TrackerActionQueue":59}],61:[function(require,module,exports){
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./generated/_exports"), exports);
-__exportStar(require("./base/index"), exports);
-__exportStar(require("./compat/DyamicUI"), exports);
-
-},{"./base/index":7,"./compat/DyamicUI":16,"./generated/_exports":60}],62:[function(require,module,exports){
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeXML = exports.decodeHTMLStrict = exports.decodeHTMLAttribute = exports.decodeHTML = exports.determineBranch = exports.EntityDecoder = exports.DecodingMode = exports.BinTrieFlags = exports.fromCodePoint = exports.replaceCodePoint = exports.decodeCodePoint = exports.xmlDecodeTree = exports.htmlDecodeTree = void 0;
+exports.decodeXML = exports.decodeHTMLStrict = exports.decodeHTML = exports.determineBranch = exports.BinTrieFlags = exports.fromCodePoint = exports.replaceCodePoint = exports.decodeCodePoint = exports.xmlDecodeTree = exports.htmlDecodeTree = void 0;
 var decode_data_html_js_1 = __importDefault(require("./generated/decode-data-html.js"));
 exports.htmlDecodeTree = decode_data_html_js_1.default;
 var decode_data_xml_js_1 = __importDefault(require("./generated/decode-data-xml.js"));
 exports.xmlDecodeTree = decode_data_xml_js_1.default;
-var decode_codepoint_js_1 = __importStar(require("./decode_codepoint.js"));
+var decode_codepoint_js_1 = __importDefault(require("./decode_codepoint.js"));
 exports.decodeCodePoint = decode_codepoint_js_1.default;
 var decode_codepoint_js_2 = require("./decode_codepoint.js");
 Object.defineProperty(exports, "replaceCodePoint", { enumerable: true, get: function () { return decode_codepoint_js_2.replaceCodePoint; } });
@@ -500,421 +20,99 @@ var CharCodes;
 (function (CharCodes) {
     CharCodes[CharCodes["NUM"] = 35] = "NUM";
     CharCodes[CharCodes["SEMI"] = 59] = "SEMI";
-    CharCodes[CharCodes["EQUALS"] = 61] = "EQUALS";
     CharCodes[CharCodes["ZERO"] = 48] = "ZERO";
     CharCodes[CharCodes["NINE"] = 57] = "NINE";
     CharCodes[CharCodes["LOWER_A"] = 97] = "LOWER_A";
     CharCodes[CharCodes["LOWER_F"] = 102] = "LOWER_F";
     CharCodes[CharCodes["LOWER_X"] = 120] = "LOWER_X";
-    CharCodes[CharCodes["LOWER_Z"] = 122] = "LOWER_Z";
-    CharCodes[CharCodes["UPPER_A"] = 65] = "UPPER_A";
-    CharCodes[CharCodes["UPPER_F"] = 70] = "UPPER_F";
-    CharCodes[CharCodes["UPPER_Z"] = 90] = "UPPER_Z";
+    /** Bit that needs to be set to convert an upper case ASCII character to lower case */
+    CharCodes[CharCodes["To_LOWER_BIT"] = 32] = "To_LOWER_BIT";
 })(CharCodes || (CharCodes = {}));
-/** Bit that needs to be set to convert an upper case ASCII character to lower case */
-var TO_LOWER_BIT = 32;
 var BinTrieFlags;
 (function (BinTrieFlags) {
     BinTrieFlags[BinTrieFlags["VALUE_LENGTH"] = 49152] = "VALUE_LENGTH";
     BinTrieFlags[BinTrieFlags["BRANCH_LENGTH"] = 16256] = "BRANCH_LENGTH";
     BinTrieFlags[BinTrieFlags["JUMP_TABLE"] = 127] = "JUMP_TABLE";
 })(BinTrieFlags = exports.BinTrieFlags || (exports.BinTrieFlags = {}));
-function isNumber(code) {
-    return code >= CharCodes.ZERO && code <= CharCodes.NINE;
-}
-function isHexadecimalCharacter(code) {
-    return ((code >= CharCodes.UPPER_A && code <= CharCodes.UPPER_F) ||
-        (code >= CharCodes.LOWER_A && code <= CharCodes.LOWER_F));
-}
-function isAsciiAlphaNumeric(code) {
-    return ((code >= CharCodes.UPPER_A && code <= CharCodes.UPPER_Z) ||
-        (code >= CharCodes.LOWER_A && code <= CharCodes.LOWER_Z) ||
-        isNumber(code));
-}
-/**
- * Checks if the given character is a valid end character for an entity in an attribute.
- *
- * Attribute values that aren't terminated properly aren't parsed, and shouldn't lead to a parser error.
- * See the example in https://html.spec.whatwg.org/multipage/parsing.html#named-character-reference-state
- */
-function isEntityInAttributeInvalidEnd(code) {
-    return code === CharCodes.EQUALS || isAsciiAlphaNumeric(code);
-}
-var EntityDecoderState;
-(function (EntityDecoderState) {
-    EntityDecoderState[EntityDecoderState["EntityStart"] = 0] = "EntityStart";
-    EntityDecoderState[EntityDecoderState["NumericStart"] = 1] = "NumericStart";
-    EntityDecoderState[EntityDecoderState["NumericDecimal"] = 2] = "NumericDecimal";
-    EntityDecoderState[EntityDecoderState["NumericHex"] = 3] = "NumericHex";
-    EntityDecoderState[EntityDecoderState["NamedEntity"] = 4] = "NamedEntity";
-})(EntityDecoderState || (EntityDecoderState = {}));
-var DecodingMode;
-(function (DecodingMode) {
-    /** Entities in text nodes that can end with any character. */
-    DecodingMode[DecodingMode["Legacy"] = 0] = "Legacy";
-    /** Only allow entities terminated with a semicolon. */
-    DecodingMode[DecodingMode["Strict"] = 1] = "Strict";
-    /** Entities in attributes have limitations on ending characters. */
-    DecodingMode[DecodingMode["Attribute"] = 2] = "Attribute";
-})(DecodingMode = exports.DecodingMode || (exports.DecodingMode = {}));
-/**
- * Token decoder with support of writing partial entities.
- */
-var EntityDecoder = /** @class */ (function () {
-    function EntityDecoder(
-    /** The tree used to decode entities. */
-    decodeTree, 
-    /**
-     * The function that is called when a codepoint is decoded.
-     *
-     * For multi-byte named entities, this will be called multiple times,
-     * with the second codepoint, and the same `consumed` value.
-     *
-     * @param codepoint The decoded codepoint.
-     * @param consumed The number of bytes consumed by the decoder.
-     */
-    emitCodePoint, 
-    /** An object that is used to produce errors. */
-    errors) {
-        this.decodeTree = decodeTree;
-        this.emitCodePoint = emitCodePoint;
-        this.errors = errors;
-        /** The current state of the decoder. */
-        this.state = EntityDecoderState.EntityStart;
-        /** Characters that were consumed while parsing an entity. */
-        this.consumed = 1;
-        /**
-         * The result of the entity.
-         *
-         * Either the result index of a numeric entity, or the codepoint of a
-         * numeric entity.
-         */
-        this.result = 0;
-        /** The current index in the decode tree. */
-        this.treeIndex = 0;
-        /** The number of characters that were consumed in excess. */
-        this.excess = 1;
-        /** The mode in which the decoder is operating. */
-        this.decodeMode = DecodingMode.Strict;
-    }
-    /** Resets the instance to make it reusable. */
-    EntityDecoder.prototype.startEntity = function (decodeMode) {
-        this.decodeMode = decodeMode;
-        this.state = EntityDecoderState.EntityStart;
-        this.result = 0;
-        this.treeIndex = 0;
-        this.excess = 1;
-        this.consumed = 1;
-    };
-    /**
-     * Write an entity to the decoder. This can be called multiple times with partial entities.
-     * If the entity is incomplete, the decoder will return -1.
-     *
-     * Mirrors the implementation of `getDecoder`, but with the ability to stop decoding if the
-     * entity is incomplete, and resume when the next string is written.
-     *
-     * @param string The string containing the entity (or a continuation of the entity).
-     * @param offset The offset at which the entity begins. Should be 0 if this is not the first call.
-     * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-     */
-    EntityDecoder.prototype.write = function (str, offset) {
-        switch (this.state) {
-            case EntityDecoderState.EntityStart: {
-                if (str.charCodeAt(offset) === CharCodes.NUM) {
-                    this.state = EntityDecoderState.NumericStart;
-                    this.consumed += 1;
-                    return this.stateNumericStart(str, offset + 1);
-                }
-                this.state = EntityDecoderState.NamedEntity;
-                return this.stateNamedEntity(str, offset);
-            }
-            case EntityDecoderState.NumericStart: {
-                return this.stateNumericStart(str, offset);
-            }
-            case EntityDecoderState.NumericDecimal: {
-                return this.stateNumericDecimal(str, offset);
-            }
-            case EntityDecoderState.NumericHex: {
-                return this.stateNumericHex(str, offset);
-            }
-            case EntityDecoderState.NamedEntity: {
-                return this.stateNamedEntity(str, offset);
-            }
-        }
-    };
-    /**
-     * Switches between the numeric decimal and hexadecimal states.
-     *
-     * Equivalent to the `Numeric character reference state` in the HTML spec.
-     *
-     * @param str The string containing the entity (or a continuation of the entity).
-     * @param offset The current offset.
-     * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-     */
-    EntityDecoder.prototype.stateNumericStart = function (str, offset) {
-        if (offset >= str.length) {
-            return -1;
-        }
-        if ((str.charCodeAt(offset) | TO_LOWER_BIT) === CharCodes.LOWER_X) {
-            this.state = EntityDecoderState.NumericHex;
-            this.consumed += 1;
-            return this.stateNumericHex(str, offset + 1);
-        }
-        this.state = EntityDecoderState.NumericDecimal;
-        return this.stateNumericDecimal(str, offset);
-    };
-    EntityDecoder.prototype.addToNumericResult = function (str, start, end, base) {
-        if (start !== end) {
-            var digitCount = end - start;
-            this.result =
-                this.result * Math.pow(base, digitCount) +
-                    parseInt(str.substr(start, digitCount), base);
-            this.consumed += digitCount;
-        }
-    };
-    /**
-     * Parses a hexadecimal numeric entity.
-     *
-     * Equivalent to the `Hexademical character reference state` in the HTML spec.
-     *
-     * @param str The string containing the entity (or a continuation of the entity).
-     * @param offset The current offset.
-     * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-     */
-    EntityDecoder.prototype.stateNumericHex = function (str, offset) {
-        var startIdx = offset;
-        while (offset < str.length) {
-            var char = str.charCodeAt(offset);
-            if (isNumber(char) || isHexadecimalCharacter(char)) {
-                offset += 1;
-            }
-            else {
-                this.addToNumericResult(str, startIdx, offset, 16);
-                return this.emitNumericEntity(char, 3);
-            }
-        }
-        this.addToNumericResult(str, startIdx, offset, 16);
-        return -1;
-    };
-    /**
-     * Parses a decimal numeric entity.
-     *
-     * Equivalent to the `Decimal character reference state` in the HTML spec.
-     *
-     * @param str The string containing the entity (or a continuation of the entity).
-     * @param offset The current offset.
-     * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-     */
-    EntityDecoder.prototype.stateNumericDecimal = function (str, offset) {
-        var startIdx = offset;
-        while (offset < str.length) {
-            var char = str.charCodeAt(offset);
-            if (isNumber(char)) {
-                offset += 1;
-            }
-            else {
-                this.addToNumericResult(str, startIdx, offset, 10);
-                return this.emitNumericEntity(char, 2);
-            }
-        }
-        this.addToNumericResult(str, startIdx, offset, 10);
-        return -1;
-    };
-    /**
-     * Validate and emit a numeric entity.
-     *
-     * Implements the logic from the `Hexademical character reference start
-     * state` and `Numeric character reference end state` in the HTML spec.
-     *
-     * @param lastCp The last code point of the entity. Used to see if the
-     *               entity was terminated with a semicolon.
-     * @param expectedLength The minimum number of characters that should be
-     *                       consumed. Used to validate that at least one digit
-     *                       was consumed.
-     * @returns The number of characters that were consumed.
-     */
-    EntityDecoder.prototype.emitNumericEntity = function (lastCp, expectedLength) {
-        var _a;
-        // Ensure we consumed at least one digit.
-        if (this.consumed <= expectedLength) {
-            (_a = this.errors) === null || _a === void 0 ? void 0 : _a.absenceOfDigitsInNumericCharacterReference(this.consumed);
-            return 0;
-        }
-        // Figure out if this is a legit end of the entity
-        if (lastCp === CharCodes.SEMI) {
-            this.consumed += 1;
-        }
-        else if (this.decodeMode === DecodingMode.Strict) {
-            return 0;
-        }
-        this.emitCodePoint((0, decode_codepoint_js_1.replaceCodePoint)(this.result), this.consumed);
-        if (this.errors) {
-            if (lastCp !== CharCodes.SEMI) {
-                this.errors.missingSemicolonAfterCharacterReference();
-            }
-            this.errors.validateNumericCharacterReference(this.result);
-        }
-        return this.consumed;
-    };
-    /**
-     * Parses a named entity.
-     *
-     * Equivalent to the `Named character reference state` in the HTML spec.
-     *
-     * @param str The string containing the entity (or a continuation of the entity).
-     * @param offset The current offset.
-     * @returns The number of characters that were consumed, or -1 if the entity is incomplete.
-     */
-    EntityDecoder.prototype.stateNamedEntity = function (str, offset) {
-        var decodeTree = this.decodeTree;
-        var current = decodeTree[this.treeIndex];
-        // The mask is the number of bytes of the value, including the current byte.
-        var valueLength = (current & BinTrieFlags.VALUE_LENGTH) >> 14;
-        for (; offset < str.length; offset++, this.excess++) {
-            var char = str.charCodeAt(offset);
-            this.treeIndex = determineBranch(decodeTree, current, this.treeIndex + Math.max(1, valueLength), char);
-            if (this.treeIndex < 0) {
-                return this.result === 0 ||
-                    // If we are parsing an attribute
-                    (this.decodeMode === DecodingMode.Attribute &&
-                        // We shouldn't have consumed any characters after the entity,
-                        (valueLength === 0 ||
-                            // And there should be no invalid characters.
-                            isEntityInAttributeInvalidEnd(char)))
-                    ? 0
-                    : this.emitNotTerminatedNamedEntity();
-            }
-            current = decodeTree[this.treeIndex];
-            valueLength = (current & BinTrieFlags.VALUE_LENGTH) >> 14;
-            // If the branch is a value, store it and continue
-            if (valueLength !== 0) {
-                // If the entity is terminated by a semicolon, we are done.
-                if (char === CharCodes.SEMI) {
-                    return this.emitNamedEntityData(this.treeIndex, valueLength, this.consumed + this.excess);
-                }
-                // If we encounter a non-terminated (legacy) entity while parsing strictly, then ignore it.
-                if (this.decodeMode !== DecodingMode.Strict) {
-                    this.result = this.treeIndex;
-                    this.consumed += this.excess;
-                    this.excess = 0;
-                }
-            }
-        }
-        return -1;
-    };
-    /**
-     * Emit a named entity that was not terminated with a semicolon.
-     *
-     * @returns The number of characters consumed.
-     */
-    EntityDecoder.prototype.emitNotTerminatedNamedEntity = function () {
-        var _a;
-        var _b = this, result = _b.result, decodeTree = _b.decodeTree;
-        var valueLength = (decodeTree[result] & BinTrieFlags.VALUE_LENGTH) >> 14;
-        this.emitNamedEntityData(result, valueLength, this.consumed);
-        (_a = this.errors) === null || _a === void 0 ? void 0 : _a.missingSemicolonAfterCharacterReference();
-        return this.consumed;
-    };
-    /**
-     * Emit a named entity.
-     *
-     * @param result The index of the entity in the decode tree.
-     * @param valueLength The number of bytes in the entity.
-     * @param consumed The number of characters consumed.
-     *
-     * @returns The number of characters consumed.
-     */
-    EntityDecoder.prototype.emitNamedEntityData = function (result, valueLength, consumed) {
-        var decodeTree = this.decodeTree;
-        this.emitCodePoint(valueLength === 1
-            ? decodeTree[result] & ~BinTrieFlags.VALUE_LENGTH
-            : decodeTree[result + 1], consumed);
-        if (valueLength === 3) {
-            // For multi-byte values, we need to emit the second byte.
-            this.emitCodePoint(decodeTree[result + 2], consumed);
-        }
-        return consumed;
-    };
-    /**
-     * Signal to the parser that the end of the input was reached.
-     *
-     * Remaining data will be emitted and relevant errors will be produced.
-     *
-     * @returns The number of characters consumed.
-     */
-    EntityDecoder.prototype.end = function () {
-        var _a;
-        switch (this.state) {
-            case EntityDecoderState.NamedEntity: {
-                // Emit a named entity if we have one.
-                return this.result !== 0 &&
-                    (this.decodeMode !== DecodingMode.Attribute ||
-                        this.result === this.treeIndex)
-                    ? this.emitNotTerminatedNamedEntity()
-                    : 0;
-            }
-            // Otherwise, emit a numeric entity if we have one.
-            case EntityDecoderState.NumericDecimal: {
-                return this.emitNumericEntity(0, 2);
-            }
-            case EntityDecoderState.NumericHex: {
-                return this.emitNumericEntity(0, 3);
-            }
-            case EntityDecoderState.NumericStart: {
-                (_a = this.errors) === null || _a === void 0 ? void 0 : _a.absenceOfDigitsInNumericCharacterReference(this.consumed);
-                return 0;
-            }
-            case EntityDecoderState.EntityStart: {
-                // Return 0 if we have no entity.
-                return 0;
-            }
-        }
-    };
-    return EntityDecoder;
-}());
-exports.EntityDecoder = EntityDecoder;
-/**
- * Creates a function that decodes entities in a string.
- *
- * @param decodeTree The decode tree.
- * @returns A function that decodes entities in a string.
- */
 function getDecoder(decodeTree) {
-    var ret = "";
-    var decoder = new EntityDecoder(decodeTree, function (str) { return (ret += (0, decode_codepoint_js_1.fromCodePoint)(str)); });
-    return function decodeWithTrie(str, decodeMode) {
-        var lastIndex = 0;
-        var offset = 0;
-        while ((offset = str.indexOf("&", offset)) >= 0) {
-            ret += str.slice(lastIndex, offset);
-            decoder.startEntity(decodeMode);
-            var len = decoder.write(str, 
+    return function decodeHTMLBinary(str, strict) {
+        var ret = "";
+        var lastIdx = 0;
+        var strIdx = 0;
+        while ((strIdx = str.indexOf("&", strIdx)) >= 0) {
+            ret += str.slice(lastIdx, strIdx);
+            lastIdx = strIdx;
             // Skip the "&"
-            offset + 1);
-            if (len < 0) {
-                lastIndex = offset + decoder.end();
-                break;
+            strIdx += 1;
+            // If we have a numeric entity, handle this separately.
+            if (str.charCodeAt(strIdx) === CharCodes.NUM) {
+                // Skip the leading "&#". For hex entities, also skip the leading "x".
+                var start = strIdx + 1;
+                var base = 10;
+                var cp = str.charCodeAt(start);
+                if ((cp | CharCodes.To_LOWER_BIT) === CharCodes.LOWER_X) {
+                    base = 16;
+                    strIdx += 1;
+                    start += 1;
+                }
+                do
+                    cp = str.charCodeAt(++strIdx);
+                while ((cp >= CharCodes.ZERO && cp <= CharCodes.NINE) ||
+                    (base === 16 &&
+                        (cp | CharCodes.To_LOWER_BIT) >= CharCodes.LOWER_A &&
+                        (cp | CharCodes.To_LOWER_BIT) <= CharCodes.LOWER_F));
+                if (start !== strIdx) {
+                    var entity = str.substring(start, strIdx);
+                    var parsed = parseInt(entity, base);
+                    if (str.charCodeAt(strIdx) === CharCodes.SEMI) {
+                        strIdx += 1;
+                    }
+                    else if (strict) {
+                        continue;
+                    }
+                    ret += (0, decode_codepoint_js_1.default)(parsed);
+                    lastIdx = strIdx;
+                }
+                continue;
             }
-            lastIndex = offset + len;
-            // If `len` is 0, skip the current `&` and continue.
-            offset = len === 0 ? lastIndex + 1 : lastIndex;
+            var resultIdx = 0;
+            var excess = 1;
+            var treeIdx = 0;
+            var current = decodeTree[treeIdx];
+            for (; strIdx < str.length; strIdx++, excess++) {
+                treeIdx = determineBranch(decodeTree, current, treeIdx + 1, str.charCodeAt(strIdx));
+                if (treeIdx < 0)
+                    break;
+                current = decodeTree[treeIdx];
+                var masked = current & BinTrieFlags.VALUE_LENGTH;
+                // If the branch is a value, store it and continue
+                if (masked) {
+                    // If we have a legacy entity while parsing strictly, just skip the number of bytes
+                    if (!strict || str.charCodeAt(strIdx) === CharCodes.SEMI) {
+                        resultIdx = treeIdx;
+                        excess = 0;
+                    }
+                    // The mask is the number of bytes of the value, including the current byte.
+                    var valueLength = (masked >> 14) - 1;
+                    if (valueLength === 0)
+                        break;
+                    treeIdx += valueLength;
+                }
+            }
+            if (resultIdx !== 0) {
+                var valueLength = (decodeTree[resultIdx] & BinTrieFlags.VALUE_LENGTH) >> 14;
+                ret +=
+                    valueLength === 1
+                        ? String.fromCharCode(decodeTree[resultIdx] & ~BinTrieFlags.VALUE_LENGTH)
+                        : valueLength === 2
+                            ? String.fromCharCode(decodeTree[resultIdx + 1])
+                            : String.fromCharCode(decodeTree[resultIdx + 1], decodeTree[resultIdx + 2]);
+                lastIdx = strIdx - excess + 1;
+            }
         }
-        var result = ret + str.slice(lastIndex);
-        // Make sure we don't keep a reference to the final string.
-        ret = "";
-        return result;
+        return ret + str.slice(lastIdx);
     };
 }
-/**
- * Determines the branch of the current node that is taken given the current
- * character. This function is used to traverse the trie.
- *
- * @param decodeTree The trie.
- * @param current The current node.
- * @param nodeIdx The index right after the current node and its value.
- * @param char The current character.
- * @returns The index of the next node, or -1 if no branch is taken.
- */
 function determineBranch(decodeTree, current, nodeIdx, char) {
     var branchCount = (current & BinTrieFlags.BRANCH_LENGTH) >> 7;
     var jumpOffset = current & BinTrieFlags.JUMP_TABLE;
@@ -925,7 +123,7 @@ function determineBranch(decodeTree, current, nodeIdx, char) {
     // Case 2: Multiple branches encoded in jump table
     if (jumpOffset) {
         var value = char - jumpOffset;
-        return value < 0 || value >= branchCount
+        return value < 0 || value > branchCount
             ? -1
             : decodeTree[nodeIdx + value] - 1;
     }
@@ -951,50 +149,20 @@ function determineBranch(decodeTree, current, nodeIdx, char) {
 exports.determineBranch = determineBranch;
 var htmlDecoder = getDecoder(decode_data_html_js_1.default);
 var xmlDecoder = getDecoder(decode_data_xml_js_1.default);
-/**
- * Decodes an HTML string.
- *
- * @param str The string to decode.
- * @param mode The decoding mode.
- * @returns The decoded string.
- */
-function decodeHTML(str, mode) {
-    if (mode === void 0) { mode = DecodingMode.Legacy; }
-    return htmlDecoder(str, mode);
+function decodeHTML(str) {
+    return htmlDecoder(str, false);
 }
 exports.decodeHTML = decodeHTML;
-/**
- * Decodes an HTML string in an attribute.
- *
- * @param str The string to decode.
- * @returns The decoded string.
- */
-function decodeHTMLAttribute(str) {
-    return htmlDecoder(str, DecodingMode.Attribute);
-}
-exports.decodeHTMLAttribute = decodeHTMLAttribute;
-/**
- * Decodes an HTML string, requiring all entities to be terminated by a semicolon.
- *
- * @param str The string to decode.
- * @returns The decoded string.
- */
 function decodeHTMLStrict(str) {
-    return htmlDecoder(str, DecodingMode.Strict);
+    return htmlDecoder(str, true);
 }
 exports.decodeHTMLStrict = decodeHTMLStrict;
-/**
- * Decodes an XML string, requiring all entities to be terminated by a semicolon.
- *
- * @param str The string to decode.
- * @returns The decoded string.
- */
 function decodeXML(str) {
-    return xmlDecoder(str, DecodingMode.Strict);
+    return xmlDecoder(str, true);
 }
 exports.decodeXML = decodeXML;
 
-},{"./decode_codepoint.js":63,"./generated/decode-data-html.js":66,"./generated/decode-data-xml.js":67}],63:[function(require,module,exports){
+},{"./decode_codepoint.js":3,"./generated/decode-data-html.js":6,"./generated/decode-data-xml.js":7}],3:[function(require,module,exports){
 "use strict";
 // Adapted from https://github.com/mathiasbynens/he/blob/36afe179392226cf1b6ccdb16ebbb7a5a844d93a/src/he.js#L106-L134
 var _a;
@@ -1002,7 +170,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.replaceCodePoint = exports.fromCodePoint = void 0;
 var decodeMap = new Map([
     [0, 65533],
-    // C1 Unicode control character reference replacements
     [128, 8364],
     [130, 8218],
     [131, 402],
@@ -1031,9 +198,6 @@ var decodeMap = new Map([
     [158, 382],
     [159, 376],
 ]);
-/**
- * Polyfill for `String.fromCodePoint`. It is used to create a string from a Unicode code point.
- */
 exports.fromCodePoint = 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, node/no-unsupported-features/es-builtins
 (_a = String.fromCodePoint) !== null && _a !== void 0 ? _a : function (codePoint) {
@@ -1046,11 +210,6 @@ exports.fromCodePoint =
     output += String.fromCharCode(codePoint);
     return output;
 };
-/**
- * Replace the given code point with a replacement character if it is a
- * surrogate or is outside the valid range. Otherwise return the code
- * point unchanged.
- */
 function replaceCodePoint(codePoint) {
     var _a;
     if ((codePoint >= 0xd800 && codePoint <= 0xdfff) || codePoint > 0x10ffff) {
@@ -1059,19 +218,12 @@ function replaceCodePoint(codePoint) {
     return (_a = decodeMap.get(codePoint)) !== null && _a !== void 0 ? _a : codePoint;
 }
 exports.replaceCodePoint = replaceCodePoint;
-/**
- * Replace the code point if relevant, then convert it to a string.
- *
- * @deprecated Use `fromCodePoint(replaceCodePoint(codePoint))` instead.
- * @param codePoint The code point to decode.
- * @returns The decoded code point.
- */
 function decodeCodePoint(codePoint) {
     return (0, exports.fromCodePoint)(replaceCodePoint(codePoint));
 }
 exports.default = decodeCodePoint;
 
-},{}],64:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -1082,15 +234,14 @@ var encode_html_js_1 = __importDefault(require("./generated/encode-html.js"));
 var escape_js_1 = require("./escape.js");
 var htmlReplacer = /[\t\n!-,./:-@[-`\f{-}$\x80-\uFFFF]/g;
 /**
- * Encodes all characters in the input using HTML entities. This includes
- * characters that are valid ASCII characters in HTML documents, such as `#`.
+ * Encodes all entities and non-ASCII characters in the input.
  *
- * To get a more compact output, consider using the `encodeNonAsciiHTML`
- * function, which will only encode characters that are not valid in HTML
- * documents, as well as non-ASCII characters.
+ * This includes characters that are valid ASCII characters in HTML documents.
+ * For example `#` will be encoded as `&num;`. To get a more compact output,
+ * consider using the `encodeNonAsciiHTML` function.
  *
- * If a character has no equivalent entity, a numeric hexadecimal reference
- * (eg. `&#xfc;`) will be used.
+ * If a character has no equivalent entity, a
+ * numeric hexadecimal reference (eg. `&#xfc;`) will be used.
  */
 function encodeHTML(data) {
     return encodeHTMLTrieRe(htmlReplacer, data);
@@ -1098,11 +249,10 @@ function encodeHTML(data) {
 exports.encodeHTML = encodeHTML;
 /**
  * Encodes all non-ASCII characters, as well as characters not valid in HTML
- * documents using HTML entities. This function will not encode characters that
- * are valid in HTML documents, such as `#`.
+ * documents using HTML entities.
  *
- * If a character has no equivalent entity, a numeric hexadecimal reference
- * (eg. `&#xfc;`) will be used.
+ * If a character has no equivalent entity, a
+ * numeric hexadecimal reference (eg. `&#xfc;`) will be used.
  */
 function encodeNonAsciiHTML(data) {
     return encodeHTMLTrieRe(escape_js_1.xmlReplacer, data);
@@ -1134,7 +284,7 @@ function encodeHTMLTrieRe(regExp, str) {
             }
             next = next.v;
         }
-        // We might have a tree node without a value; skip and use a numeric entity.
+        // We might have a tree node without a value; skip and use a numeric entitiy.
         if (next !== undefined) {
             ret += next;
             lastIdx = i + 1;
@@ -1149,7 +299,7 @@ function encodeHTMLTrieRe(regExp, str) {
     return ret + str.substr(lastIdx);
 }
 
-},{"./escape.js":65,"./generated/encode-html.js":68}],65:[function(require,module,exports){
+},{"./escape.js":5,"./generated/encode-html.js":8}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.escapeText = exports.escapeAttribute = exports.escapeUTF8 = exports.escape = exports.encodeXML = exports.getCodePoint = exports.xmlReplacer = void 0;
@@ -1213,16 +363,6 @@ exports.encodeXML = encodeXML;
  * @param data String to escape.
  */
 exports.escape = encodeXML;
-/**
- * Creates a function that escapes all characters matched by the given regular
- * expression using the given map of characters to escape to their entities.
- *
- * @param regex Regular expression to match characters to escape.
- * @param map Map of characters to escape to their entities.
- *
- * @returns Function that escapes all characters matched by the given regular
- * expression using the given map of characters to escape to their entities.
- */
 function getEscaper(regex, map) {
     return function escape(data) {
         var match;
@@ -1232,7 +372,7 @@ function getEscaper(regex, map) {
             if (lastIdx !== match.index) {
                 result += data.substring(lastIdx, match.index);
             }
-            // We know that this character will be in the map.
+            // We know that this chararcter will be in the map.
             result += map.get(match[0].charCodeAt(0));
             // Every match will be of length 1
             lastIdx = match.index + 1;
@@ -1272,43 +412,31 @@ exports.escapeText = getEscaper(/[&<>\u00A0]/g, new Map([
     [160, "&nbsp;"],
 ]));
 
-},{}],66:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
-// Generated using scripts/write-decode-map.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = new Uint16Array(
+// Generated using scripts/write-decode-map.ts
 // prettier-ignore
-"\u1d41<\xd5\u0131\u028a\u049d\u057b\u05d0\u0675\u06de\u07a2\u07d6\u080f\u0a4a\u0a91\u0da1\u0e6d\u0f09\u0f26\u10ca\u1228\u12e1\u1415\u149d\u14c3\u14df\u1525\0\0\0\0\0\0\u156b\u16cd\u198d\u1c12\u1ddd\u1f7e\u2060\u21b0\u228d\u23c0\u23fb\u2442\u2824\u2912\u2d08\u2e48\u2fce\u3016\u32ba\u3639\u37ac\u38fe\u3a28\u3a71\u3ae0\u3b2e\u0800EMabcfglmnoprstu\\bfms\x7f\x84\x8b\x90\x95\x98\xa6\xb3\xb9\xc8\xcflig\u803b\xc6\u40c6P\u803b&\u4026cute\u803b\xc1\u40c1reve;\u4102\u0100iyx}rc\u803b\xc2\u40c2;\u4410r;\uc000\ud835\udd04rave\u803b\xc0\u40c0pha;\u4391acr;\u4100d;\u6a53\u0100gp\x9d\xa1on;\u4104f;\uc000\ud835\udd38plyFunction;\u6061ing\u803b\xc5\u40c5\u0100cs\xbe\xc3r;\uc000\ud835\udc9cign;\u6254ilde\u803b\xc3\u40c3ml\u803b\xc4\u40c4\u0400aceforsu\xe5\xfb\xfe\u0117\u011c\u0122\u0127\u012a\u0100cr\xea\xf2kslash;\u6216\u0176\xf6\xf8;\u6ae7ed;\u6306y;\u4411\u0180crt\u0105\u010b\u0114ause;\u6235noullis;\u612ca;\u4392r;\uc000\ud835\udd05pf;\uc000\ud835\udd39eve;\u42d8c\xf2\u0113mpeq;\u624e\u0700HOacdefhilorsu\u014d\u0151\u0156\u0180\u019e\u01a2\u01b5\u01b7\u01ba\u01dc\u0215\u0273\u0278\u027ecy;\u4427PY\u803b\xa9\u40a9\u0180cpy\u015d\u0162\u017aute;\u4106\u0100;i\u0167\u0168\u62d2talDifferentialD;\u6145leys;\u612d\u0200aeio\u0189\u018e\u0194\u0198ron;\u410cdil\u803b\xc7\u40c7rc;\u4108nint;\u6230ot;\u410a\u0100dn\u01a7\u01adilla;\u40b8terDot;\u40b7\xf2\u017fi;\u43a7rcle\u0200DMPT\u01c7\u01cb\u01d1\u01d6ot;\u6299inus;\u6296lus;\u6295imes;\u6297o\u0100cs\u01e2\u01f8kwiseContourIntegral;\u6232eCurly\u0100DQ\u0203\u020foubleQuote;\u601duote;\u6019\u0200lnpu\u021e\u0228\u0247\u0255on\u0100;e\u0225\u0226\u6237;\u6a74\u0180git\u022f\u0236\u023aruent;\u6261nt;\u622fourIntegral;\u622e\u0100fr\u024c\u024e;\u6102oduct;\u6210nterClockwiseContourIntegral;\u6233oss;\u6a2fcr;\uc000\ud835\udc9ep\u0100;C\u0284\u0285\u62d3ap;\u624d\u0580DJSZacefios\u02a0\u02ac\u02b0\u02b4\u02b8\u02cb\u02d7\u02e1\u02e6\u0333\u048d\u0100;o\u0179\u02a5trahd;\u6911cy;\u4402cy;\u4405cy;\u440f\u0180grs\u02bf\u02c4\u02c7ger;\u6021r;\u61a1hv;\u6ae4\u0100ay\u02d0\u02d5ron;\u410e;\u4414l\u0100;t\u02dd\u02de\u6207a;\u4394r;\uc000\ud835\udd07\u0100af\u02eb\u0327\u0100cm\u02f0\u0322ritical\u0200ADGT\u0300\u0306\u0316\u031ccute;\u40b4o\u0174\u030b\u030d;\u42d9bleAcute;\u42ddrave;\u4060ilde;\u42dcond;\u62c4ferentialD;\u6146\u0470\u033d\0\0\0\u0342\u0354\0\u0405f;\uc000\ud835\udd3b\u0180;DE\u0348\u0349\u034d\u40a8ot;\u60dcqual;\u6250ble\u0300CDLRUV\u0363\u0372\u0382\u03cf\u03e2\u03f8ontourIntegra\xec\u0239o\u0274\u0379\0\0\u037b\xbb\u0349nArrow;\u61d3\u0100eo\u0387\u03a4ft\u0180ART\u0390\u0396\u03a1rrow;\u61d0ightArrow;\u61d4e\xe5\u02cang\u0100LR\u03ab\u03c4eft\u0100AR\u03b3\u03b9rrow;\u67f8ightArrow;\u67faightArrow;\u67f9ight\u0100AT\u03d8\u03derrow;\u61d2ee;\u62a8p\u0241\u03e9\0\0\u03efrrow;\u61d1ownArrow;\u61d5erticalBar;\u6225n\u0300ABLRTa\u0412\u042a\u0430\u045e\u047f\u037crrow\u0180;BU\u041d\u041e\u0422\u6193ar;\u6913pArrow;\u61f5reve;\u4311eft\u02d2\u043a\0\u0446\0\u0450ightVector;\u6950eeVector;\u695eector\u0100;B\u0459\u045a\u61bdar;\u6956ight\u01d4\u0467\0\u0471eeVector;\u695fector\u0100;B\u047a\u047b\u61c1ar;\u6957ee\u0100;A\u0486\u0487\u62a4rrow;\u61a7\u0100ct\u0492\u0497r;\uc000\ud835\udc9frok;\u4110\u0800NTacdfglmopqstux\u04bd\u04c0\u04c4\u04cb\u04de\u04e2\u04e7\u04ee\u04f5\u0521\u052f\u0536\u0552\u055d\u0560\u0565G;\u414aH\u803b\xd0\u40d0cute\u803b\xc9\u40c9\u0180aiy\u04d2\u04d7\u04dcron;\u411arc\u803b\xca\u40ca;\u442dot;\u4116r;\uc000\ud835\udd08rave\u803b\xc8\u40c8ement;\u6208\u0100ap\u04fa\u04fecr;\u4112ty\u0253\u0506\0\0\u0512mallSquare;\u65fberySmallSquare;\u65ab\u0100gp\u0526\u052aon;\u4118f;\uc000\ud835\udd3csilon;\u4395u\u0100ai\u053c\u0549l\u0100;T\u0542\u0543\u6a75ilde;\u6242librium;\u61cc\u0100ci\u0557\u055ar;\u6130m;\u6a73a;\u4397ml\u803b\xcb\u40cb\u0100ip\u056a\u056fsts;\u6203onentialE;\u6147\u0280cfios\u0585\u0588\u058d\u05b2\u05ccy;\u4424r;\uc000\ud835\udd09lled\u0253\u0597\0\0\u05a3mallSquare;\u65fcerySmallSquare;\u65aa\u0370\u05ba\0\u05bf\0\0\u05c4f;\uc000\ud835\udd3dAll;\u6200riertrf;\u6131c\xf2\u05cb\u0600JTabcdfgorst\u05e8\u05ec\u05ef\u05fa\u0600\u0612\u0616\u061b\u061d\u0623\u066c\u0672cy;\u4403\u803b>\u403emma\u0100;d\u05f7\u05f8\u4393;\u43dcreve;\u411e\u0180eiy\u0607\u060c\u0610dil;\u4122rc;\u411c;\u4413ot;\u4120r;\uc000\ud835\udd0a;\u62d9pf;\uc000\ud835\udd3eeater\u0300EFGLST\u0635\u0644\u064e\u0656\u065b\u0666qual\u0100;L\u063e\u063f\u6265ess;\u62dbullEqual;\u6267reater;\u6aa2ess;\u6277lantEqual;\u6a7eilde;\u6273cr;\uc000\ud835\udca2;\u626b\u0400Aacfiosu\u0685\u068b\u0696\u069b\u069e\u06aa\u06be\u06caRDcy;\u442a\u0100ct\u0690\u0694ek;\u42c7;\u405eirc;\u4124r;\u610clbertSpace;\u610b\u01f0\u06af\0\u06b2f;\u610dizontalLine;\u6500\u0100ct\u06c3\u06c5\xf2\u06a9rok;\u4126mp\u0144\u06d0\u06d8ownHum\xf0\u012fqual;\u624f\u0700EJOacdfgmnostu\u06fa\u06fe\u0703\u0707\u070e\u071a\u071e\u0721\u0728\u0744\u0778\u078b\u078f\u0795cy;\u4415lig;\u4132cy;\u4401cute\u803b\xcd\u40cd\u0100iy\u0713\u0718rc\u803b\xce\u40ce;\u4418ot;\u4130r;\u6111rave\u803b\xcc\u40cc\u0180;ap\u0720\u072f\u073f\u0100cg\u0734\u0737r;\u412ainaryI;\u6148lie\xf3\u03dd\u01f4\u0749\0\u0762\u0100;e\u074d\u074e\u622c\u0100gr\u0753\u0758ral;\u622bsection;\u62c2isible\u0100CT\u076c\u0772omma;\u6063imes;\u6062\u0180gpt\u077f\u0783\u0788on;\u412ef;\uc000\ud835\udd40a;\u4399cr;\u6110ilde;\u4128\u01eb\u079a\0\u079ecy;\u4406l\u803b\xcf\u40cf\u0280cfosu\u07ac\u07b7\u07bc\u07c2\u07d0\u0100iy\u07b1\u07b5rc;\u4134;\u4419r;\uc000\ud835\udd0dpf;\uc000\ud835\udd41\u01e3\u07c7\0\u07ccr;\uc000\ud835\udca5rcy;\u4408kcy;\u4404\u0380HJacfos\u07e4\u07e8\u07ec\u07f1\u07fd\u0802\u0808cy;\u4425cy;\u440cppa;\u439a\u0100ey\u07f6\u07fbdil;\u4136;\u441ar;\uc000\ud835\udd0epf;\uc000\ud835\udd42cr;\uc000\ud835\udca6\u0580JTaceflmost\u0825\u0829\u082c\u0850\u0863\u09b3\u09b8\u09c7\u09cd\u0a37\u0a47cy;\u4409\u803b<\u403c\u0280cmnpr\u0837\u083c\u0841\u0844\u084dute;\u4139bda;\u439bg;\u67ealacetrf;\u6112r;\u619e\u0180aey\u0857\u085c\u0861ron;\u413ddil;\u413b;\u441b\u0100fs\u0868\u0970t\u0500ACDFRTUVar\u087e\u08a9\u08b1\u08e0\u08e6\u08fc\u092f\u095b\u0390\u096a\u0100nr\u0883\u088fgleBracket;\u67e8row\u0180;BR\u0899\u089a\u089e\u6190ar;\u61e4ightArrow;\u61c6eiling;\u6308o\u01f5\u08b7\0\u08c3bleBracket;\u67e6n\u01d4\u08c8\0\u08d2eeVector;\u6961ector\u0100;B\u08db\u08dc\u61c3ar;\u6959loor;\u630aight\u0100AV\u08ef\u08f5rrow;\u6194ector;\u694e\u0100er\u0901\u0917e\u0180;AV\u0909\u090a\u0910\u62a3rrow;\u61a4ector;\u695aiangle\u0180;BE\u0924\u0925\u0929\u62b2ar;\u69cfqual;\u62b4p\u0180DTV\u0937\u0942\u094cownVector;\u6951eeVector;\u6960ector\u0100;B\u0956\u0957\u61bfar;\u6958ector\u0100;B\u0965\u0966\u61bcar;\u6952ight\xe1\u039cs\u0300EFGLST\u097e\u098b\u0995\u099d\u09a2\u09adqualGreater;\u62daullEqual;\u6266reater;\u6276ess;\u6aa1lantEqual;\u6a7dilde;\u6272r;\uc000\ud835\udd0f\u0100;e\u09bd\u09be\u62d8ftarrow;\u61daidot;\u413f\u0180npw\u09d4\u0a16\u0a1bg\u0200LRlr\u09de\u09f7\u0a02\u0a10eft\u0100AR\u09e6\u09ecrrow;\u67f5ightArrow;\u67f7ightArrow;\u67f6eft\u0100ar\u03b3\u0a0aight\xe1\u03bfight\xe1\u03caf;\uc000\ud835\udd43er\u0100LR\u0a22\u0a2ceftArrow;\u6199ightArrow;\u6198\u0180cht\u0a3e\u0a40\u0a42\xf2\u084c;\u61b0rok;\u4141;\u626a\u0400acefiosu\u0a5a\u0a5d\u0a60\u0a77\u0a7c\u0a85\u0a8b\u0a8ep;\u6905y;\u441c\u0100dl\u0a65\u0a6fiumSpace;\u605flintrf;\u6133r;\uc000\ud835\udd10nusPlus;\u6213pf;\uc000\ud835\udd44c\xf2\u0a76;\u439c\u0480Jacefostu\u0aa3\u0aa7\u0aad\u0ac0\u0b14\u0b19\u0d91\u0d97\u0d9ecy;\u440acute;\u4143\u0180aey\u0ab4\u0ab9\u0aberon;\u4147dil;\u4145;\u441d\u0180gsw\u0ac7\u0af0\u0b0eative\u0180MTV\u0ad3\u0adf\u0ae8ediumSpace;\u600bhi\u0100cn\u0ae6\u0ad8\xeb\u0ad9eryThi\xee\u0ad9ted\u0100GL\u0af8\u0b06reaterGreate\xf2\u0673essLes\xf3\u0a48Line;\u400ar;\uc000\ud835\udd11\u0200Bnpt\u0b22\u0b28\u0b37\u0b3areak;\u6060BreakingSpace;\u40a0f;\u6115\u0680;CDEGHLNPRSTV\u0b55\u0b56\u0b6a\u0b7c\u0ba1\u0beb\u0c04\u0c5e\u0c84\u0ca6\u0cd8\u0d61\u0d85\u6aec\u0100ou\u0b5b\u0b64ngruent;\u6262pCap;\u626doubleVerticalBar;\u6226\u0180lqx\u0b83\u0b8a\u0b9bement;\u6209ual\u0100;T\u0b92\u0b93\u6260ilde;\uc000\u2242\u0338ists;\u6204reater\u0380;EFGLST\u0bb6\u0bb7\u0bbd\u0bc9\u0bd3\u0bd8\u0be5\u626fqual;\u6271ullEqual;\uc000\u2267\u0338reater;\uc000\u226b\u0338ess;\u6279lantEqual;\uc000\u2a7e\u0338ilde;\u6275ump\u0144\u0bf2\u0bfdownHump;\uc000\u224e\u0338qual;\uc000\u224f\u0338e\u0100fs\u0c0a\u0c27tTriangle\u0180;BE\u0c1a\u0c1b\u0c21\u62eaar;\uc000\u29cf\u0338qual;\u62ecs\u0300;EGLST\u0c35\u0c36\u0c3c\u0c44\u0c4b\u0c58\u626equal;\u6270reater;\u6278ess;\uc000\u226a\u0338lantEqual;\uc000\u2a7d\u0338ilde;\u6274ested\u0100GL\u0c68\u0c79reaterGreater;\uc000\u2aa2\u0338essLess;\uc000\u2aa1\u0338recedes\u0180;ES\u0c92\u0c93\u0c9b\u6280qual;\uc000\u2aaf\u0338lantEqual;\u62e0\u0100ei\u0cab\u0cb9verseElement;\u620cghtTriangle\u0180;BE\u0ccb\u0ccc\u0cd2\u62ebar;\uc000\u29d0\u0338qual;\u62ed\u0100qu\u0cdd\u0d0cuareSu\u0100bp\u0ce8\u0cf9set\u0100;E\u0cf0\u0cf3\uc000\u228f\u0338qual;\u62e2erset\u0100;E\u0d03\u0d06\uc000\u2290\u0338qual;\u62e3\u0180bcp\u0d13\u0d24\u0d4eset\u0100;E\u0d1b\u0d1e\uc000\u2282\u20d2qual;\u6288ceeds\u0200;EST\u0d32\u0d33\u0d3b\u0d46\u6281qual;\uc000\u2ab0\u0338lantEqual;\u62e1ilde;\uc000\u227f\u0338erset\u0100;E\u0d58\u0d5b\uc000\u2283\u20d2qual;\u6289ilde\u0200;EFT\u0d6e\u0d6f\u0d75\u0d7f\u6241qual;\u6244ullEqual;\u6247ilde;\u6249erticalBar;\u6224cr;\uc000\ud835\udca9ilde\u803b\xd1\u40d1;\u439d\u0700Eacdfgmoprstuv\u0dbd\u0dc2\u0dc9\u0dd5\u0ddb\u0de0\u0de7\u0dfc\u0e02\u0e20\u0e22\u0e32\u0e3f\u0e44lig;\u4152cute\u803b\xd3\u40d3\u0100iy\u0dce\u0dd3rc\u803b\xd4\u40d4;\u441eblac;\u4150r;\uc000\ud835\udd12rave\u803b\xd2\u40d2\u0180aei\u0dee\u0df2\u0df6cr;\u414cga;\u43a9cron;\u439fpf;\uc000\ud835\udd46enCurly\u0100DQ\u0e0e\u0e1aoubleQuote;\u601cuote;\u6018;\u6a54\u0100cl\u0e27\u0e2cr;\uc000\ud835\udcaaash\u803b\xd8\u40d8i\u016c\u0e37\u0e3cde\u803b\xd5\u40d5es;\u6a37ml\u803b\xd6\u40d6er\u0100BP\u0e4b\u0e60\u0100ar\u0e50\u0e53r;\u603eac\u0100ek\u0e5a\u0e5c;\u63deet;\u63b4arenthesis;\u63dc\u0480acfhilors\u0e7f\u0e87\u0e8a\u0e8f\u0e92\u0e94\u0e9d\u0eb0\u0efcrtialD;\u6202y;\u441fr;\uc000\ud835\udd13i;\u43a6;\u43a0usMinus;\u40b1\u0100ip\u0ea2\u0eadncareplan\xe5\u069df;\u6119\u0200;eio\u0eb9\u0eba\u0ee0\u0ee4\u6abbcedes\u0200;EST\u0ec8\u0ec9\u0ecf\u0eda\u627aqual;\u6aaflantEqual;\u627cilde;\u627eme;\u6033\u0100dp\u0ee9\u0eeeuct;\u620fortion\u0100;a\u0225\u0ef9l;\u621d\u0100ci\u0f01\u0f06r;\uc000\ud835\udcab;\u43a8\u0200Ufos\u0f11\u0f16\u0f1b\u0f1fOT\u803b\"\u4022r;\uc000\ud835\udd14pf;\u611acr;\uc000\ud835\udcac\u0600BEacefhiorsu\u0f3e\u0f43\u0f47\u0f60\u0f73\u0fa7\u0faa\u0fad\u1096\u10a9\u10b4\u10bearr;\u6910G\u803b\xae\u40ae\u0180cnr\u0f4e\u0f53\u0f56ute;\u4154g;\u67ebr\u0100;t\u0f5c\u0f5d\u61a0l;\u6916\u0180aey\u0f67\u0f6c\u0f71ron;\u4158dil;\u4156;\u4420\u0100;v\u0f78\u0f79\u611cerse\u0100EU\u0f82\u0f99\u0100lq\u0f87\u0f8eement;\u620builibrium;\u61cbpEquilibrium;\u696fr\xbb\u0f79o;\u43a1ght\u0400ACDFTUVa\u0fc1\u0feb\u0ff3\u1022\u1028\u105b\u1087\u03d8\u0100nr\u0fc6\u0fd2gleBracket;\u67e9row\u0180;BL\u0fdc\u0fdd\u0fe1\u6192ar;\u61e5eftArrow;\u61c4eiling;\u6309o\u01f5\u0ff9\0\u1005bleBracket;\u67e7n\u01d4\u100a\0\u1014eeVector;\u695dector\u0100;B\u101d\u101e\u61c2ar;\u6955loor;\u630b\u0100er\u102d\u1043e\u0180;AV\u1035\u1036\u103c\u62a2rrow;\u61a6ector;\u695biangle\u0180;BE\u1050\u1051\u1055\u62b3ar;\u69d0qual;\u62b5p\u0180DTV\u1063\u106e\u1078ownVector;\u694feeVector;\u695cector\u0100;B\u1082\u1083\u61bear;\u6954ector\u0100;B\u1091\u1092\u61c0ar;\u6953\u0100pu\u109b\u109ef;\u611dndImplies;\u6970ightarrow;\u61db\u0100ch\u10b9\u10bcr;\u611b;\u61b1leDelayed;\u69f4\u0680HOacfhimoqstu\u10e4\u10f1\u10f7\u10fd\u1119\u111e\u1151\u1156\u1161\u1167\u11b5\u11bb\u11bf\u0100Cc\u10e9\u10eeHcy;\u4429y;\u4428FTcy;\u442ccute;\u415a\u0280;aeiy\u1108\u1109\u110e\u1113\u1117\u6abcron;\u4160dil;\u415erc;\u415c;\u4421r;\uc000\ud835\udd16ort\u0200DLRU\u112a\u1134\u113e\u1149ownArrow\xbb\u041eeftArrow\xbb\u089aightArrow\xbb\u0fddpArrow;\u6191gma;\u43a3allCircle;\u6218pf;\uc000\ud835\udd4a\u0272\u116d\0\0\u1170t;\u621aare\u0200;ISU\u117b\u117c\u1189\u11af\u65a1ntersection;\u6293u\u0100bp\u118f\u119eset\u0100;E\u1197\u1198\u628fqual;\u6291erset\u0100;E\u11a8\u11a9\u6290qual;\u6292nion;\u6294cr;\uc000\ud835\udcaear;\u62c6\u0200bcmp\u11c8\u11db\u1209\u120b\u0100;s\u11cd\u11ce\u62d0et\u0100;E\u11cd\u11d5qual;\u6286\u0100ch\u11e0\u1205eeds\u0200;EST\u11ed\u11ee\u11f4\u11ff\u627bqual;\u6ab0lantEqual;\u627dilde;\u627fTh\xe1\u0f8c;\u6211\u0180;es\u1212\u1213\u1223\u62d1rset\u0100;E\u121c\u121d\u6283qual;\u6287et\xbb\u1213\u0580HRSacfhiors\u123e\u1244\u1249\u1255\u125e\u1271\u1276\u129f\u12c2\u12c8\u12d1ORN\u803b\xde\u40deADE;\u6122\u0100Hc\u124e\u1252cy;\u440by;\u4426\u0100bu\u125a\u125c;\u4009;\u43a4\u0180aey\u1265\u126a\u126fron;\u4164dil;\u4162;\u4422r;\uc000\ud835\udd17\u0100ei\u127b\u1289\u01f2\u1280\0\u1287efore;\u6234a;\u4398\u0100cn\u128e\u1298kSpace;\uc000\u205f\u200aSpace;\u6009lde\u0200;EFT\u12ab\u12ac\u12b2\u12bc\u623cqual;\u6243ullEqual;\u6245ilde;\u6248pf;\uc000\ud835\udd4bipleDot;\u60db\u0100ct\u12d6\u12dbr;\uc000\ud835\udcafrok;\u4166\u0ae1\u12f7\u130e\u131a\u1326\0\u132c\u1331\0\0\0\0\0\u1338\u133d\u1377\u1385\0\u13ff\u1404\u140a\u1410\u0100cr\u12fb\u1301ute\u803b\xda\u40dar\u0100;o\u1307\u1308\u619fcir;\u6949r\u01e3\u1313\0\u1316y;\u440eve;\u416c\u0100iy\u131e\u1323rc\u803b\xdb\u40db;\u4423blac;\u4170r;\uc000\ud835\udd18rave\u803b\xd9\u40d9acr;\u416a\u0100di\u1341\u1369er\u0100BP\u1348\u135d\u0100ar\u134d\u1350r;\u405fac\u0100ek\u1357\u1359;\u63dfet;\u63b5arenthesis;\u63ddon\u0100;P\u1370\u1371\u62c3lus;\u628e\u0100gp\u137b\u137fon;\u4172f;\uc000\ud835\udd4c\u0400ADETadps\u1395\u13ae\u13b8\u13c4\u03e8\u13d2\u13d7\u13f3rrow\u0180;BD\u1150\u13a0\u13a4ar;\u6912ownArrow;\u61c5ownArrow;\u6195quilibrium;\u696eee\u0100;A\u13cb\u13cc\u62a5rrow;\u61a5own\xe1\u03f3er\u0100LR\u13de\u13e8eftArrow;\u6196ightArrow;\u6197i\u0100;l\u13f9\u13fa\u43d2on;\u43a5ing;\u416ecr;\uc000\ud835\udcb0ilde;\u4168ml\u803b\xdc\u40dc\u0480Dbcdefosv\u1427\u142c\u1430\u1433\u143e\u1485\u148a\u1490\u1496ash;\u62abar;\u6aeby;\u4412ash\u0100;l\u143b\u143c\u62a9;\u6ae6\u0100er\u1443\u1445;\u62c1\u0180bty\u144c\u1450\u147aar;\u6016\u0100;i\u144f\u1455cal\u0200BLST\u1461\u1465\u146a\u1474ar;\u6223ine;\u407ceparator;\u6758ilde;\u6240ThinSpace;\u600ar;\uc000\ud835\udd19pf;\uc000\ud835\udd4dcr;\uc000\ud835\udcb1dash;\u62aa\u0280cefos\u14a7\u14ac\u14b1\u14b6\u14bcirc;\u4174dge;\u62c0r;\uc000\ud835\udd1apf;\uc000\ud835\udd4ecr;\uc000\ud835\udcb2\u0200fios\u14cb\u14d0\u14d2\u14d8r;\uc000\ud835\udd1b;\u439epf;\uc000\ud835\udd4fcr;\uc000\ud835\udcb3\u0480AIUacfosu\u14f1\u14f5\u14f9\u14fd\u1504\u150f\u1514\u151a\u1520cy;\u442fcy;\u4407cy;\u442ecute\u803b\xdd\u40dd\u0100iy\u1509\u150drc;\u4176;\u442br;\uc000\ud835\udd1cpf;\uc000\ud835\udd50cr;\uc000\ud835\udcb4ml;\u4178\u0400Hacdefos\u1535\u1539\u153f\u154b\u154f\u155d\u1560\u1564cy;\u4416cute;\u4179\u0100ay\u1544\u1549ron;\u417d;\u4417ot;\u417b\u01f2\u1554\0\u155boWidt\xe8\u0ad9a;\u4396r;\u6128pf;\u6124cr;\uc000\ud835\udcb5\u0be1\u1583\u158a\u1590\0\u15b0\u15b6\u15bf\0\0\0\0\u15c6\u15db\u15eb\u165f\u166d\0\u1695\u169b\u16b2\u16b9\0\u16becute\u803b\xe1\u40e1reve;\u4103\u0300;Ediuy\u159c\u159d\u15a1\u15a3\u15a8\u15ad\u623e;\uc000\u223e\u0333;\u623frc\u803b\xe2\u40e2te\u80bb\xb4\u0306;\u4430lig\u803b\xe6\u40e6\u0100;r\xb2\u15ba;\uc000\ud835\udd1erave\u803b\xe0\u40e0\u0100ep\u15ca\u15d6\u0100fp\u15cf\u15d4sym;\u6135\xe8\u15d3ha;\u43b1\u0100ap\u15dfc\u0100cl\u15e4\u15e7r;\u4101g;\u6a3f\u0264\u15f0\0\0\u160a\u0280;adsv\u15fa\u15fb\u15ff\u1601\u1607\u6227nd;\u6a55;\u6a5clope;\u6a58;\u6a5a\u0380;elmrsz\u1618\u1619\u161b\u161e\u163f\u164f\u1659\u6220;\u69a4e\xbb\u1619sd\u0100;a\u1625\u1626\u6221\u0461\u1630\u1632\u1634\u1636\u1638\u163a\u163c\u163e;\u69a8;\u69a9;\u69aa;\u69ab;\u69ac;\u69ad;\u69ae;\u69aft\u0100;v\u1645\u1646\u621fb\u0100;d\u164c\u164d\u62be;\u699d\u0100pt\u1654\u1657h;\u6222\xbb\xb9arr;\u637c\u0100gp\u1663\u1667on;\u4105f;\uc000\ud835\udd52\u0380;Eaeiop\u12c1\u167b\u167d\u1682\u1684\u1687\u168a;\u6a70cir;\u6a6f;\u624ad;\u624bs;\u4027rox\u0100;e\u12c1\u1692\xf1\u1683ing\u803b\xe5\u40e5\u0180cty\u16a1\u16a6\u16a8r;\uc000\ud835\udcb6;\u402amp\u0100;e\u12c1\u16af\xf1\u0288ilde\u803b\xe3\u40e3ml\u803b\xe4\u40e4\u0100ci\u16c2\u16c8onin\xf4\u0272nt;\u6a11\u0800Nabcdefiklnoprsu\u16ed\u16f1\u1730\u173c\u1743\u1748\u1778\u177d\u17e0\u17e6\u1839\u1850\u170d\u193d\u1948\u1970ot;\u6aed\u0100cr\u16f6\u171ek\u0200ceps\u1700\u1705\u170d\u1713ong;\u624cpsilon;\u43f6rime;\u6035im\u0100;e\u171a\u171b\u623dq;\u62cd\u0176\u1722\u1726ee;\u62bded\u0100;g\u172c\u172d\u6305e\xbb\u172drk\u0100;t\u135c\u1737brk;\u63b6\u0100oy\u1701\u1741;\u4431quo;\u601e\u0280cmprt\u1753\u175b\u1761\u1764\u1768aus\u0100;e\u010a\u0109ptyv;\u69b0s\xe9\u170cno\xf5\u0113\u0180ahw\u176f\u1771\u1773;\u43b2;\u6136een;\u626cr;\uc000\ud835\udd1fg\u0380costuvw\u178d\u179d\u17b3\u17c1\u17d5\u17db\u17de\u0180aiu\u1794\u1796\u179a\xf0\u0760rc;\u65efp\xbb\u1371\u0180dpt\u17a4\u17a8\u17adot;\u6a00lus;\u6a01imes;\u6a02\u0271\u17b9\0\0\u17becup;\u6a06ar;\u6605riangle\u0100du\u17cd\u17d2own;\u65bdp;\u65b3plus;\u6a04e\xe5\u1444\xe5\u14adarow;\u690d\u0180ako\u17ed\u1826\u1835\u0100cn\u17f2\u1823k\u0180lst\u17fa\u05ab\u1802ozenge;\u69ebriangle\u0200;dlr\u1812\u1813\u1818\u181d\u65b4own;\u65beeft;\u65c2ight;\u65b8k;\u6423\u01b1\u182b\0\u1833\u01b2\u182f\0\u1831;\u6592;\u65914;\u6593ck;\u6588\u0100eo\u183e\u184d\u0100;q\u1843\u1846\uc000=\u20e5uiv;\uc000\u2261\u20e5t;\u6310\u0200ptwx\u1859\u185e\u1867\u186cf;\uc000\ud835\udd53\u0100;t\u13cb\u1863om\xbb\u13cctie;\u62c8\u0600DHUVbdhmptuv\u1885\u1896\u18aa\u18bb\u18d7\u18db\u18ec\u18ff\u1905\u190a\u1910\u1921\u0200LRlr\u188e\u1890\u1892\u1894;\u6557;\u6554;\u6556;\u6553\u0280;DUdu\u18a1\u18a2\u18a4\u18a6\u18a8\u6550;\u6566;\u6569;\u6564;\u6567\u0200LRlr\u18b3\u18b5\u18b7\u18b9;\u655d;\u655a;\u655c;\u6559\u0380;HLRhlr\u18ca\u18cb\u18cd\u18cf\u18d1\u18d3\u18d5\u6551;\u656c;\u6563;\u6560;\u656b;\u6562;\u655fox;\u69c9\u0200LRlr\u18e4\u18e6\u18e8\u18ea;\u6555;\u6552;\u6510;\u650c\u0280;DUdu\u06bd\u18f7\u18f9\u18fb\u18fd;\u6565;\u6568;\u652c;\u6534inus;\u629flus;\u629eimes;\u62a0\u0200LRlr\u1919\u191b\u191d\u191f;\u655b;\u6558;\u6518;\u6514\u0380;HLRhlr\u1930\u1931\u1933\u1935\u1937\u1939\u193b\u6502;\u656a;\u6561;\u655e;\u653c;\u6524;\u651c\u0100ev\u0123\u1942bar\u803b\xa6\u40a6\u0200ceio\u1951\u1956\u195a\u1960r;\uc000\ud835\udcb7mi;\u604fm\u0100;e\u171a\u171cl\u0180;bh\u1968\u1969\u196b\u405c;\u69c5sub;\u67c8\u016c\u1974\u197el\u0100;e\u1979\u197a\u6022t\xbb\u197ap\u0180;Ee\u012f\u1985\u1987;\u6aae\u0100;q\u06dc\u06db\u0ce1\u19a7\0\u19e8\u1a11\u1a15\u1a32\0\u1a37\u1a50\0\0\u1ab4\0\0\u1ac1\0\0\u1b21\u1b2e\u1b4d\u1b52\0\u1bfd\0\u1c0c\u0180cpr\u19ad\u19b2\u19ddute;\u4107\u0300;abcds\u19bf\u19c0\u19c4\u19ca\u19d5\u19d9\u6229nd;\u6a44rcup;\u6a49\u0100au\u19cf\u19d2p;\u6a4bp;\u6a47ot;\u6a40;\uc000\u2229\ufe00\u0100eo\u19e2\u19e5t;\u6041\xee\u0693\u0200aeiu\u19f0\u19fb\u1a01\u1a05\u01f0\u19f5\0\u19f8s;\u6a4don;\u410ddil\u803b\xe7\u40e7rc;\u4109ps\u0100;s\u1a0c\u1a0d\u6a4cm;\u6a50ot;\u410b\u0180dmn\u1a1b\u1a20\u1a26il\u80bb\xb8\u01adptyv;\u69b2t\u8100\xa2;e\u1a2d\u1a2e\u40a2r\xe4\u01b2r;\uc000\ud835\udd20\u0180cei\u1a3d\u1a40\u1a4dy;\u4447ck\u0100;m\u1a47\u1a48\u6713ark\xbb\u1a48;\u43c7r\u0380;Ecefms\u1a5f\u1a60\u1a62\u1a6b\u1aa4\u1aaa\u1aae\u65cb;\u69c3\u0180;el\u1a69\u1a6a\u1a6d\u42c6q;\u6257e\u0261\u1a74\0\0\u1a88rrow\u0100lr\u1a7c\u1a81eft;\u61baight;\u61bb\u0280RSacd\u1a92\u1a94\u1a96\u1a9a\u1a9f\xbb\u0f47;\u64c8st;\u629birc;\u629aash;\u629dnint;\u6a10id;\u6aefcir;\u69c2ubs\u0100;u\u1abb\u1abc\u6663it\xbb\u1abc\u02ec\u1ac7\u1ad4\u1afa\0\u1b0aon\u0100;e\u1acd\u1ace\u403a\u0100;q\xc7\xc6\u026d\u1ad9\0\0\u1ae2a\u0100;t\u1ade\u1adf\u402c;\u4040\u0180;fl\u1ae8\u1ae9\u1aeb\u6201\xee\u1160e\u0100mx\u1af1\u1af6ent\xbb\u1ae9e\xf3\u024d\u01e7\u1afe\0\u1b07\u0100;d\u12bb\u1b02ot;\u6a6dn\xf4\u0246\u0180fry\u1b10\u1b14\u1b17;\uc000\ud835\udd54o\xe4\u0254\u8100\xa9;s\u0155\u1b1dr;\u6117\u0100ao\u1b25\u1b29rr;\u61b5ss;\u6717\u0100cu\u1b32\u1b37r;\uc000\ud835\udcb8\u0100bp\u1b3c\u1b44\u0100;e\u1b41\u1b42\u6acf;\u6ad1\u0100;e\u1b49\u1b4a\u6ad0;\u6ad2dot;\u62ef\u0380delprvw\u1b60\u1b6c\u1b77\u1b82\u1bac\u1bd4\u1bf9arr\u0100lr\u1b68\u1b6a;\u6938;\u6935\u0270\u1b72\0\0\u1b75r;\u62dec;\u62dfarr\u0100;p\u1b7f\u1b80\u61b6;\u693d\u0300;bcdos\u1b8f\u1b90\u1b96\u1ba1\u1ba5\u1ba8\u622arcap;\u6a48\u0100au\u1b9b\u1b9ep;\u6a46p;\u6a4aot;\u628dr;\u6a45;\uc000\u222a\ufe00\u0200alrv\u1bb5\u1bbf\u1bde\u1be3rr\u0100;m\u1bbc\u1bbd\u61b7;\u693cy\u0180evw\u1bc7\u1bd4\u1bd8q\u0270\u1bce\0\0\u1bd2re\xe3\u1b73u\xe3\u1b75ee;\u62ceedge;\u62cfen\u803b\xa4\u40a4earrow\u0100lr\u1bee\u1bf3eft\xbb\u1b80ight\xbb\u1bbde\xe4\u1bdd\u0100ci\u1c01\u1c07onin\xf4\u01f7nt;\u6231lcty;\u632d\u0980AHabcdefhijlorstuwz\u1c38\u1c3b\u1c3f\u1c5d\u1c69\u1c75\u1c8a\u1c9e\u1cac\u1cb7\u1cfb\u1cff\u1d0d\u1d7b\u1d91\u1dab\u1dbb\u1dc6\u1dcdr\xf2\u0381ar;\u6965\u0200glrs\u1c48\u1c4d\u1c52\u1c54ger;\u6020eth;\u6138\xf2\u1133h\u0100;v\u1c5a\u1c5b\u6010\xbb\u090a\u016b\u1c61\u1c67arow;\u690fa\xe3\u0315\u0100ay\u1c6e\u1c73ron;\u410f;\u4434\u0180;ao\u0332\u1c7c\u1c84\u0100gr\u02bf\u1c81r;\u61catseq;\u6a77\u0180glm\u1c91\u1c94\u1c98\u803b\xb0\u40b0ta;\u43b4ptyv;\u69b1\u0100ir\u1ca3\u1ca8sht;\u697f;\uc000\ud835\udd21ar\u0100lr\u1cb3\u1cb5\xbb\u08dc\xbb\u101e\u0280aegsv\u1cc2\u0378\u1cd6\u1cdc\u1ce0m\u0180;os\u0326\u1cca\u1cd4nd\u0100;s\u0326\u1cd1uit;\u6666amma;\u43ddin;\u62f2\u0180;io\u1ce7\u1ce8\u1cf8\u40f7de\u8100\xf7;o\u1ce7\u1cf0ntimes;\u62c7n\xf8\u1cf7cy;\u4452c\u026f\u1d06\0\0\u1d0arn;\u631eop;\u630d\u0280lptuw\u1d18\u1d1d\u1d22\u1d49\u1d55lar;\u4024f;\uc000\ud835\udd55\u0280;emps\u030b\u1d2d\u1d37\u1d3d\u1d42q\u0100;d\u0352\u1d33ot;\u6251inus;\u6238lus;\u6214quare;\u62a1blebarwedg\xe5\xfan\u0180adh\u112e\u1d5d\u1d67ownarrow\xf3\u1c83arpoon\u0100lr\u1d72\u1d76ef\xf4\u1cb4igh\xf4\u1cb6\u0162\u1d7f\u1d85karo\xf7\u0f42\u026f\u1d8a\0\0\u1d8ern;\u631fop;\u630c\u0180cot\u1d98\u1da3\u1da6\u0100ry\u1d9d\u1da1;\uc000\ud835\udcb9;\u4455l;\u69f6rok;\u4111\u0100dr\u1db0\u1db4ot;\u62f1i\u0100;f\u1dba\u1816\u65bf\u0100ah\u1dc0\u1dc3r\xf2\u0429a\xf2\u0fa6angle;\u69a6\u0100ci\u1dd2\u1dd5y;\u445fgrarr;\u67ff\u0900Dacdefglmnopqrstux\u1e01\u1e09\u1e19\u1e38\u0578\u1e3c\u1e49\u1e61\u1e7e\u1ea5\u1eaf\u1ebd\u1ee1\u1f2a\u1f37\u1f44\u1f4e\u1f5a\u0100Do\u1e06\u1d34o\xf4\u1c89\u0100cs\u1e0e\u1e14ute\u803b\xe9\u40e9ter;\u6a6e\u0200aioy\u1e22\u1e27\u1e31\u1e36ron;\u411br\u0100;c\u1e2d\u1e2e\u6256\u803b\xea\u40ealon;\u6255;\u444dot;\u4117\u0100Dr\u1e41\u1e45ot;\u6252;\uc000\ud835\udd22\u0180;rs\u1e50\u1e51\u1e57\u6a9aave\u803b\xe8\u40e8\u0100;d\u1e5c\u1e5d\u6a96ot;\u6a98\u0200;ils\u1e6a\u1e6b\u1e72\u1e74\u6a99nters;\u63e7;\u6113\u0100;d\u1e79\u1e7a\u6a95ot;\u6a97\u0180aps\u1e85\u1e89\u1e97cr;\u4113ty\u0180;sv\u1e92\u1e93\u1e95\u6205et\xbb\u1e93p\u01001;\u1e9d\u1ea4\u0133\u1ea1\u1ea3;\u6004;\u6005\u6003\u0100gs\u1eaa\u1eac;\u414bp;\u6002\u0100gp\u1eb4\u1eb8on;\u4119f;\uc000\ud835\udd56\u0180als\u1ec4\u1ece\u1ed2r\u0100;s\u1eca\u1ecb\u62d5l;\u69e3us;\u6a71i\u0180;lv\u1eda\u1edb\u1edf\u43b5on\xbb\u1edb;\u43f5\u0200csuv\u1eea\u1ef3\u1f0b\u1f23\u0100io\u1eef\u1e31rc\xbb\u1e2e\u0269\u1ef9\0\0\u1efb\xed\u0548ant\u0100gl\u1f02\u1f06tr\xbb\u1e5dess\xbb\u1e7a\u0180aei\u1f12\u1f16\u1f1als;\u403dst;\u625fv\u0100;D\u0235\u1f20D;\u6a78parsl;\u69e5\u0100Da\u1f2f\u1f33ot;\u6253rr;\u6971\u0180cdi\u1f3e\u1f41\u1ef8r;\u612fo\xf4\u0352\u0100ah\u1f49\u1f4b;\u43b7\u803b\xf0\u40f0\u0100mr\u1f53\u1f57l\u803b\xeb\u40ebo;\u60ac\u0180cip\u1f61\u1f64\u1f67l;\u4021s\xf4\u056e\u0100eo\u1f6c\u1f74ctatio\xee\u0559nential\xe5\u0579\u09e1\u1f92\0\u1f9e\0\u1fa1\u1fa7\0\0\u1fc6\u1fcc\0\u1fd3\0\u1fe6\u1fea\u2000\0\u2008\u205allingdotse\xf1\u1e44y;\u4444male;\u6640\u0180ilr\u1fad\u1fb3\u1fc1lig;\u8000\ufb03\u0269\u1fb9\0\0\u1fbdg;\u8000\ufb00ig;\u8000\ufb04;\uc000\ud835\udd23lig;\u8000\ufb01lig;\uc000fj\u0180alt\u1fd9\u1fdc\u1fe1t;\u666dig;\u8000\ufb02ns;\u65b1of;\u4192\u01f0\u1fee\0\u1ff3f;\uc000\ud835\udd57\u0100ak\u05bf\u1ff7\u0100;v\u1ffc\u1ffd\u62d4;\u6ad9artint;\u6a0d\u0100ao\u200c\u2055\u0100cs\u2011\u2052\u03b1\u201a\u2030\u2038\u2045\u2048\0\u2050\u03b2\u2022\u2025\u2027\u202a\u202c\0\u202e\u803b\xbd\u40bd;\u6153\u803b\xbc\u40bc;\u6155;\u6159;\u615b\u01b3\u2034\0\u2036;\u6154;\u6156\u02b4\u203e\u2041\0\0\u2043\u803b\xbe\u40be;\u6157;\u615c5;\u6158\u01b6\u204c\0\u204e;\u615a;\u615d8;\u615el;\u6044wn;\u6322cr;\uc000\ud835\udcbb\u0880Eabcdefgijlnorstv\u2082\u2089\u209f\u20a5\u20b0\u20b4\u20f0\u20f5\u20fa\u20ff\u2103\u2112\u2138\u0317\u213e\u2152\u219e\u0100;l\u064d\u2087;\u6a8c\u0180cmp\u2090\u2095\u209dute;\u41f5ma\u0100;d\u209c\u1cda\u43b3;\u6a86reve;\u411f\u0100iy\u20aa\u20aerc;\u411d;\u4433ot;\u4121\u0200;lqs\u063e\u0642\u20bd\u20c9\u0180;qs\u063e\u064c\u20c4lan\xf4\u0665\u0200;cdl\u0665\u20d2\u20d5\u20e5c;\u6aa9ot\u0100;o\u20dc\u20dd\u6a80\u0100;l\u20e2\u20e3\u6a82;\u6a84\u0100;e\u20ea\u20ed\uc000\u22db\ufe00s;\u6a94r;\uc000\ud835\udd24\u0100;g\u0673\u061bmel;\u6137cy;\u4453\u0200;Eaj\u065a\u210c\u210e\u2110;\u6a92;\u6aa5;\u6aa4\u0200Eaes\u211b\u211d\u2129\u2134;\u6269p\u0100;p\u2123\u2124\u6a8arox\xbb\u2124\u0100;q\u212e\u212f\u6a88\u0100;q\u212e\u211bim;\u62e7pf;\uc000\ud835\udd58\u0100ci\u2143\u2146r;\u610am\u0180;el\u066b\u214e\u2150;\u6a8e;\u6a90\u8300>;cdlqr\u05ee\u2160\u216a\u216e\u2173\u2179\u0100ci\u2165\u2167;\u6aa7r;\u6a7aot;\u62d7Par;\u6995uest;\u6a7c\u0280adels\u2184\u216a\u2190\u0656\u219b\u01f0\u2189\0\u218epro\xf8\u209er;\u6978q\u0100lq\u063f\u2196les\xf3\u2088i\xed\u066b\u0100en\u21a3\u21adrtneqq;\uc000\u2269\ufe00\xc5\u21aa\u0500Aabcefkosy\u21c4\u21c7\u21f1\u21f5\u21fa\u2218\u221d\u222f\u2268\u227dr\xf2\u03a0\u0200ilmr\u21d0\u21d4\u21d7\u21dbrs\xf0\u1484f\xbb\u2024il\xf4\u06a9\u0100dr\u21e0\u21e4cy;\u444a\u0180;cw\u08f4\u21eb\u21efir;\u6948;\u61adar;\u610firc;\u4125\u0180alr\u2201\u220e\u2213rts\u0100;u\u2209\u220a\u6665it\xbb\u220alip;\u6026con;\u62b9r;\uc000\ud835\udd25s\u0100ew\u2223\u2229arow;\u6925arow;\u6926\u0280amopr\u223a\u223e\u2243\u225e\u2263rr;\u61fftht;\u623bk\u0100lr\u2249\u2253eftarrow;\u61a9ightarrow;\u61aaf;\uc000\ud835\udd59bar;\u6015\u0180clt\u226f\u2274\u2278r;\uc000\ud835\udcbdas\xe8\u21f4rok;\u4127\u0100bp\u2282\u2287ull;\u6043hen\xbb\u1c5b\u0ae1\u22a3\0\u22aa\0\u22b8\u22c5\u22ce\0\u22d5\u22f3\0\0\u22f8\u2322\u2367\u2362\u237f\0\u2386\u23aa\u23b4cute\u803b\xed\u40ed\u0180;iy\u0771\u22b0\u22b5rc\u803b\xee\u40ee;\u4438\u0100cx\u22bc\u22bfy;\u4435cl\u803b\xa1\u40a1\u0100fr\u039f\u22c9;\uc000\ud835\udd26rave\u803b\xec\u40ec\u0200;ino\u073e\u22dd\u22e9\u22ee\u0100in\u22e2\u22e6nt;\u6a0ct;\u622dfin;\u69dcta;\u6129lig;\u4133\u0180aop\u22fe\u231a\u231d\u0180cgt\u2305\u2308\u2317r;\u412b\u0180elp\u071f\u230f\u2313in\xe5\u078ear\xf4\u0720h;\u4131f;\u62b7ed;\u41b5\u0280;cfot\u04f4\u232c\u2331\u233d\u2341are;\u6105in\u0100;t\u2338\u2339\u621eie;\u69dddo\xf4\u2319\u0280;celp\u0757\u234c\u2350\u235b\u2361al;\u62ba\u0100gr\u2355\u2359er\xf3\u1563\xe3\u234darhk;\u6a17rod;\u6a3c\u0200cgpt\u236f\u2372\u2376\u237by;\u4451on;\u412ff;\uc000\ud835\udd5aa;\u43b9uest\u803b\xbf\u40bf\u0100ci\u238a\u238fr;\uc000\ud835\udcben\u0280;Edsv\u04f4\u239b\u239d\u23a1\u04f3;\u62f9ot;\u62f5\u0100;v\u23a6\u23a7\u62f4;\u62f3\u0100;i\u0777\u23aelde;\u4129\u01eb\u23b8\0\u23bccy;\u4456l\u803b\xef\u40ef\u0300cfmosu\u23cc\u23d7\u23dc\u23e1\u23e7\u23f5\u0100iy\u23d1\u23d5rc;\u4135;\u4439r;\uc000\ud835\udd27ath;\u4237pf;\uc000\ud835\udd5b\u01e3\u23ec\0\u23f1r;\uc000\ud835\udcbfrcy;\u4458kcy;\u4454\u0400acfghjos\u240b\u2416\u2422\u2427\u242d\u2431\u2435\u243bppa\u0100;v\u2413\u2414\u43ba;\u43f0\u0100ey\u241b\u2420dil;\u4137;\u443ar;\uc000\ud835\udd28reen;\u4138cy;\u4445cy;\u445cpf;\uc000\ud835\udd5ccr;\uc000\ud835\udcc0\u0b80ABEHabcdefghjlmnoprstuv\u2470\u2481\u2486\u248d\u2491\u250e\u253d\u255a\u2580\u264e\u265e\u2665\u2679\u267d\u269a\u26b2\u26d8\u275d\u2768\u278b\u27c0\u2801\u2812\u0180art\u2477\u247a\u247cr\xf2\u09c6\xf2\u0395ail;\u691barr;\u690e\u0100;g\u0994\u248b;\u6a8bar;\u6962\u0963\u24a5\0\u24aa\0\u24b1\0\0\0\0\0\u24b5\u24ba\0\u24c6\u24c8\u24cd\0\u24f9ute;\u413amptyv;\u69b4ra\xee\u084cbda;\u43bbg\u0180;dl\u088e\u24c1\u24c3;\u6991\xe5\u088e;\u6a85uo\u803b\xab\u40abr\u0400;bfhlpst\u0899\u24de\u24e6\u24e9\u24eb\u24ee\u24f1\u24f5\u0100;f\u089d\u24e3s;\u691fs;\u691d\xeb\u2252p;\u61abl;\u6939im;\u6973l;\u61a2\u0180;ae\u24ff\u2500\u2504\u6aabil;\u6919\u0100;s\u2509\u250a\u6aad;\uc000\u2aad\ufe00\u0180abr\u2515\u2519\u251drr;\u690crk;\u6772\u0100ak\u2522\u252cc\u0100ek\u2528\u252a;\u407b;\u405b\u0100es\u2531\u2533;\u698bl\u0100du\u2539\u253b;\u698f;\u698d\u0200aeuy\u2546\u254b\u2556\u2558ron;\u413e\u0100di\u2550\u2554il;\u413c\xec\u08b0\xe2\u2529;\u443b\u0200cqrs\u2563\u2566\u256d\u257da;\u6936uo\u0100;r\u0e19\u1746\u0100du\u2572\u2577har;\u6967shar;\u694bh;\u61b2\u0280;fgqs\u258b\u258c\u0989\u25f3\u25ff\u6264t\u0280ahlrt\u2598\u25a4\u25b7\u25c2\u25e8rrow\u0100;t\u0899\u25a1a\xe9\u24f6arpoon\u0100du\u25af\u25b4own\xbb\u045ap\xbb\u0966eftarrows;\u61c7ight\u0180ahs\u25cd\u25d6\u25derrow\u0100;s\u08f4\u08a7arpoon\xf3\u0f98quigarro\xf7\u21f0hreetimes;\u62cb\u0180;qs\u258b\u0993\u25falan\xf4\u09ac\u0280;cdgs\u09ac\u260a\u260d\u261d\u2628c;\u6aa8ot\u0100;o\u2614\u2615\u6a7f\u0100;r\u261a\u261b\u6a81;\u6a83\u0100;e\u2622\u2625\uc000\u22da\ufe00s;\u6a93\u0280adegs\u2633\u2639\u263d\u2649\u264bppro\xf8\u24c6ot;\u62d6q\u0100gq\u2643\u2645\xf4\u0989gt\xf2\u248c\xf4\u099bi\xed\u09b2\u0180ilr\u2655\u08e1\u265asht;\u697c;\uc000\ud835\udd29\u0100;E\u099c\u2663;\u6a91\u0161\u2669\u2676r\u0100du\u25b2\u266e\u0100;l\u0965\u2673;\u696alk;\u6584cy;\u4459\u0280;acht\u0a48\u2688\u268b\u2691\u2696r\xf2\u25c1orne\xf2\u1d08ard;\u696bri;\u65fa\u0100io\u269f\u26a4dot;\u4140ust\u0100;a\u26ac\u26ad\u63b0che\xbb\u26ad\u0200Eaes\u26bb\u26bd\u26c9\u26d4;\u6268p\u0100;p\u26c3\u26c4\u6a89rox\xbb\u26c4\u0100;q\u26ce\u26cf\u6a87\u0100;q\u26ce\u26bbim;\u62e6\u0400abnoptwz\u26e9\u26f4\u26f7\u271a\u272f\u2741\u2747\u2750\u0100nr\u26ee\u26f1g;\u67ecr;\u61fdr\xeb\u08c1g\u0180lmr\u26ff\u270d\u2714eft\u0100ar\u09e6\u2707ight\xe1\u09f2apsto;\u67fcight\xe1\u09fdparrow\u0100lr\u2725\u2729ef\xf4\u24edight;\u61ac\u0180afl\u2736\u2739\u273dr;\u6985;\uc000\ud835\udd5dus;\u6a2dimes;\u6a34\u0161\u274b\u274fst;\u6217\xe1\u134e\u0180;ef\u2757\u2758\u1800\u65cange\xbb\u2758ar\u0100;l\u2764\u2765\u4028t;\u6993\u0280achmt\u2773\u2776\u277c\u2785\u2787r\xf2\u08a8orne\xf2\u1d8car\u0100;d\u0f98\u2783;\u696d;\u600eri;\u62bf\u0300achiqt\u2798\u279d\u0a40\u27a2\u27ae\u27bbquo;\u6039r;\uc000\ud835\udcc1m\u0180;eg\u09b2\u27aa\u27ac;\u6a8d;\u6a8f\u0100bu\u252a\u27b3o\u0100;r\u0e1f\u27b9;\u601arok;\u4142\u8400<;cdhilqr\u082b\u27d2\u2639\u27dc\u27e0\u27e5\u27ea\u27f0\u0100ci\u27d7\u27d9;\u6aa6r;\u6a79re\xe5\u25f2mes;\u62c9arr;\u6976uest;\u6a7b\u0100Pi\u27f5\u27f9ar;\u6996\u0180;ef\u2800\u092d\u181b\u65c3r\u0100du\u2807\u280dshar;\u694ahar;\u6966\u0100en\u2817\u2821rtneqq;\uc000\u2268\ufe00\xc5\u281e\u0700Dacdefhilnopsu\u2840\u2845\u2882\u288e\u2893\u28a0\u28a5\u28a8\u28da\u28e2\u28e4\u0a83\u28f3\u2902Dot;\u623a\u0200clpr\u284e\u2852\u2863\u287dr\u803b\xaf\u40af\u0100et\u2857\u2859;\u6642\u0100;e\u285e\u285f\u6720se\xbb\u285f\u0100;s\u103b\u2868to\u0200;dlu\u103b\u2873\u2877\u287bow\xee\u048cef\xf4\u090f\xf0\u13d1ker;\u65ae\u0100oy\u2887\u288cmma;\u6a29;\u443cash;\u6014asuredangle\xbb\u1626r;\uc000\ud835\udd2ao;\u6127\u0180cdn\u28af\u28b4\u28c9ro\u803b\xb5\u40b5\u0200;acd\u1464\u28bd\u28c0\u28c4s\xf4\u16a7ir;\u6af0ot\u80bb\xb7\u01b5us\u0180;bd\u28d2\u1903\u28d3\u6212\u0100;u\u1d3c\u28d8;\u6a2a\u0163\u28de\u28e1p;\u6adb\xf2\u2212\xf0\u0a81\u0100dp\u28e9\u28eeels;\u62a7f;\uc000\ud835\udd5e\u0100ct\u28f8\u28fdr;\uc000\ud835\udcc2pos\xbb\u159d\u0180;lm\u2909\u290a\u290d\u43bctimap;\u62b8\u0c00GLRVabcdefghijlmoprstuvw\u2942\u2953\u297e\u2989\u2998\u29da\u29e9\u2a15\u2a1a\u2a58\u2a5d\u2a83\u2a95\u2aa4\u2aa8\u2b04\u2b07\u2b44\u2b7f\u2bae\u2c34\u2c67\u2c7c\u2ce9\u0100gt\u2947\u294b;\uc000\u22d9\u0338\u0100;v\u2950\u0bcf\uc000\u226b\u20d2\u0180elt\u295a\u2972\u2976ft\u0100ar\u2961\u2967rrow;\u61cdightarrow;\u61ce;\uc000\u22d8\u0338\u0100;v\u297b\u0c47\uc000\u226a\u20d2ightarrow;\u61cf\u0100Dd\u298e\u2993ash;\u62afash;\u62ae\u0280bcnpt\u29a3\u29a7\u29ac\u29b1\u29ccla\xbb\u02deute;\u4144g;\uc000\u2220\u20d2\u0280;Eiop\u0d84\u29bc\u29c0\u29c5\u29c8;\uc000\u2a70\u0338d;\uc000\u224b\u0338s;\u4149ro\xf8\u0d84ur\u0100;a\u29d3\u29d4\u666el\u0100;s\u29d3\u0b38\u01f3\u29df\0\u29e3p\u80bb\xa0\u0b37mp\u0100;e\u0bf9\u0c00\u0280aeouy\u29f4\u29fe\u2a03\u2a10\u2a13\u01f0\u29f9\0\u29fb;\u6a43on;\u4148dil;\u4146ng\u0100;d\u0d7e\u2a0aot;\uc000\u2a6d\u0338p;\u6a42;\u443dash;\u6013\u0380;Aadqsx\u0b92\u2a29\u2a2d\u2a3b\u2a41\u2a45\u2a50rr;\u61d7r\u0100hr\u2a33\u2a36k;\u6924\u0100;o\u13f2\u13f0ot;\uc000\u2250\u0338ui\xf6\u0b63\u0100ei\u2a4a\u2a4ear;\u6928\xed\u0b98ist\u0100;s\u0ba0\u0b9fr;\uc000\ud835\udd2b\u0200Eest\u0bc5\u2a66\u2a79\u2a7c\u0180;qs\u0bbc\u2a6d\u0be1\u0180;qs\u0bbc\u0bc5\u2a74lan\xf4\u0be2i\xed\u0bea\u0100;r\u0bb6\u2a81\xbb\u0bb7\u0180Aap\u2a8a\u2a8d\u2a91r\xf2\u2971rr;\u61aear;\u6af2\u0180;sv\u0f8d\u2a9c\u0f8c\u0100;d\u2aa1\u2aa2\u62fc;\u62facy;\u445a\u0380AEadest\u2ab7\u2aba\u2abe\u2ac2\u2ac5\u2af6\u2af9r\xf2\u2966;\uc000\u2266\u0338rr;\u619ar;\u6025\u0200;fqs\u0c3b\u2ace\u2ae3\u2aeft\u0100ar\u2ad4\u2ad9rro\xf7\u2ac1ightarro\xf7\u2a90\u0180;qs\u0c3b\u2aba\u2aealan\xf4\u0c55\u0100;s\u0c55\u2af4\xbb\u0c36i\xed\u0c5d\u0100;r\u0c35\u2afei\u0100;e\u0c1a\u0c25i\xe4\u0d90\u0100pt\u2b0c\u2b11f;\uc000\ud835\udd5f\u8180\xac;in\u2b19\u2b1a\u2b36\u40acn\u0200;Edv\u0b89\u2b24\u2b28\u2b2e;\uc000\u22f9\u0338ot;\uc000\u22f5\u0338\u01e1\u0b89\u2b33\u2b35;\u62f7;\u62f6i\u0100;v\u0cb8\u2b3c\u01e1\u0cb8\u2b41\u2b43;\u62fe;\u62fd\u0180aor\u2b4b\u2b63\u2b69r\u0200;ast\u0b7b\u2b55\u2b5a\u2b5flle\xec\u0b7bl;\uc000\u2afd\u20e5;\uc000\u2202\u0338lint;\u6a14\u0180;ce\u0c92\u2b70\u2b73u\xe5\u0ca5\u0100;c\u0c98\u2b78\u0100;e\u0c92\u2b7d\xf1\u0c98\u0200Aait\u2b88\u2b8b\u2b9d\u2ba7r\xf2\u2988rr\u0180;cw\u2b94\u2b95\u2b99\u619b;\uc000\u2933\u0338;\uc000\u219d\u0338ghtarrow\xbb\u2b95ri\u0100;e\u0ccb\u0cd6\u0380chimpqu\u2bbd\u2bcd\u2bd9\u2b04\u0b78\u2be4\u2bef\u0200;cer\u0d32\u2bc6\u0d37\u2bc9u\xe5\u0d45;\uc000\ud835\udcc3ort\u026d\u2b05\0\0\u2bd6ar\xe1\u2b56m\u0100;e\u0d6e\u2bdf\u0100;q\u0d74\u0d73su\u0100bp\u2beb\u2bed\xe5\u0cf8\xe5\u0d0b\u0180bcp\u2bf6\u2c11\u2c19\u0200;Ees\u2bff\u2c00\u0d22\u2c04\u6284;\uc000\u2ac5\u0338et\u0100;e\u0d1b\u2c0bq\u0100;q\u0d23\u2c00c\u0100;e\u0d32\u2c17\xf1\u0d38\u0200;Ees\u2c22\u2c23\u0d5f\u2c27\u6285;\uc000\u2ac6\u0338et\u0100;e\u0d58\u2c2eq\u0100;q\u0d60\u2c23\u0200gilr\u2c3d\u2c3f\u2c45\u2c47\xec\u0bd7lde\u803b\xf1\u40f1\xe7\u0c43iangle\u0100lr\u2c52\u2c5ceft\u0100;e\u0c1a\u2c5a\xf1\u0c26ight\u0100;e\u0ccb\u2c65\xf1\u0cd7\u0100;m\u2c6c\u2c6d\u43bd\u0180;es\u2c74\u2c75\u2c79\u4023ro;\u6116p;\u6007\u0480DHadgilrs\u2c8f\u2c94\u2c99\u2c9e\u2ca3\u2cb0\u2cb6\u2cd3\u2ce3ash;\u62adarr;\u6904p;\uc000\u224d\u20d2ash;\u62ac\u0100et\u2ca8\u2cac;\uc000\u2265\u20d2;\uc000>\u20d2nfin;\u69de\u0180Aet\u2cbd\u2cc1\u2cc5rr;\u6902;\uc000\u2264\u20d2\u0100;r\u2cca\u2ccd\uc000<\u20d2ie;\uc000\u22b4\u20d2\u0100At\u2cd8\u2cdcrr;\u6903rie;\uc000\u22b5\u20d2im;\uc000\u223c\u20d2\u0180Aan\u2cf0\u2cf4\u2d02rr;\u61d6r\u0100hr\u2cfa\u2cfdk;\u6923\u0100;o\u13e7\u13e5ear;\u6927\u1253\u1a95\0\0\0\0\0\0\0\0\0\0\0\0\0\u2d2d\0\u2d38\u2d48\u2d60\u2d65\u2d72\u2d84\u1b07\0\0\u2d8d\u2dab\0\u2dc8\u2dce\0\u2ddc\u2e19\u2e2b\u2e3e\u2e43\u0100cs\u2d31\u1a97ute\u803b\xf3\u40f3\u0100iy\u2d3c\u2d45r\u0100;c\u1a9e\u2d42\u803b\xf4\u40f4;\u443e\u0280abios\u1aa0\u2d52\u2d57\u01c8\u2d5alac;\u4151v;\u6a38old;\u69bclig;\u4153\u0100cr\u2d69\u2d6dir;\u69bf;\uc000\ud835\udd2c\u036f\u2d79\0\0\u2d7c\0\u2d82n;\u42dbave\u803b\xf2\u40f2;\u69c1\u0100bm\u2d88\u0df4ar;\u69b5\u0200acit\u2d95\u2d98\u2da5\u2da8r\xf2\u1a80\u0100ir\u2d9d\u2da0r;\u69beoss;\u69bbn\xe5\u0e52;\u69c0\u0180aei\u2db1\u2db5\u2db9cr;\u414dga;\u43c9\u0180cdn\u2dc0\u2dc5\u01cdron;\u43bf;\u69b6pf;\uc000\ud835\udd60\u0180ael\u2dd4\u2dd7\u01d2r;\u69b7rp;\u69b9\u0380;adiosv\u2dea\u2deb\u2dee\u2e08\u2e0d\u2e10\u2e16\u6228r\xf2\u1a86\u0200;efm\u2df7\u2df8\u2e02\u2e05\u6a5dr\u0100;o\u2dfe\u2dff\u6134f\xbb\u2dff\u803b\xaa\u40aa\u803b\xba\u40bagof;\u62b6r;\u6a56lope;\u6a57;\u6a5b\u0180clo\u2e1f\u2e21\u2e27\xf2\u2e01ash\u803b\xf8\u40f8l;\u6298i\u016c\u2e2f\u2e34de\u803b\xf5\u40f5es\u0100;a\u01db\u2e3as;\u6a36ml\u803b\xf6\u40f6bar;\u633d\u0ae1\u2e5e\0\u2e7d\0\u2e80\u2e9d\0\u2ea2\u2eb9\0\0\u2ecb\u0e9c\0\u2f13\0\0\u2f2b\u2fbc\0\u2fc8r\u0200;ast\u0403\u2e67\u2e72\u0e85\u8100\xb6;l\u2e6d\u2e6e\u40b6le\xec\u0403\u0269\u2e78\0\0\u2e7bm;\u6af3;\u6afdy;\u443fr\u0280cimpt\u2e8b\u2e8f\u2e93\u1865\u2e97nt;\u4025od;\u402eil;\u6030enk;\u6031r;\uc000\ud835\udd2d\u0180imo\u2ea8\u2eb0\u2eb4\u0100;v\u2ead\u2eae\u43c6;\u43d5ma\xf4\u0a76ne;\u660e\u0180;tv\u2ebf\u2ec0\u2ec8\u43c0chfork\xbb\u1ffd;\u43d6\u0100au\u2ecf\u2edfn\u0100ck\u2ed5\u2eddk\u0100;h\u21f4\u2edb;\u610e\xf6\u21f4s\u0480;abcdemst\u2ef3\u2ef4\u1908\u2ef9\u2efd\u2f04\u2f06\u2f0a\u2f0e\u402bcir;\u6a23ir;\u6a22\u0100ou\u1d40\u2f02;\u6a25;\u6a72n\u80bb\xb1\u0e9dim;\u6a26wo;\u6a27\u0180ipu\u2f19\u2f20\u2f25ntint;\u6a15f;\uc000\ud835\udd61nd\u803b\xa3\u40a3\u0500;Eaceinosu\u0ec8\u2f3f\u2f41\u2f44\u2f47\u2f81\u2f89\u2f92\u2f7e\u2fb6;\u6ab3p;\u6ab7u\xe5\u0ed9\u0100;c\u0ece\u2f4c\u0300;acens\u0ec8\u2f59\u2f5f\u2f66\u2f68\u2f7eppro\xf8\u2f43urlye\xf1\u0ed9\xf1\u0ece\u0180aes\u2f6f\u2f76\u2f7approx;\u6ab9qq;\u6ab5im;\u62e8i\xed\u0edfme\u0100;s\u2f88\u0eae\u6032\u0180Eas\u2f78\u2f90\u2f7a\xf0\u2f75\u0180dfp\u0eec\u2f99\u2faf\u0180als\u2fa0\u2fa5\u2faalar;\u632eine;\u6312urf;\u6313\u0100;t\u0efb\u2fb4\xef\u0efbrel;\u62b0\u0100ci\u2fc0\u2fc5r;\uc000\ud835\udcc5;\u43c8ncsp;\u6008\u0300fiopsu\u2fda\u22e2\u2fdf\u2fe5\u2feb\u2ff1r;\uc000\ud835\udd2epf;\uc000\ud835\udd62rime;\u6057cr;\uc000\ud835\udcc6\u0180aeo\u2ff8\u3009\u3013t\u0100ei\u2ffe\u3005rnion\xf3\u06b0nt;\u6a16st\u0100;e\u3010\u3011\u403f\xf1\u1f19\xf4\u0f14\u0a80ABHabcdefhilmnoprstux\u3040\u3051\u3055\u3059\u30e0\u310e\u312b\u3147\u3162\u3172\u318e\u3206\u3215\u3224\u3229\u3258\u326e\u3272\u3290\u32b0\u32b7\u0180art\u3047\u304a\u304cr\xf2\u10b3\xf2\u03ddail;\u691car\xf2\u1c65ar;\u6964\u0380cdenqrt\u3068\u3075\u3078\u307f\u308f\u3094\u30cc\u0100eu\u306d\u3071;\uc000\u223d\u0331te;\u4155i\xe3\u116emptyv;\u69b3g\u0200;del\u0fd1\u3089\u308b\u308d;\u6992;\u69a5\xe5\u0fd1uo\u803b\xbb\u40bbr\u0580;abcfhlpstw\u0fdc\u30ac\u30af\u30b7\u30b9\u30bc\u30be\u30c0\u30c3\u30c7\u30cap;\u6975\u0100;f\u0fe0\u30b4s;\u6920;\u6933s;\u691e\xeb\u225d\xf0\u272el;\u6945im;\u6974l;\u61a3;\u619d\u0100ai\u30d1\u30d5il;\u691ao\u0100;n\u30db\u30dc\u6236al\xf3\u0f1e\u0180abr\u30e7\u30ea\u30eer\xf2\u17e5rk;\u6773\u0100ak\u30f3\u30fdc\u0100ek\u30f9\u30fb;\u407d;\u405d\u0100es\u3102\u3104;\u698cl\u0100du\u310a\u310c;\u698e;\u6990\u0200aeuy\u3117\u311c\u3127\u3129ron;\u4159\u0100di\u3121\u3125il;\u4157\xec\u0ff2\xe2\u30fa;\u4440\u0200clqs\u3134\u3137\u313d\u3144a;\u6937dhar;\u6969uo\u0100;r\u020e\u020dh;\u61b3\u0180acg\u314e\u315f\u0f44l\u0200;ips\u0f78\u3158\u315b\u109cn\xe5\u10bbar\xf4\u0fa9t;\u65ad\u0180ilr\u3169\u1023\u316esht;\u697d;\uc000\ud835\udd2f\u0100ao\u3177\u3186r\u0100du\u317d\u317f\xbb\u047b\u0100;l\u1091\u3184;\u696c\u0100;v\u318b\u318c\u43c1;\u43f1\u0180gns\u3195\u31f9\u31fcht\u0300ahlrst\u31a4\u31b0\u31c2\u31d8\u31e4\u31eerrow\u0100;t\u0fdc\u31ada\xe9\u30c8arpoon\u0100du\u31bb\u31bfow\xee\u317ep\xbb\u1092eft\u0100ah\u31ca\u31d0rrow\xf3\u0feaarpoon\xf3\u0551ightarrows;\u61c9quigarro\xf7\u30cbhreetimes;\u62ccg;\u42daingdotse\xf1\u1f32\u0180ahm\u320d\u3210\u3213r\xf2\u0feaa\xf2\u0551;\u600foust\u0100;a\u321e\u321f\u63b1che\xbb\u321fmid;\u6aee\u0200abpt\u3232\u323d\u3240\u3252\u0100nr\u3237\u323ag;\u67edr;\u61fer\xeb\u1003\u0180afl\u3247\u324a\u324er;\u6986;\uc000\ud835\udd63us;\u6a2eimes;\u6a35\u0100ap\u325d\u3267r\u0100;g\u3263\u3264\u4029t;\u6994olint;\u6a12ar\xf2\u31e3\u0200achq\u327b\u3280\u10bc\u3285quo;\u603ar;\uc000\ud835\udcc7\u0100bu\u30fb\u328ao\u0100;r\u0214\u0213\u0180hir\u3297\u329b\u32a0re\xe5\u31f8mes;\u62cai\u0200;efl\u32aa\u1059\u1821\u32ab\u65b9tri;\u69celuhar;\u6968;\u611e\u0d61\u32d5\u32db\u32df\u332c\u3338\u3371\0\u337a\u33a4\0\0\u33ec\u33f0\0\u3428\u3448\u345a\u34ad\u34b1\u34ca\u34f1\0\u3616\0\0\u3633cute;\u415bqu\xef\u27ba\u0500;Eaceinpsy\u11ed\u32f3\u32f5\u32ff\u3302\u330b\u330f\u331f\u3326\u3329;\u6ab4\u01f0\u32fa\0\u32fc;\u6ab8on;\u4161u\xe5\u11fe\u0100;d\u11f3\u3307il;\u415frc;\u415d\u0180Eas\u3316\u3318\u331b;\u6ab6p;\u6abaim;\u62e9olint;\u6a13i\xed\u1204;\u4441ot\u0180;be\u3334\u1d47\u3335\u62c5;\u6a66\u0380Aacmstx\u3346\u334a\u3357\u335b\u335e\u3363\u336drr;\u61d8r\u0100hr\u3350\u3352\xeb\u2228\u0100;o\u0a36\u0a34t\u803b\xa7\u40a7i;\u403bwar;\u6929m\u0100in\u3369\xf0nu\xf3\xf1t;\u6736r\u0100;o\u3376\u2055\uc000\ud835\udd30\u0200acoy\u3382\u3386\u3391\u33a0rp;\u666f\u0100hy\u338b\u338fcy;\u4449;\u4448rt\u026d\u3399\0\0\u339ci\xe4\u1464ara\xec\u2e6f\u803b\xad\u40ad\u0100gm\u33a8\u33b4ma\u0180;fv\u33b1\u33b2\u33b2\u43c3;\u43c2\u0400;deglnpr\u12ab\u33c5\u33c9\u33ce\u33d6\u33de\u33e1\u33e6ot;\u6a6a\u0100;q\u12b1\u12b0\u0100;E\u33d3\u33d4\u6a9e;\u6aa0\u0100;E\u33db\u33dc\u6a9d;\u6a9fe;\u6246lus;\u6a24arr;\u6972ar\xf2\u113d\u0200aeit\u33f8\u3408\u340f\u3417\u0100ls\u33fd\u3404lsetm\xe9\u336ahp;\u6a33parsl;\u69e4\u0100dl\u1463\u3414e;\u6323\u0100;e\u341c\u341d\u6aaa\u0100;s\u3422\u3423\u6aac;\uc000\u2aac\ufe00\u0180flp\u342e\u3433\u3442tcy;\u444c\u0100;b\u3438\u3439\u402f\u0100;a\u343e\u343f\u69c4r;\u633ff;\uc000\ud835\udd64a\u0100dr\u344d\u0402es\u0100;u\u3454\u3455\u6660it\xbb\u3455\u0180csu\u3460\u3479\u349f\u0100au\u3465\u346fp\u0100;s\u1188\u346b;\uc000\u2293\ufe00p\u0100;s\u11b4\u3475;\uc000\u2294\ufe00u\u0100bp\u347f\u348f\u0180;es\u1197\u119c\u3486et\u0100;e\u1197\u348d\xf1\u119d\u0180;es\u11a8\u11ad\u3496et\u0100;e\u11a8\u349d\xf1\u11ae\u0180;af\u117b\u34a6\u05b0r\u0165\u34ab\u05b1\xbb\u117car\xf2\u1148\u0200cemt\u34b9\u34be\u34c2\u34c5r;\uc000\ud835\udcc8tm\xee\xf1i\xec\u3415ar\xe6\u11be\u0100ar\u34ce\u34d5r\u0100;f\u34d4\u17bf\u6606\u0100an\u34da\u34edight\u0100ep\u34e3\u34eapsilo\xee\u1ee0h\xe9\u2eafs\xbb\u2852\u0280bcmnp\u34fb\u355e\u1209\u358b\u358e\u0480;Edemnprs\u350e\u350f\u3511\u3515\u351e\u3523\u352c\u3531\u3536\u6282;\u6ac5ot;\u6abd\u0100;d\u11da\u351aot;\u6ac3ult;\u6ac1\u0100Ee\u3528\u352a;\u6acb;\u628alus;\u6abfarr;\u6979\u0180eiu\u353d\u3552\u3555t\u0180;en\u350e\u3545\u354bq\u0100;q\u11da\u350feq\u0100;q\u352b\u3528m;\u6ac7\u0100bp\u355a\u355c;\u6ad5;\u6ad3c\u0300;acens\u11ed\u356c\u3572\u3579\u357b\u3326ppro\xf8\u32faurlye\xf1\u11fe\xf1\u11f3\u0180aes\u3582\u3588\u331bppro\xf8\u331aq\xf1\u3317g;\u666a\u0680123;Edehlmnps\u35a9\u35ac\u35af\u121c\u35b2\u35b4\u35c0\u35c9\u35d5\u35da\u35df\u35e8\u35ed\u803b\xb9\u40b9\u803b\xb2\u40b2\u803b\xb3\u40b3;\u6ac6\u0100os\u35b9\u35bct;\u6abeub;\u6ad8\u0100;d\u1222\u35c5ot;\u6ac4s\u0100ou\u35cf\u35d2l;\u67c9b;\u6ad7arr;\u697bult;\u6ac2\u0100Ee\u35e4\u35e6;\u6acc;\u628blus;\u6ac0\u0180eiu\u35f4\u3609\u360ct\u0180;en\u121c\u35fc\u3602q\u0100;q\u1222\u35b2eq\u0100;q\u35e7\u35e4m;\u6ac8\u0100bp\u3611\u3613;\u6ad4;\u6ad6\u0180Aan\u361c\u3620\u362drr;\u61d9r\u0100hr\u3626\u3628\xeb\u222e\u0100;o\u0a2b\u0a29war;\u692alig\u803b\xdf\u40df\u0be1\u3651\u365d\u3660\u12ce\u3673\u3679\0\u367e\u36c2\0\0\0\0\0\u36db\u3703\0\u3709\u376c\0\0\0\u3787\u0272\u3656\0\0\u365bget;\u6316;\u43c4r\xeb\u0e5f\u0180aey\u3666\u366b\u3670ron;\u4165dil;\u4163;\u4442lrec;\u6315r;\uc000\ud835\udd31\u0200eiko\u3686\u369d\u36b5\u36bc\u01f2\u368b\0\u3691e\u01004f\u1284\u1281a\u0180;sv\u3698\u3699\u369b\u43b8ym;\u43d1\u0100cn\u36a2\u36b2k\u0100as\u36a8\u36aeppro\xf8\u12c1im\xbb\u12acs\xf0\u129e\u0100as\u36ba\u36ae\xf0\u12c1rn\u803b\xfe\u40fe\u01ec\u031f\u36c6\u22e7es\u8180\xd7;bd\u36cf\u36d0\u36d8\u40d7\u0100;a\u190f\u36d5r;\u6a31;\u6a30\u0180eps\u36e1\u36e3\u3700\xe1\u2a4d\u0200;bcf\u0486\u36ec\u36f0\u36f4ot;\u6336ir;\u6af1\u0100;o\u36f9\u36fc\uc000\ud835\udd65rk;\u6ada\xe1\u3362rime;\u6034\u0180aip\u370f\u3712\u3764d\xe5\u1248\u0380adempst\u3721\u374d\u3740\u3751\u3757\u375c\u375fngle\u0280;dlqr\u3730\u3731\u3736\u3740\u3742\u65b5own\xbb\u1dbbeft\u0100;e\u2800\u373e\xf1\u092e;\u625cight\u0100;e\u32aa\u374b\xf1\u105aot;\u65ecinus;\u6a3alus;\u6a39b;\u69cdime;\u6a3bezium;\u63e2\u0180cht\u3772\u377d\u3781\u0100ry\u3777\u377b;\uc000\ud835\udcc9;\u4446cy;\u445brok;\u4167\u0100io\u378b\u378ex\xf4\u1777head\u0100lr\u3797\u37a0eftarro\xf7\u084fightarrow\xbb\u0f5d\u0900AHabcdfghlmoprstuw\u37d0\u37d3\u37d7\u37e4\u37f0\u37fc\u380e\u381c\u3823\u3834\u3851\u385d\u386b\u38a9\u38cc\u38d2\u38ea\u38f6r\xf2\u03edar;\u6963\u0100cr\u37dc\u37e2ute\u803b\xfa\u40fa\xf2\u1150r\u01e3\u37ea\0\u37edy;\u445eve;\u416d\u0100iy\u37f5\u37farc\u803b\xfb\u40fb;\u4443\u0180abh\u3803\u3806\u380br\xf2\u13adlac;\u4171a\xf2\u13c3\u0100ir\u3813\u3818sht;\u697e;\uc000\ud835\udd32rave\u803b\xf9\u40f9\u0161\u3827\u3831r\u0100lr\u382c\u382e\xbb\u0957\xbb\u1083lk;\u6580\u0100ct\u3839\u384d\u026f\u383f\0\0\u384arn\u0100;e\u3845\u3846\u631cr\xbb\u3846op;\u630fri;\u65f8\u0100al\u3856\u385acr;\u416b\u80bb\xa8\u0349\u0100gp\u3862\u3866on;\u4173f;\uc000\ud835\udd66\u0300adhlsu\u114b\u3878\u387d\u1372\u3891\u38a0own\xe1\u13b3arpoon\u0100lr\u3888\u388cef\xf4\u382digh\xf4\u382fi\u0180;hl\u3899\u389a\u389c\u43c5\xbb\u13faon\xbb\u389aparrows;\u61c8\u0180cit\u38b0\u38c4\u38c8\u026f\u38b6\0\0\u38c1rn\u0100;e\u38bc\u38bd\u631dr\xbb\u38bdop;\u630eng;\u416fri;\u65f9cr;\uc000\ud835\udcca\u0180dir\u38d9\u38dd\u38e2ot;\u62f0lde;\u4169i\u0100;f\u3730\u38e8\xbb\u1813\u0100am\u38ef\u38f2r\xf2\u38a8l\u803b\xfc\u40fcangle;\u69a7\u0780ABDacdeflnoprsz\u391c\u391f\u3929\u392d\u39b5\u39b8\u39bd\u39df\u39e4\u39e8\u39f3\u39f9\u39fd\u3a01\u3a20r\xf2\u03f7ar\u0100;v\u3926\u3927\u6ae8;\u6ae9as\xe8\u03e1\u0100nr\u3932\u3937grt;\u699c\u0380eknprst\u34e3\u3946\u394b\u3952\u395d\u3964\u3996app\xe1\u2415othin\xe7\u1e96\u0180hir\u34eb\u2ec8\u3959op\xf4\u2fb5\u0100;h\u13b7\u3962\xef\u318d\u0100iu\u3969\u396dgm\xe1\u33b3\u0100bp\u3972\u3984setneq\u0100;q\u397d\u3980\uc000\u228a\ufe00;\uc000\u2acb\ufe00setneq\u0100;q\u398f\u3992\uc000\u228b\ufe00;\uc000\u2acc\ufe00\u0100hr\u399b\u399fet\xe1\u369ciangle\u0100lr\u39aa\u39afeft\xbb\u0925ight\xbb\u1051y;\u4432ash\xbb\u1036\u0180elr\u39c4\u39d2\u39d7\u0180;be\u2dea\u39cb\u39cfar;\u62bbq;\u625alip;\u62ee\u0100bt\u39dc\u1468a\xf2\u1469r;\uc000\ud835\udd33tr\xe9\u39aesu\u0100bp\u39ef\u39f1\xbb\u0d1c\xbb\u0d59pf;\uc000\ud835\udd67ro\xf0\u0efbtr\xe9\u39b4\u0100cu\u3a06\u3a0br;\uc000\ud835\udccb\u0100bp\u3a10\u3a18n\u0100Ee\u3980\u3a16\xbb\u397en\u0100Ee\u3992\u3a1e\xbb\u3990igzag;\u699a\u0380cefoprs\u3a36\u3a3b\u3a56\u3a5b\u3a54\u3a61\u3a6airc;\u4175\u0100di\u3a40\u3a51\u0100bg\u3a45\u3a49ar;\u6a5fe\u0100;q\u15fa\u3a4f;\u6259erp;\u6118r;\uc000\ud835\udd34pf;\uc000\ud835\udd68\u0100;e\u1479\u3a66at\xe8\u1479cr;\uc000\ud835\udccc\u0ae3\u178e\u3a87\0\u3a8b\0\u3a90\u3a9b\0\0\u3a9d\u3aa8\u3aab\u3aaf\0\0\u3ac3\u3ace\0\u3ad8\u17dc\u17dftr\xe9\u17d1r;\uc000\ud835\udd35\u0100Aa\u3a94\u3a97r\xf2\u03c3r\xf2\u09f6;\u43be\u0100Aa\u3aa1\u3aa4r\xf2\u03b8r\xf2\u09eba\xf0\u2713is;\u62fb\u0180dpt\u17a4\u3ab5\u3abe\u0100fl\u3aba\u17a9;\uc000\ud835\udd69im\xe5\u17b2\u0100Aa\u3ac7\u3acar\xf2\u03cer\xf2\u0a01\u0100cq\u3ad2\u17b8r;\uc000\ud835\udccd\u0100pt\u17d6\u3adcr\xe9\u17d4\u0400acefiosu\u3af0\u3afd\u3b08\u3b0c\u3b11\u3b15\u3b1b\u3b21c\u0100uy\u3af6\u3afbte\u803b\xfd\u40fd;\u444f\u0100iy\u3b02\u3b06rc;\u4177;\u444bn\u803b\xa5\u40a5r;\uc000\ud835\udd36cy;\u4457pf;\uc000\ud835\udd6acr;\uc000\ud835\udcce\u0100cm\u3b26\u3b29y;\u444el\u803b\xff\u40ff\u0500acdefhiosw\u3b42\u3b48\u3b54\u3b58\u3b64\u3b69\u3b6d\u3b74\u3b7a\u3b80cute;\u417a\u0100ay\u3b4d\u3b52ron;\u417e;\u4437ot;\u417c\u0100et\u3b5d\u3b61tr\xe6\u155fa;\u43b6r;\uc000\ud835\udd37cy;\u4436grarr;\u61ddpf;\uc000\ud835\udd6bcr;\uc000\ud835\udccf\u0100jn\u3b85\u3b87;\u600dj;\u600c"
-    .split("")
-    .map(function (c) { return c.charCodeAt(0); }));
+exports.default = new Uint16Array([7489, 60, 213, 305, 650, 1181, 1403, 1488, 1653, 1758, 1954, 2006, 2063, 2634, 2705, 3489, 3693, 3849, 3878, 4298, 4648, 4833, 5141, 5277, 5315, 5343, 5413, 0, 0, 0, 0, 0, 0, 5483, 5837, 6541, 7186, 7645, 8062, 8288, 8624, 8845, 9152, 9211, 9282, 10276, 10514, 11528, 11848, 12238, 12310, 12986, 13881, 14252, 14590, 14888, 14961, 15072, 15150, 2048, 69, 77, 97, 98, 99, 102, 103, 108, 109, 110, 111, 112, 114, 115, 116, 117, 92, 98, 102, 109, 115, 127, 132, 139, 144, 149, 152, 166, 179, 185, 200, 207, 108, 105, 103, 32827, 198, 16582, 80, 32827, 38, 16422, 99, 117, 116, 101, 32827, 193, 16577, 114, 101, 118, 101, 59, 16642, 256, 105, 121, 120, 125, 114, 99, 32827, 194, 16578, 59, 17424, 114, 59, 49152, 55349, 56580, 114, 97, 118, 101, 32827, 192, 16576, 112, 104, 97, 59, 17297, 97, 99, 114, 59, 16640, 100, 59, 27219, 256, 103, 112, 157, 161, 111, 110, 59, 16644, 102, 59, 49152, 55349, 56632, 112, 108, 121, 70, 117, 110, 99, 116, 105, 111, 110, 59, 24673, 105, 110, 103, 32827, 197, 16581, 256, 99, 115, 190, 195, 114, 59, 49152, 55349, 56476, 105, 103, 110, 59, 25172, 105, 108, 100, 101, 32827, 195, 16579, 109, 108, 32827, 196, 16580, 1024, 97, 99, 101, 102, 111, 114, 115, 117, 229, 251, 254, 279, 284, 290, 295, 298, 256, 99, 114, 234, 242, 107, 115, 108, 97, 115, 104, 59, 25110, 374, 246, 248, 59, 27367, 101, 100, 59, 25350, 121, 59, 17425, 384, 99, 114, 116, 261, 267, 276, 97, 117, 115, 101, 59, 25141, 110, 111, 117, 108, 108, 105, 115, 59, 24876, 97, 59, 17298, 114, 59, 49152, 55349, 56581, 112, 102, 59, 49152, 55349, 56633, 101, 118, 101, 59, 17112, 99, 242, 275, 109, 112, 101, 113, 59, 25166, 1792, 72, 79, 97, 99, 100, 101, 102, 104, 105, 108, 111, 114, 115, 117, 333, 337, 342, 384, 414, 418, 437, 439, 442, 476, 533, 627, 632, 638, 99, 121, 59, 17447, 80, 89, 32827, 169, 16553, 384, 99, 112, 121, 349, 354, 378, 117, 116, 101, 59, 16646, 256, 59, 105, 359, 360, 25298, 116, 97, 108, 68, 105, 102, 102, 101, 114, 101, 110, 116, 105, 97, 108, 68, 59, 24901, 108, 101, 121, 115, 59, 24877, 512, 97, 101, 105, 111, 393, 398, 404, 408, 114, 111, 110, 59, 16652, 100, 105, 108, 32827, 199, 16583, 114, 99, 59, 16648, 110, 105, 110, 116, 59, 25136, 111, 116, 59, 16650, 256, 100, 110, 423, 429, 105, 108, 108, 97, 59, 16568, 116, 101, 114, 68, 111, 116, 59, 16567, 242, 383, 105, 59, 17319, 114, 99, 108, 101, 512, 68, 77, 80, 84, 455, 459, 465, 470, 111, 116, 59, 25241, 105, 110, 117, 115, 59, 25238, 108, 117, 115, 59, 25237, 105, 109, 101, 115, 59, 25239, 111, 256, 99, 115, 482, 504, 107, 119, 105, 115, 101, 67, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 25138, 101, 67, 117, 114, 108, 121, 256, 68, 81, 515, 527, 111, 117, 98, 108, 101, 81, 117, 111, 116, 101, 59, 24605, 117, 111, 116, 101, 59, 24601, 512, 108, 110, 112, 117, 542, 552, 583, 597, 111, 110, 256, 59, 101, 549, 550, 25143, 59, 27252, 384, 103, 105, 116, 559, 566, 570, 114, 117, 101, 110, 116, 59, 25185, 110, 116, 59, 25135, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 25134, 256, 102, 114, 588, 590, 59, 24834, 111, 100, 117, 99, 116, 59, 25104, 110, 116, 101, 114, 67, 108, 111, 99, 107, 119, 105, 115, 101, 67, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 108, 59, 25139, 111, 115, 115, 59, 27183, 99, 114, 59, 49152, 55349, 56478, 112, 256, 59, 67, 644, 645, 25299, 97, 112, 59, 25165, 1408, 68, 74, 83, 90, 97, 99, 101, 102, 105, 111, 115, 672, 684, 688, 692, 696, 715, 727, 737, 742, 819, 1165, 256, 59, 111, 377, 677, 116, 114, 97, 104, 100, 59, 26897, 99, 121, 59, 17410, 99, 121, 59, 17413, 99, 121, 59, 17423, 384, 103, 114, 115, 703, 708, 711, 103, 101, 114, 59, 24609, 114, 59, 24993, 104, 118, 59, 27364, 256, 97, 121, 720, 725, 114, 111, 110, 59, 16654, 59, 17428, 108, 256, 59, 116, 733, 734, 25095, 97, 59, 17300, 114, 59, 49152, 55349, 56583, 256, 97, 102, 747, 807, 256, 99, 109, 752, 802, 114, 105, 116, 105, 99, 97, 108, 512, 65, 68, 71, 84, 768, 774, 790, 796, 99, 117, 116, 101, 59, 16564, 111, 372, 779, 781, 59, 17113, 98, 108, 101, 65, 99, 117, 116, 101, 59, 17117, 114, 97, 118, 101, 59, 16480, 105, 108, 100, 101, 59, 17116, 111, 110, 100, 59, 25284, 102, 101, 114, 101, 110, 116, 105, 97, 108, 68, 59, 24902, 1136, 829, 0, 0, 0, 834, 852, 0, 1029, 102, 59, 49152, 55349, 56635, 384, 59, 68, 69, 840, 841, 845, 16552, 111, 116, 59, 24796, 113, 117, 97, 108, 59, 25168, 98, 108, 101, 768, 67, 68, 76, 82, 85, 86, 867, 882, 898, 975, 994, 1016, 111, 110, 116, 111, 117, 114, 73, 110, 116, 101, 103, 114, 97, 236, 569, 111, 628, 889, 0, 0, 891, 187, 841, 110, 65, 114, 114, 111, 119, 59, 25043, 256, 101, 111, 903, 932, 102, 116, 384, 65, 82, 84, 912, 918, 929, 114, 114, 111, 119, 59, 25040, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 25044, 101, 229, 714, 110, 103, 256, 76, 82, 939, 964, 101, 102, 116, 256, 65, 82, 947, 953, 114, 114, 111, 119, 59, 26616, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 26618, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 26617, 105, 103, 104, 116, 256, 65, 84, 984, 990, 114, 114, 111, 119, 59, 25042, 101, 101, 59, 25256, 112, 577, 1001, 0, 0, 1007, 114, 114, 111, 119, 59, 25041, 111, 119, 110, 65, 114, 114, 111, 119, 59, 25045, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 25125, 110, 768, 65, 66, 76, 82, 84, 97, 1042, 1066, 1072, 1118, 1151, 892, 114, 114, 111, 119, 384, 59, 66, 85, 1053, 1054, 1058, 24979, 97, 114, 59, 26899, 112, 65, 114, 114, 111, 119, 59, 25077, 114, 101, 118, 101, 59, 17169, 101, 102, 116, 722, 1082, 0, 1094, 0, 1104, 105, 103, 104, 116, 86, 101, 99, 116, 111, 114, 59, 26960, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26974, 101, 99, 116, 111, 114, 256, 59, 66, 1113, 1114, 25021, 97, 114, 59, 26966, 105, 103, 104, 116, 468, 1127, 0, 1137, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26975, 101, 99, 116, 111, 114, 256, 59, 66, 1146, 1147, 25025, 97, 114, 59, 26967, 101, 101, 256, 59, 65, 1158, 1159, 25252, 114, 114, 111, 119, 59, 24999, 256, 99, 116, 1170, 1175, 114, 59, 49152, 55349, 56479, 114, 111, 107, 59, 16656, 2048, 78, 84, 97, 99, 100, 102, 103, 108, 109, 111, 112, 113, 115, 116, 117, 120, 1213, 1216, 1220, 1227, 1246, 1250, 1255, 1262, 1269, 1313, 1327, 1334, 1362, 1373, 1376, 1381, 71, 59, 16714, 72, 32827, 208, 16592, 99, 117, 116, 101, 32827, 201, 16585, 384, 97, 105, 121, 1234, 1239, 1244, 114, 111, 110, 59, 16666, 114, 99, 32827, 202, 16586, 59, 17453, 111, 116, 59, 16662, 114, 59, 49152, 55349, 56584, 114, 97, 118, 101, 32827, 200, 16584, 101, 109, 101, 110, 116, 59, 25096, 256, 97, 112, 1274, 1278, 99, 114, 59, 16658, 116, 121, 595, 1286, 0, 0, 1298, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 26107, 101, 114, 121, 83, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 26027, 256, 103, 112, 1318, 1322, 111, 110, 59, 16664, 102, 59, 49152, 55349, 56636, 115, 105, 108, 111, 110, 59, 17301, 117, 256, 97, 105, 1340, 1353, 108, 256, 59, 84, 1346, 1347, 27253, 105, 108, 100, 101, 59, 25154, 108, 105, 98, 114, 105, 117, 109, 59, 25036, 256, 99, 105, 1367, 1370, 114, 59, 24880, 109, 59, 27251, 97, 59, 17303, 109, 108, 32827, 203, 16587, 256, 105, 112, 1386, 1391, 115, 116, 115, 59, 25091, 111, 110, 101, 110, 116, 105, 97, 108, 69, 59, 24903, 640, 99, 102, 105, 111, 115, 1413, 1416, 1421, 1458, 1484, 121, 59, 17444, 114, 59, 49152, 55349, 56585, 108, 108, 101, 100, 595, 1431, 0, 0, 1443, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 26108, 101, 114, 121, 83, 109, 97, 108, 108, 83, 113, 117, 97, 114, 101, 59, 26026, 880, 1466, 0, 1471, 0, 0, 1476, 102, 59, 49152, 55349, 56637, 65, 108, 108, 59, 25088, 114, 105, 101, 114, 116, 114, 102, 59, 24881, 99, 242, 1483, 1536, 74, 84, 97, 98, 99, 100, 102, 103, 111, 114, 115, 116, 1512, 1516, 1519, 1530, 1536, 1554, 1558, 1563, 1565, 1571, 1644, 1650, 99, 121, 59, 17411, 32827, 62, 16446, 109, 109, 97, 256, 59, 100, 1527, 1528, 17299, 59, 17372, 114, 101, 118, 101, 59, 16670, 384, 101, 105, 121, 1543, 1548, 1552, 100, 105, 108, 59, 16674, 114, 99, 59, 16668, 59, 17427, 111, 116, 59, 16672, 114, 59, 49152, 55349, 56586, 59, 25305, 112, 102, 59, 49152, 55349, 56638, 101, 97, 116, 101, 114, 768, 69, 70, 71, 76, 83, 84, 1589, 1604, 1614, 1622, 1627, 1638, 113, 117, 97, 108, 256, 59, 76, 1598, 1599, 25189, 101, 115, 115, 59, 25307, 117, 108, 108, 69, 113, 117, 97, 108, 59, 25191, 114, 101, 97, 116, 101, 114, 59, 27298, 101, 115, 115, 59, 25207, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 27262, 105, 108, 100, 101, 59, 25203, 99, 114, 59, 49152, 55349, 56482, 59, 25195, 1024, 65, 97, 99, 102, 105, 111, 115, 117, 1669, 1675, 1686, 1691, 1694, 1706, 1726, 1738, 82, 68, 99, 121, 59, 17450, 256, 99, 116, 1680, 1684, 101, 107, 59, 17095, 59, 16478, 105, 114, 99, 59, 16676, 114, 59, 24844, 108, 98, 101, 114, 116, 83, 112, 97, 99, 101, 59, 24843, 496, 1711, 0, 1714, 102, 59, 24845, 105, 122, 111, 110, 116, 97, 108, 76, 105, 110, 101, 59, 25856, 256, 99, 116, 1731, 1733, 242, 1705, 114, 111, 107, 59, 16678, 109, 112, 324, 1744, 1752, 111, 119, 110, 72, 117, 109, 240, 303, 113, 117, 97, 108, 59, 25167, 1792, 69, 74, 79, 97, 99, 100, 102, 103, 109, 110, 111, 115, 116, 117, 1786, 1790, 1795, 1799, 1806, 1818, 1822, 1825, 1832, 1860, 1912, 1931, 1935, 1941, 99, 121, 59, 17429, 108, 105, 103, 59, 16690, 99, 121, 59, 17409, 99, 117, 116, 101, 32827, 205, 16589, 256, 105, 121, 1811, 1816, 114, 99, 32827, 206, 16590, 59, 17432, 111, 116, 59, 16688, 114, 59, 24849, 114, 97, 118, 101, 32827, 204, 16588, 384, 59, 97, 112, 1824, 1839, 1855, 256, 99, 103, 1844, 1847, 114, 59, 16682, 105, 110, 97, 114, 121, 73, 59, 24904, 108, 105, 101, 243, 989, 500, 1865, 0, 1890, 256, 59, 101, 1869, 1870, 25132, 256, 103, 114, 1875, 1880, 114, 97, 108, 59, 25131, 115, 101, 99, 116, 105, 111, 110, 59, 25282, 105, 115, 105, 98, 108, 101, 256, 67, 84, 1900, 1906, 111, 109, 109, 97, 59, 24675, 105, 109, 101, 115, 59, 24674, 384, 103, 112, 116, 1919, 1923, 1928, 111, 110, 59, 16686, 102, 59, 49152, 55349, 56640, 97, 59, 17305, 99, 114, 59, 24848, 105, 108, 100, 101, 59, 16680, 491, 1946, 0, 1950, 99, 121, 59, 17414, 108, 32827, 207, 16591, 640, 99, 102, 111, 115, 117, 1964, 1975, 1980, 1986, 2000, 256, 105, 121, 1969, 1973, 114, 99, 59, 16692, 59, 17433, 114, 59, 49152, 55349, 56589, 112, 102, 59, 49152, 55349, 56641, 483, 1991, 0, 1996, 114, 59, 49152, 55349, 56485, 114, 99, 121, 59, 17416, 107, 99, 121, 59, 17412, 896, 72, 74, 97, 99, 102, 111, 115, 2020, 2024, 2028, 2033, 2045, 2050, 2056, 99, 121, 59, 17445, 99, 121, 59, 17420, 112, 112, 97, 59, 17306, 256, 101, 121, 2038, 2043, 100, 105, 108, 59, 16694, 59, 17434, 114, 59, 49152, 55349, 56590, 112, 102, 59, 49152, 55349, 56642, 99, 114, 59, 49152, 55349, 56486, 1408, 74, 84, 97, 99, 101, 102, 108, 109, 111, 115, 116, 2085, 2089, 2092, 2128, 2147, 2483, 2488, 2503, 2509, 2615, 2631, 99, 121, 59, 17417, 32827, 60, 16444, 640, 99, 109, 110, 112, 114, 2103, 2108, 2113, 2116, 2125, 117, 116, 101, 59, 16697, 98, 100, 97, 59, 17307, 103, 59, 26602, 108, 97, 99, 101, 116, 114, 102, 59, 24850, 114, 59, 24990, 384, 97, 101, 121, 2135, 2140, 2145, 114, 111, 110, 59, 16701, 100, 105, 108, 59, 16699, 59, 17435, 256, 102, 115, 2152, 2416, 116, 1280, 65, 67, 68, 70, 82, 84, 85, 86, 97, 114, 2174, 2217, 2225, 2272, 2278, 2300, 2351, 2395, 912, 2410, 256, 110, 114, 2179, 2191, 103, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 26600, 114, 111, 119, 384, 59, 66, 82, 2201, 2202, 2206, 24976, 97, 114, 59, 25060, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 25030, 101, 105, 108, 105, 110, 103, 59, 25352, 111, 501, 2231, 0, 2243, 98, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 26598, 110, 468, 2248, 0, 2258, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26977, 101, 99, 116, 111, 114, 256, 59, 66, 2267, 2268, 25027, 97, 114, 59, 26969, 108, 111, 111, 114, 59, 25354, 105, 103, 104, 116, 256, 65, 86, 2287, 2293, 114, 114, 111, 119, 59, 24980, 101, 99, 116, 111, 114, 59, 26958, 256, 101, 114, 2305, 2327, 101, 384, 59, 65, 86, 2313, 2314, 2320, 25251, 114, 114, 111, 119, 59, 24996, 101, 99, 116, 111, 114, 59, 26970, 105, 97, 110, 103, 108, 101, 384, 59, 66, 69, 2340, 2341, 2345, 25266, 97, 114, 59, 27087, 113, 117, 97, 108, 59, 25268, 112, 384, 68, 84, 86, 2359, 2370, 2380, 111, 119, 110, 86, 101, 99, 116, 111, 114, 59, 26961, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26976, 101, 99, 116, 111, 114, 256, 59, 66, 2390, 2391, 25023, 97, 114, 59, 26968, 101, 99, 116, 111, 114, 256, 59, 66, 2405, 2406, 25020, 97, 114, 59, 26962, 105, 103, 104, 116, 225, 924, 115, 768, 69, 70, 71, 76, 83, 84, 2430, 2443, 2453, 2461, 2466, 2477, 113, 117, 97, 108, 71, 114, 101, 97, 116, 101, 114, 59, 25306, 117, 108, 108, 69, 113, 117, 97, 108, 59, 25190, 114, 101, 97, 116, 101, 114, 59, 25206, 101, 115, 115, 59, 27297, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 27261, 105, 108, 100, 101, 59, 25202, 114, 59, 49152, 55349, 56591, 256, 59, 101, 2493, 2494, 25304, 102, 116, 97, 114, 114, 111, 119, 59, 25050, 105, 100, 111, 116, 59, 16703, 384, 110, 112, 119, 2516, 2582, 2587, 103, 512, 76, 82, 108, 114, 2526, 2551, 2562, 2576, 101, 102, 116, 256, 65, 82, 2534, 2540, 114, 114, 111, 119, 59, 26613, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 26615, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 26614, 101, 102, 116, 256, 97, 114, 947, 2570, 105, 103, 104, 116, 225, 959, 105, 103, 104, 116, 225, 970, 102, 59, 49152, 55349, 56643, 101, 114, 256, 76, 82, 2594, 2604, 101, 102, 116, 65, 114, 114, 111, 119, 59, 24985, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 24984, 384, 99, 104, 116, 2622, 2624, 2626, 242, 2124, 59, 25008, 114, 111, 107, 59, 16705, 59, 25194, 1024, 97, 99, 101, 102, 105, 111, 115, 117, 2650, 2653, 2656, 2679, 2684, 2693, 2699, 2702, 112, 59, 26885, 121, 59, 17436, 256, 100, 108, 2661, 2671, 105, 117, 109, 83, 112, 97, 99, 101, 59, 24671, 108, 105, 110, 116, 114, 102, 59, 24883, 114, 59, 49152, 55349, 56592, 110, 117, 115, 80, 108, 117, 115, 59, 25107, 112, 102, 59, 49152, 55349, 56644, 99, 242, 2678, 59, 17308, 1152, 74, 97, 99, 101, 102, 111, 115, 116, 117, 2723, 2727, 2733, 2752, 2836, 2841, 3473, 3479, 3486, 99, 121, 59, 17418, 99, 117, 116, 101, 59, 16707, 384, 97, 101, 121, 2740, 2745, 2750, 114, 111, 110, 59, 16711, 100, 105, 108, 59, 16709, 59, 17437, 384, 103, 115, 119, 2759, 2800, 2830, 97, 116, 105, 118, 101, 384, 77, 84, 86, 2771, 2783, 2792, 101, 100, 105, 117, 109, 83, 112, 97, 99, 101, 59, 24587, 104, 105, 256, 99, 110, 2790, 2776, 235, 2777, 101, 114, 121, 84, 104, 105, 238, 2777, 116, 101, 100, 256, 71, 76, 2808, 2822, 114, 101, 97, 116, 101, 114, 71, 114, 101, 97, 116, 101, 242, 1651, 101, 115, 115, 76, 101, 115, 243, 2632, 76, 105, 110, 101, 59, 16394, 114, 59, 49152, 55349, 56593, 512, 66, 110, 112, 116, 2850, 2856, 2871, 2874, 114, 101, 97, 107, 59, 24672, 66, 114, 101, 97, 107, 105, 110, 103, 83, 112, 97, 99, 101, 59, 16544, 102, 59, 24853, 1664, 59, 67, 68, 69, 71, 72, 76, 78, 80, 82, 83, 84, 86, 2901, 2902, 2922, 2940, 2977, 3051, 3076, 3166, 3204, 3238, 3288, 3425, 3461, 27372, 256, 111, 117, 2907, 2916, 110, 103, 114, 117, 101, 110, 116, 59, 25186, 112, 67, 97, 112, 59, 25197, 111, 117, 98, 108, 101, 86, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 25126, 384, 108, 113, 120, 2947, 2954, 2971, 101, 109, 101, 110, 116, 59, 25097, 117, 97, 108, 256, 59, 84, 2962, 2963, 25184, 105, 108, 100, 101, 59, 49152, 8770, 824, 105, 115, 116, 115, 59, 25092, 114, 101, 97, 116, 101, 114, 896, 59, 69, 70, 71, 76, 83, 84, 2998, 2999, 3005, 3017, 3027, 3032, 3045, 25199, 113, 117, 97, 108, 59, 25201, 117, 108, 108, 69, 113, 117, 97, 108, 59, 49152, 8807, 824, 114, 101, 97, 116, 101, 114, 59, 49152, 8811, 824, 101, 115, 115, 59, 25209, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 49152, 10878, 824, 105, 108, 100, 101, 59, 25205, 117, 109, 112, 324, 3058, 3069, 111, 119, 110, 72, 117, 109, 112, 59, 49152, 8782, 824, 113, 117, 97, 108, 59, 49152, 8783, 824, 101, 256, 102, 115, 3082, 3111, 116, 84, 114, 105, 97, 110, 103, 108, 101, 384, 59, 66, 69, 3098, 3099, 3105, 25322, 97, 114, 59, 49152, 10703, 824, 113, 117, 97, 108, 59, 25324, 115, 768, 59, 69, 71, 76, 83, 84, 3125, 3126, 3132, 3140, 3147, 3160, 25198, 113, 117, 97, 108, 59, 25200, 114, 101, 97, 116, 101, 114, 59, 25208, 101, 115, 115, 59, 49152, 8810, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 49152, 10877, 824, 105, 108, 100, 101, 59, 25204, 101, 115, 116, 101, 100, 256, 71, 76, 3176, 3193, 114, 101, 97, 116, 101, 114, 71, 114, 101, 97, 116, 101, 114, 59, 49152, 10914, 824, 101, 115, 115, 76, 101, 115, 115, 59, 49152, 10913, 824, 114, 101, 99, 101, 100, 101, 115, 384, 59, 69, 83, 3218, 3219, 3227, 25216, 113, 117, 97, 108, 59, 49152, 10927, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 25312, 256, 101, 105, 3243, 3257, 118, 101, 114, 115, 101, 69, 108, 101, 109, 101, 110, 116, 59, 25100, 103, 104, 116, 84, 114, 105, 97, 110, 103, 108, 101, 384, 59, 66, 69, 3275, 3276, 3282, 25323, 97, 114, 59, 49152, 10704, 824, 113, 117, 97, 108, 59, 25325, 256, 113, 117, 3293, 3340, 117, 97, 114, 101, 83, 117, 256, 98, 112, 3304, 3321, 115, 101, 116, 256, 59, 69, 3312, 3315, 49152, 8847, 824, 113, 117, 97, 108, 59, 25314, 101, 114, 115, 101, 116, 256, 59, 69, 3331, 3334, 49152, 8848, 824, 113, 117, 97, 108, 59, 25315, 384, 98, 99, 112, 3347, 3364, 3406, 115, 101, 116, 256, 59, 69, 3355, 3358, 49152, 8834, 8402, 113, 117, 97, 108, 59, 25224, 99, 101, 101, 100, 115, 512, 59, 69, 83, 84, 3378, 3379, 3387, 3398, 25217, 113, 117, 97, 108, 59, 49152, 10928, 824, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 25313, 105, 108, 100, 101, 59, 49152, 8831, 824, 101, 114, 115, 101, 116, 256, 59, 69, 3416, 3419, 49152, 8835, 8402, 113, 117, 97, 108, 59, 25225, 105, 108, 100, 101, 512, 59, 69, 70, 84, 3438, 3439, 3445, 3455, 25153, 113, 117, 97, 108, 59, 25156, 117, 108, 108, 69, 113, 117, 97, 108, 59, 25159, 105, 108, 100, 101, 59, 25161, 101, 114, 116, 105, 99, 97, 108, 66, 97, 114, 59, 25124, 99, 114, 59, 49152, 55349, 56489, 105, 108, 100, 101, 32827, 209, 16593, 59, 17309, 1792, 69, 97, 99, 100, 102, 103, 109, 111, 112, 114, 115, 116, 117, 118, 3517, 3522, 3529, 3541, 3547, 3552, 3559, 3580, 3586, 3616, 3618, 3634, 3647, 3652, 108, 105, 103, 59, 16722, 99, 117, 116, 101, 32827, 211, 16595, 256, 105, 121, 3534, 3539, 114, 99, 32827, 212, 16596, 59, 17438, 98, 108, 97, 99, 59, 16720, 114, 59, 49152, 55349, 56594, 114, 97, 118, 101, 32827, 210, 16594, 384, 97, 101, 105, 3566, 3570, 3574, 99, 114, 59, 16716, 103, 97, 59, 17321, 99, 114, 111, 110, 59, 17311, 112, 102, 59, 49152, 55349, 56646, 101, 110, 67, 117, 114, 108, 121, 256, 68, 81, 3598, 3610, 111, 117, 98, 108, 101, 81, 117, 111, 116, 101, 59, 24604, 117, 111, 116, 101, 59, 24600, 59, 27220, 256, 99, 108, 3623, 3628, 114, 59, 49152, 55349, 56490, 97, 115, 104, 32827, 216, 16600, 105, 364, 3639, 3644, 100, 101, 32827, 213, 16597, 101, 115, 59, 27191, 109, 108, 32827, 214, 16598, 101, 114, 256, 66, 80, 3659, 3680, 256, 97, 114, 3664, 3667, 114, 59, 24638, 97, 99, 256, 101, 107, 3674, 3676, 59, 25566, 101, 116, 59, 25524, 97, 114, 101, 110, 116, 104, 101, 115, 105, 115, 59, 25564, 1152, 97, 99, 102, 104, 105, 108, 111, 114, 115, 3711, 3719, 3722, 3727, 3730, 3732, 3741, 3760, 3836, 114, 116, 105, 97, 108, 68, 59, 25090, 121, 59, 17439, 114, 59, 49152, 55349, 56595, 105, 59, 17318, 59, 17312, 117, 115, 77, 105, 110, 117, 115, 59, 16561, 256, 105, 112, 3746, 3757, 110, 99, 97, 114, 101, 112, 108, 97, 110, 229, 1693, 102, 59, 24857, 512, 59, 101, 105, 111, 3769, 3770, 3808, 3812, 27323, 99, 101, 100, 101, 115, 512, 59, 69, 83, 84, 3784, 3785, 3791, 3802, 25210, 113, 117, 97, 108, 59, 27311, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 25212, 105, 108, 100, 101, 59, 25214, 109, 101, 59, 24627, 256, 100, 112, 3817, 3822, 117, 99, 116, 59, 25103, 111, 114, 116, 105, 111, 110, 256, 59, 97, 549, 3833, 108, 59, 25117, 256, 99, 105, 3841, 3846, 114, 59, 49152, 55349, 56491, 59, 17320, 512, 85, 102, 111, 115, 3857, 3862, 3867, 3871, 79, 84, 32827, 34, 16418, 114, 59, 49152, 55349, 56596, 112, 102, 59, 24858, 99, 114, 59, 49152, 55349, 56492, 1536, 66, 69, 97, 99, 101, 102, 104, 105, 111, 114, 115, 117, 3902, 3907, 3911, 3936, 3955, 4007, 4010, 4013, 4246, 4265, 4276, 4286, 97, 114, 114, 59, 26896, 71, 32827, 174, 16558, 384, 99, 110, 114, 3918, 3923, 3926, 117, 116, 101, 59, 16724, 103, 59, 26603, 114, 256, 59, 116, 3932, 3933, 24992, 108, 59, 26902, 384, 97, 101, 121, 3943, 3948, 3953, 114, 111, 110, 59, 16728, 100, 105, 108, 59, 16726, 59, 17440, 256, 59, 118, 3960, 3961, 24860, 101, 114, 115, 101, 256, 69, 85, 3970, 3993, 256, 108, 113, 3975, 3982, 101, 109, 101, 110, 116, 59, 25099, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 25035, 112, 69, 113, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 26991, 114, 187, 3961, 111, 59, 17313, 103, 104, 116, 1024, 65, 67, 68, 70, 84, 85, 86, 97, 4033, 4075, 4083, 4130, 4136, 4187, 4231, 984, 256, 110, 114, 4038, 4050, 103, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 26601, 114, 111, 119, 384, 59, 66, 76, 4060, 4061, 4065, 24978, 97, 114, 59, 25061, 101, 102, 116, 65, 114, 114, 111, 119, 59, 25028, 101, 105, 108, 105, 110, 103, 59, 25353, 111, 501, 4089, 0, 4101, 98, 108, 101, 66, 114, 97, 99, 107, 101, 116, 59, 26599, 110, 468, 4106, 0, 4116, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26973, 101, 99, 116, 111, 114, 256, 59, 66, 4125, 4126, 25026, 97, 114, 59, 26965, 108, 111, 111, 114, 59, 25355, 256, 101, 114, 4141, 4163, 101, 384, 59, 65, 86, 4149, 4150, 4156, 25250, 114, 114, 111, 119, 59, 24998, 101, 99, 116, 111, 114, 59, 26971, 105, 97, 110, 103, 108, 101, 384, 59, 66, 69, 4176, 4177, 4181, 25267, 97, 114, 59, 27088, 113, 117, 97, 108, 59, 25269, 112, 384, 68, 84, 86, 4195, 4206, 4216, 111, 119, 110, 86, 101, 99, 116, 111, 114, 59, 26959, 101, 101, 86, 101, 99, 116, 111, 114, 59, 26972, 101, 99, 116, 111, 114, 256, 59, 66, 4226, 4227, 25022, 97, 114, 59, 26964, 101, 99, 116, 111, 114, 256, 59, 66, 4241, 4242, 25024, 97, 114, 59, 26963, 256, 112, 117, 4251, 4254, 102, 59, 24861, 110, 100, 73, 109, 112, 108, 105, 101, 115, 59, 26992, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 25051, 256, 99, 104, 4281, 4284, 114, 59, 24859, 59, 25009, 108, 101, 68, 101, 108, 97, 121, 101, 100, 59, 27124, 1664, 72, 79, 97, 99, 102, 104, 105, 109, 111, 113, 115, 116, 117, 4324, 4337, 4343, 4349, 4377, 4382, 4433, 4438, 4449, 4455, 4533, 4539, 4543, 256, 67, 99, 4329, 4334, 72, 99, 121, 59, 17449, 121, 59, 17448, 70, 84, 99, 121, 59, 17452, 99, 117, 116, 101, 59, 16730, 640, 59, 97, 101, 105, 121, 4360, 4361, 4366, 4371, 4375, 27324, 114, 111, 110, 59, 16736, 100, 105, 108, 59, 16734, 114, 99, 59, 16732, 59, 17441, 114, 59, 49152, 55349, 56598, 111, 114, 116, 512, 68, 76, 82, 85, 4394, 4404, 4414, 4425, 111, 119, 110, 65, 114, 114, 111, 119, 187, 1054, 101, 102, 116, 65, 114, 114, 111, 119, 187, 2202, 105, 103, 104, 116, 65, 114, 114, 111, 119, 187, 4061, 112, 65, 114, 114, 111, 119, 59, 24977, 103, 109, 97, 59, 17315, 97, 108, 108, 67, 105, 114, 99, 108, 101, 59, 25112, 112, 102, 59, 49152, 55349, 56650, 626, 4461, 0, 0, 4464, 116, 59, 25114, 97, 114, 101, 512, 59, 73, 83, 85, 4475, 4476, 4489, 4527, 26017, 110, 116, 101, 114, 115, 101, 99, 116, 105, 111, 110, 59, 25235, 117, 256, 98, 112, 4495, 4510, 115, 101, 116, 256, 59, 69, 4503, 4504, 25231, 113, 117, 97, 108, 59, 25233, 101, 114, 115, 101, 116, 256, 59, 69, 4520, 4521, 25232, 113, 117, 97, 108, 59, 25234, 110, 105, 111, 110, 59, 25236, 99, 114, 59, 49152, 55349, 56494, 97, 114, 59, 25286, 512, 98, 99, 109, 112, 4552, 4571, 4617, 4619, 256, 59, 115, 4557, 4558, 25296, 101, 116, 256, 59, 69, 4557, 4565, 113, 117, 97, 108, 59, 25222, 256, 99, 104, 4576, 4613, 101, 101, 100, 115, 512, 59, 69, 83, 84, 4589, 4590, 4596, 4607, 25211, 113, 117, 97, 108, 59, 27312, 108, 97, 110, 116, 69, 113, 117, 97, 108, 59, 25213, 105, 108, 100, 101, 59, 25215, 84, 104, 225, 3980, 59, 25105, 384, 59, 101, 115, 4626, 4627, 4643, 25297, 114, 115, 101, 116, 256, 59, 69, 4636, 4637, 25219, 113, 117, 97, 108, 59, 25223, 101, 116, 187, 4627, 1408, 72, 82, 83, 97, 99, 102, 104, 105, 111, 114, 115, 4670, 4676, 4681, 4693, 4702, 4721, 4726, 4767, 4802, 4808, 4817, 79, 82, 78, 32827, 222, 16606, 65, 68, 69, 59, 24866, 256, 72, 99, 4686, 4690, 99, 121, 59, 17419, 121, 59, 17446, 256, 98, 117, 4698, 4700, 59, 16393, 59, 17316, 384, 97, 101, 121, 4709, 4714, 4719, 114, 111, 110, 59, 16740, 100, 105, 108, 59, 16738, 59, 17442, 114, 59, 49152, 55349, 56599, 256, 101, 105, 4731, 4745, 498, 4736, 0, 4743, 101, 102, 111, 114, 101, 59, 25140, 97, 59, 17304, 256, 99, 110, 4750, 4760, 107, 83, 112, 97, 99, 101, 59, 49152, 8287, 8202, 83, 112, 97, 99, 101, 59, 24585, 108, 100, 101, 512, 59, 69, 70, 84, 4779, 4780, 4786, 4796, 25148, 113, 117, 97, 108, 59, 25155, 117, 108, 108, 69, 113, 117, 97, 108, 59, 25157, 105, 108, 100, 101, 59, 25160, 112, 102, 59, 49152, 55349, 56651, 105, 112, 108, 101, 68, 111, 116, 59, 24795, 256, 99, 116, 4822, 4827, 114, 59, 49152, 55349, 56495, 114, 111, 107, 59, 16742, 2785, 4855, 4878, 4890, 4902, 0, 4908, 4913, 0, 0, 0, 0, 0, 4920, 4925, 4983, 4997, 0, 5119, 5124, 5130, 5136, 256, 99, 114, 4859, 4865, 117, 116, 101, 32827, 218, 16602, 114, 256, 59, 111, 4871, 4872, 24991, 99, 105, 114, 59, 26953, 114, 483, 4883, 0, 4886, 121, 59, 17422, 118, 101, 59, 16748, 256, 105, 121, 4894, 4899, 114, 99, 32827, 219, 16603, 59, 17443, 98, 108, 97, 99, 59, 16752, 114, 59, 49152, 55349, 56600, 114, 97, 118, 101, 32827, 217, 16601, 97, 99, 114, 59, 16746, 256, 100, 105, 4929, 4969, 101, 114, 256, 66, 80, 4936, 4957, 256, 97, 114, 4941, 4944, 114, 59, 16479, 97, 99, 256, 101, 107, 4951, 4953, 59, 25567, 101, 116, 59, 25525, 97, 114, 101, 110, 116, 104, 101, 115, 105, 115, 59, 25565, 111, 110, 256, 59, 80, 4976, 4977, 25283, 108, 117, 115, 59, 25230, 256, 103, 112, 4987, 4991, 111, 110, 59, 16754, 102, 59, 49152, 55349, 56652, 1024, 65, 68, 69, 84, 97, 100, 112, 115, 5013, 5038, 5048, 5060, 1000, 5074, 5079, 5107, 114, 114, 111, 119, 384, 59, 66, 68, 4432, 5024, 5028, 97, 114, 59, 26898, 111, 119, 110, 65, 114, 114, 111, 119, 59, 25029, 111, 119, 110, 65, 114, 114, 111, 119, 59, 24981, 113, 117, 105, 108, 105, 98, 114, 105, 117, 109, 59, 26990, 101, 101, 256, 59, 65, 5067, 5068, 25253, 114, 114, 111, 119, 59, 24997, 111, 119, 110, 225, 1011, 101, 114, 256, 76, 82, 5086, 5096, 101, 102, 116, 65, 114, 114, 111, 119, 59, 24982, 105, 103, 104, 116, 65, 114, 114, 111, 119, 59, 24983, 105, 256, 59, 108, 5113, 5114, 17362, 111, 110, 59, 17317, 105, 110, 103, 59, 16750, 99, 114, 59, 49152, 55349, 56496, 105, 108, 100, 101, 59, 16744, 109, 108, 32827, 220, 16604, 1152, 68, 98, 99, 100, 101, 102, 111, 115, 118, 5159, 5164, 5168, 5171, 5182, 5253, 5258, 5264, 5270, 97, 115, 104, 59, 25259, 97, 114, 59, 27371, 121, 59, 17426, 97, 115, 104, 256, 59, 108, 5179, 5180, 25257, 59, 27366, 256, 101, 114, 5187, 5189, 59, 25281, 384, 98, 116, 121, 5196, 5200, 5242, 97, 114, 59, 24598, 256, 59, 105, 5199, 5205, 99, 97, 108, 512, 66, 76, 83, 84, 5217, 5221, 5226, 5236, 97, 114, 59, 25123, 105, 110, 101, 59, 16508, 101, 112, 97, 114, 97, 116, 111, 114, 59, 26456, 105, 108, 100, 101, 59, 25152, 84, 104, 105, 110, 83, 112, 97, 99, 101, 59, 24586, 114, 59, 49152, 55349, 56601, 112, 102, 59, 49152, 55349, 56653, 99, 114, 59, 49152, 55349, 56497, 100, 97, 115, 104, 59, 25258, 640, 99, 101, 102, 111, 115, 5287, 5292, 5297, 5302, 5308, 105, 114, 99, 59, 16756, 100, 103, 101, 59, 25280, 114, 59, 49152, 55349, 56602, 112, 102, 59, 49152, 55349, 56654, 99, 114, 59, 49152, 55349, 56498, 512, 102, 105, 111, 115, 5323, 5328, 5330, 5336, 114, 59, 49152, 55349, 56603, 59, 17310, 112, 102, 59, 49152, 55349, 56655, 99, 114, 59, 49152, 55349, 56499, 1152, 65, 73, 85, 97, 99, 102, 111, 115, 117, 5361, 5365, 5369, 5373, 5380, 5391, 5396, 5402, 5408, 99, 121, 59, 17455, 99, 121, 59, 17415, 99, 121, 59, 17454, 99, 117, 116, 101, 32827, 221, 16605, 256, 105, 121, 5385, 5389, 114, 99, 59, 16758, 59, 17451, 114, 59, 49152, 55349, 56604, 112, 102, 59, 49152, 55349, 56656, 99, 114, 59, 49152, 55349, 56500, 109, 108, 59, 16760, 1024, 72, 97, 99, 100, 101, 102, 111, 115, 5429, 5433, 5439, 5451, 5455, 5469, 5472, 5476, 99, 121, 59, 17430, 99, 117, 116, 101, 59, 16761, 256, 97, 121, 5444, 5449, 114, 111, 110, 59, 16765, 59, 17431, 111, 116, 59, 16763, 498, 5460, 0, 5467, 111, 87, 105, 100, 116, 232, 2777, 97, 59, 17302, 114, 59, 24872, 112, 102, 59, 24868, 99, 114, 59, 49152, 55349, 56501, 3041, 5507, 5514, 5520, 0, 5552, 5558, 5567, 0, 0, 0, 0, 5574, 5595, 5611, 5727, 5741, 0, 5781, 5787, 5810, 5817, 0, 5822, 99, 117, 116, 101, 32827, 225, 16609, 114, 101, 118, 101, 59, 16643, 768, 59, 69, 100, 105, 117, 121, 5532, 5533, 5537, 5539, 5544, 5549, 25150, 59, 49152, 8766, 819, 59, 25151, 114, 99, 32827, 226, 16610, 116, 101, 32955, 180, 774, 59, 17456, 108, 105, 103, 32827, 230, 16614, 256, 59, 114, 178, 5562, 59, 49152, 55349, 56606, 114, 97, 118, 101, 32827, 224, 16608, 256, 101, 112, 5578, 5590, 256, 102, 112, 5583, 5588, 115, 121, 109, 59, 24885, 232, 5587, 104, 97, 59, 17329, 256, 97, 112, 5599, 99, 256, 99, 108, 5604, 5607, 114, 59, 16641, 103, 59, 27199, 612, 5616, 0, 0, 5642, 640, 59, 97, 100, 115, 118, 5626, 5627, 5631, 5633, 5639, 25127, 110, 100, 59, 27221, 59, 27228, 108, 111, 112, 101, 59, 27224, 59, 27226, 896, 59, 101, 108, 109, 114, 115, 122, 5656, 5657, 5659, 5662, 5695, 5711, 5721, 25120, 59, 27044, 101, 187, 5657, 115, 100, 256, 59, 97, 5669, 5670, 25121, 1121, 5680, 5682, 5684, 5686, 5688, 5690, 5692, 5694, 59, 27048, 59, 27049, 59, 27050, 59, 27051, 59, 27052, 59, 27053, 59, 27054, 59, 27055, 116, 256, 59, 118, 5701, 5702, 25119, 98, 256, 59, 100, 5708, 5709, 25278, 59, 27037, 256, 112, 116, 5716, 5719, 104, 59, 25122, 187, 185, 97, 114, 114, 59, 25468, 256, 103, 112, 5731, 5735, 111, 110, 59, 16645, 102, 59, 49152, 55349, 56658, 896, 59, 69, 97, 101, 105, 111, 112, 4801, 5755, 5757, 5762, 5764, 5767, 5770, 59, 27248, 99, 105, 114, 59, 27247, 59, 25162, 100, 59, 25163, 115, 59, 16423, 114, 111, 120, 256, 59, 101, 4801, 5778, 241, 5763, 105, 110, 103, 32827, 229, 16613, 384, 99, 116, 121, 5793, 5798, 5800, 114, 59, 49152, 55349, 56502, 59, 16426, 109, 112, 256, 59, 101, 4801, 5807, 241, 648, 105, 108, 100, 101, 32827, 227, 16611, 109, 108, 32827, 228, 16612, 256, 99, 105, 5826, 5832, 111, 110, 105, 110, 244, 626, 110, 116, 59, 27153, 2048, 78, 97, 98, 99, 100, 101, 102, 105, 107, 108, 110, 111, 112, 114, 115, 117, 5869, 5873, 5936, 5948, 5955, 5960, 6008, 6013, 6112, 6118, 6201, 6224, 5901, 6461, 6472, 6512, 111, 116, 59, 27373, 256, 99, 114, 5878, 5918, 107, 512, 99, 101, 112, 115, 5888, 5893, 5901, 5907, 111, 110, 103, 59, 25164, 112, 115, 105, 108, 111, 110, 59, 17398, 114, 105, 109, 101, 59, 24629, 105, 109, 256, 59, 101, 5914, 5915, 25149, 113, 59, 25293, 374, 5922, 5926, 101, 101, 59, 25277, 101, 100, 256, 59, 103, 5932, 5933, 25349, 101, 187, 5933, 114, 107, 256, 59, 116, 4956, 5943, 98, 114, 107, 59, 25526, 256, 111, 121, 5889, 5953, 59, 17457, 113, 117, 111, 59, 24606, 640, 99, 109, 112, 114, 116, 5971, 5979, 5985, 5988, 5992, 97, 117, 115, 256, 59, 101, 266, 265, 112, 116, 121, 118, 59, 27056, 115, 233, 5900, 110, 111, 245, 275, 384, 97, 104, 119, 5999, 6001, 6003, 59, 17330, 59, 24886, 101, 101, 110, 59, 25196, 114, 59, 49152, 55349, 56607, 103, 896, 99, 111, 115, 116, 117, 118, 119, 6029, 6045, 6067, 6081, 6101, 6107, 6110, 384, 97, 105, 117, 6036, 6038, 6042, 240, 1888, 114, 99, 59, 26095, 112, 187, 4977, 384, 100, 112, 116, 6052, 6056, 6061, 111, 116, 59, 27136, 108, 117, 115, 59, 27137, 105, 109, 101, 115, 59, 27138, 625, 6073, 0, 0, 6078, 99, 117, 112, 59, 27142, 97, 114, 59, 26117, 114, 105, 97, 110, 103, 108, 101, 256, 100, 117, 6093, 6098, 111, 119, 110, 59, 26045, 112, 59, 26035, 112, 108, 117, 115, 59, 27140, 101, 229, 5188, 229, 5293, 97, 114, 111, 119, 59, 26893, 384, 97, 107, 111, 6125, 6182, 6197, 256, 99, 110, 6130, 6179, 107, 384, 108, 115, 116, 6138, 1451, 6146, 111, 122, 101, 110, 103, 101, 59, 27115, 114, 105, 97, 110, 103, 108, 101, 512, 59, 100, 108, 114, 6162, 6163, 6168, 6173, 26036, 111, 119, 110, 59, 26046, 101, 102, 116, 59, 26050, 105, 103, 104, 116, 59, 26040, 107, 59, 25635, 433, 6187, 0, 6195, 434, 6191, 0, 6193, 59, 26002, 59, 26001, 52, 59, 26003, 99, 107, 59, 25992, 256, 101, 111, 6206, 6221, 256, 59, 113, 6211, 6214, 49152, 61, 8421, 117, 105, 118, 59, 49152, 8801, 8421, 116, 59, 25360, 512, 112, 116, 119, 120, 6233, 6238, 6247, 6252, 102, 59, 49152, 55349, 56659, 256, 59, 116, 5067, 6243, 111, 109, 187, 5068, 116, 105, 101, 59, 25288, 1536, 68, 72, 85, 86, 98, 100, 104, 109, 112, 116, 117, 118, 6277, 6294, 6314, 6331, 6359, 6363, 6380, 6399, 6405, 6410, 6416, 6433, 512, 76, 82, 108, 114, 6286, 6288, 6290, 6292, 59, 25943, 59, 25940, 59, 25942, 59, 25939, 640, 59, 68, 85, 100, 117, 6305, 6306, 6308, 6310, 6312, 25936, 59, 25958, 59, 25961, 59, 25956, 59, 25959, 512, 76, 82, 108, 114, 6323, 6325, 6327, 6329, 59, 25949, 59, 25946, 59, 25948, 59, 25945, 896, 59, 72, 76, 82, 104, 108, 114, 6346, 6347, 6349, 6351, 6353, 6355, 6357, 25937, 59, 25964, 59, 25955, 59, 25952, 59, 25963, 59, 25954, 59, 25951, 111, 120, 59, 27081, 512, 76, 82, 108, 114, 6372, 6374, 6376, 6378, 59, 25941, 59, 25938, 59, 25872, 59, 25868, 640, 59, 68, 85, 100, 117, 1725, 6391, 6393, 6395, 6397, 59, 25957, 59, 25960, 59, 25900, 59, 25908, 105, 110, 117, 115, 59, 25247, 108, 117, 115, 59, 25246, 105, 109, 101, 115, 59, 25248, 512, 76, 82, 108, 114, 6425, 6427, 6429, 6431, 59, 25947, 59, 25944, 59, 25880, 59, 25876, 896, 59, 72, 76, 82, 104, 108, 114, 6448, 6449, 6451, 6453, 6455, 6457, 6459, 25858, 59, 25962, 59, 25953, 59, 25950, 59, 25916, 59, 25892, 59, 25884, 256, 101, 118, 291, 6466, 98, 97, 114, 32827, 166, 16550, 512, 99, 101, 105, 111, 6481, 6486, 6490, 6496, 114, 59, 49152, 55349, 56503, 109, 105, 59, 24655, 109, 256, 59, 101, 5914, 5916, 108, 384, 59, 98, 104, 6504, 6505, 6507, 16476, 59, 27077, 115, 117, 98, 59, 26568, 364, 6516, 6526, 108, 256, 59, 101, 6521, 6522, 24610, 116, 187, 6522, 112, 384, 59, 69, 101, 303, 6533, 6535, 59, 27310, 256, 59, 113, 1756, 1755, 3297, 6567, 0, 6632, 6673, 6677, 6706, 0, 6711, 6736, 0, 0, 6836, 0, 0, 6849, 0, 0, 6945, 6958, 6989, 6994, 0, 7165, 0, 7180, 384, 99, 112, 114, 6573, 6578, 6621, 117, 116, 101, 59, 16647, 768, 59, 97, 98, 99, 100, 115, 6591, 6592, 6596, 6602, 6613, 6617, 25129, 110, 100, 59, 27204, 114, 99, 117, 112, 59, 27209, 256, 97, 117, 6607, 6610, 112, 59, 27211, 112, 59, 27207, 111, 116, 59, 27200, 59, 49152, 8745, 65024, 256, 101, 111, 6626, 6629, 116, 59, 24641, 238, 1683, 512, 97, 101, 105, 117, 6640, 6651, 6657, 6661, 496, 6645, 0, 6648, 115, 59, 27213, 111, 110, 59, 16653, 100, 105, 108, 32827, 231, 16615, 114, 99, 59, 16649, 112, 115, 256, 59, 115, 6668, 6669, 27212, 109, 59, 27216, 111, 116, 59, 16651, 384, 100, 109, 110, 6683, 6688, 6694, 105, 108, 32955, 184, 429, 112, 116, 121, 118, 59, 27058, 116, 33024, 162, 59, 101, 6701, 6702, 16546, 114, 228, 434, 114, 59, 49152, 55349, 56608, 384, 99, 101, 105, 6717, 6720, 6733, 121, 59, 17479, 99, 107, 256, 59, 109, 6727, 6728, 26387, 97, 114, 107, 187, 6728, 59, 17351, 114, 896, 59, 69, 99, 101, 102, 109, 115, 6751, 6752, 6754, 6763, 6820, 6826, 6830, 26059, 59, 27075, 384, 59, 101, 108, 6761, 6762, 6765, 17094, 113, 59, 25175, 101, 609, 6772, 0, 0, 6792, 114, 114, 111, 119, 256, 108, 114, 6780, 6785, 101, 102, 116, 59, 25018, 105, 103, 104, 116, 59, 25019, 640, 82, 83, 97, 99, 100, 6802, 6804, 6806, 6810, 6815, 187, 3911, 59, 25800, 115, 116, 59, 25243, 105, 114, 99, 59, 25242, 97, 115, 104, 59, 25245, 110, 105, 110, 116, 59, 27152, 105, 100, 59, 27375, 99, 105, 114, 59, 27074, 117, 98, 115, 256, 59, 117, 6843, 6844, 26211, 105, 116, 187, 6844, 748, 6855, 6868, 6906, 0, 6922, 111, 110, 256, 59, 101, 6861, 6862, 16442, 256, 59, 113, 199, 198, 621, 6873, 0, 0, 6882, 97, 256, 59, 116, 6878, 6879, 16428, 59, 16448, 384, 59, 102, 108, 6888, 6889, 6891, 25089, 238, 4448, 101, 256, 109, 120, 6897, 6902, 101, 110, 116, 187, 6889, 101, 243, 589, 487, 6910, 0, 6919, 256, 59, 100, 4795, 6914, 111, 116, 59, 27245, 110, 244, 582, 384, 102, 114, 121, 6928, 6932, 6935, 59, 49152, 55349, 56660, 111, 228, 596, 33024, 169, 59, 115, 341, 6941, 114, 59, 24855, 256, 97, 111, 6949, 6953, 114, 114, 59, 25013, 115, 115, 59, 26391, 256, 99, 117, 6962, 6967, 114, 59, 49152, 55349, 56504, 256, 98, 112, 6972, 6980, 256, 59, 101, 6977, 6978, 27343, 59, 27345, 256, 59, 101, 6985, 6986, 27344, 59, 27346, 100, 111, 116, 59, 25327, 896, 100, 101, 108, 112, 114, 118, 119, 7008, 7020, 7031, 7042, 7084, 7124, 7161, 97, 114, 114, 256, 108, 114, 7016, 7018, 59, 26936, 59, 26933, 624, 7026, 0, 0, 7029, 114, 59, 25310, 99, 59, 25311, 97, 114, 114, 256, 59, 112, 7039, 7040, 25014, 59, 26941, 768, 59, 98, 99, 100, 111, 115, 7055, 7056, 7062, 7073, 7077, 7080, 25130, 114, 99, 97, 112, 59, 27208, 256, 97, 117, 7067, 7070, 112, 59, 27206, 112, 59, 27210, 111, 116, 59, 25229, 114, 59, 27205, 59, 49152, 8746, 65024, 512, 97, 108, 114, 118, 7093, 7103, 7134, 7139, 114, 114, 256, 59, 109, 7100, 7101, 25015, 59, 26940, 121, 384, 101, 118, 119, 7111, 7124, 7128, 113, 624, 7118, 0, 0, 7122, 114, 101, 227, 7027, 117, 227, 7029, 101, 101, 59, 25294, 101, 100, 103, 101, 59, 25295, 101, 110, 32827, 164, 16548, 101, 97, 114, 114, 111, 119, 256, 108, 114, 7150, 7155, 101, 102, 116, 187, 7040, 105, 103, 104, 116, 187, 7101, 101, 228, 7133, 256, 99, 105, 7169, 7175, 111, 110, 105, 110, 244, 503, 110, 116, 59, 25137, 108, 99, 116, 121, 59, 25389, 2432, 65, 72, 97, 98, 99, 100, 101, 102, 104, 105, 106, 108, 111, 114, 115, 116, 117, 119, 122, 7224, 7227, 7231, 7261, 7273, 7285, 7306, 7326, 7340, 7351, 7419, 7423, 7437, 7547, 7569, 7595, 7611, 7622, 7629, 114, 242, 897, 97, 114, 59, 26981, 512, 103, 108, 114, 115, 7240, 7245, 7250, 7252, 103, 101, 114, 59, 24608, 101, 116, 104, 59, 24888, 242, 4403, 104, 256, 59, 118, 7258, 7259, 24592, 187, 2314, 363, 7265, 7271, 97, 114, 111, 119, 59, 26895, 97, 227, 789, 256, 97, 121, 7278, 7283, 114, 111, 110, 59, 16655, 59, 17460, 384, 59, 97, 111, 818, 7292, 7300, 256, 103, 114, 703, 7297, 114, 59, 25034, 116, 115, 101, 113, 59, 27255, 384, 103, 108, 109, 7313, 7316, 7320, 32827, 176, 16560, 116, 97, 59, 17332, 112, 116, 121, 118, 59, 27057, 256, 105, 114, 7331, 7336, 115, 104, 116, 59, 27007, 59, 49152, 55349, 56609, 97, 114, 256, 108, 114, 7347, 7349, 187, 2268, 187, 4126, 640, 97, 101, 103, 115, 118, 7362, 888, 7382, 7388, 7392, 109, 384, 59, 111, 115, 806, 7370, 7380, 110, 100, 256, 59, 115, 806, 7377, 117, 105, 116, 59, 26214, 97, 109, 109, 97, 59, 17373, 105, 110, 59, 25330, 384, 59, 105, 111, 7399, 7400, 7416, 16631, 100, 101, 33024, 247, 59, 111, 7399, 7408, 110, 116, 105, 109, 101, 115, 59, 25287, 110, 248, 7415, 99, 121, 59, 17490, 99, 623, 7430, 0, 0, 7434, 114, 110, 59, 25374, 111, 112, 59, 25357, 640, 108, 112, 116, 117, 119, 7448, 7453, 7458, 7497, 7509, 108, 97, 114, 59, 16420, 102, 59, 49152, 55349, 56661, 640, 59, 101, 109, 112, 115, 779, 7469, 7479, 7485, 7490, 113, 256, 59, 100, 850, 7475, 111, 116, 59, 25169, 105, 110, 117, 115, 59, 25144, 108, 117, 115, 59, 25108, 113, 117, 97, 114, 101, 59, 25249, 98, 108, 101, 98, 97, 114, 119, 101, 100, 103, 229, 250, 110, 384, 97, 100, 104, 4398, 7517, 7527, 111, 119, 110, 97, 114, 114, 111, 119, 243, 7299, 97, 114, 112, 111, 111, 110, 256, 108, 114, 7538, 7542, 101, 102, 244, 7348, 105, 103, 104, 244, 7350, 354, 7551, 7557, 107, 97, 114, 111, 247, 3906, 623, 7562, 0, 0, 7566, 114, 110, 59, 25375, 111, 112, 59, 25356, 384, 99, 111, 116, 7576, 7587, 7590, 256, 114, 121, 7581, 7585, 59, 49152, 55349, 56505, 59, 17493, 108, 59, 27126, 114, 111, 107, 59, 16657, 256, 100, 114, 7600, 7604, 111, 116, 59, 25329, 105, 256, 59, 102, 7610, 6166, 26047, 256, 97, 104, 7616, 7619, 114, 242, 1065, 97, 242, 4006, 97, 110, 103, 108, 101, 59, 27046, 256, 99, 105, 7634, 7637, 121, 59, 17503, 103, 114, 97, 114, 114, 59, 26623, 2304, 68, 97, 99, 100, 101, 102, 103, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 120, 7681, 7689, 7705, 7736, 1400, 7740, 7753, 7777, 7806, 7845, 7855, 7869, 7905, 7978, 7991, 8004, 8014, 8026, 256, 68, 111, 7686, 7476, 111, 244, 7305, 256, 99, 115, 7694, 7700, 117, 116, 101, 32827, 233, 16617, 116, 101, 114, 59, 27246, 512, 97, 105, 111, 121, 7714, 7719, 7729, 7734, 114, 111, 110, 59, 16667, 114, 256, 59, 99, 7725, 7726, 25174, 32827, 234, 16618, 108, 111, 110, 59, 25173, 59, 17485, 111, 116, 59, 16663, 256, 68, 114, 7745, 7749, 111, 116, 59, 25170, 59, 49152, 55349, 56610, 384, 59, 114, 115, 7760, 7761, 7767, 27290, 97, 118, 101, 32827, 232, 16616, 256, 59, 100, 7772, 7773, 27286, 111, 116, 59, 27288, 512, 59, 105, 108, 115, 7786, 7787, 7794, 7796, 27289, 110, 116, 101, 114, 115, 59, 25575, 59, 24851, 256, 59, 100, 7801, 7802, 27285, 111, 116, 59, 27287, 384, 97, 112, 115, 7813, 7817, 7831, 99, 114, 59, 16659, 116, 121, 384, 59, 115, 118, 7826, 7827, 7829, 25093, 101, 116, 187, 7827, 112, 256, 49, 59, 7837, 7844, 307, 7841, 7843, 59, 24580, 59, 24581, 24579, 256, 103, 115, 7850, 7852, 59, 16715, 112, 59, 24578, 256, 103, 112, 7860, 7864, 111, 110, 59, 16665, 102, 59, 49152, 55349, 56662, 384, 97, 108, 115, 7876, 7886, 7890, 114, 256, 59, 115, 7882, 7883, 25301, 108, 59, 27107, 117, 115, 59, 27249, 105, 384, 59, 108, 118, 7898, 7899, 7903, 17333, 111, 110, 187, 7899, 59, 17397, 512, 99, 115, 117, 118, 7914, 7923, 7947, 7971, 256, 105, 111, 7919, 7729, 114, 99, 187, 7726, 617, 7929, 0, 0, 7931, 237, 1352, 97, 110, 116, 256, 103, 108, 7938, 7942, 116, 114, 187, 7773, 101, 115, 115, 187, 7802, 384, 97, 101, 105, 7954, 7958, 7962, 108, 115, 59, 16445, 115, 116, 59, 25183, 118, 256, 59, 68, 565, 7968, 68, 59, 27256, 112, 97, 114, 115, 108, 59, 27109, 256, 68, 97, 7983, 7987, 111, 116, 59, 25171, 114, 114, 59, 26993, 384, 99, 100, 105, 7998, 8001, 7928, 114, 59, 24879, 111, 244, 850, 256, 97, 104, 8009, 8011, 59, 17335, 32827, 240, 16624, 256, 109, 114, 8019, 8023, 108, 32827, 235, 16619, 111, 59, 24748, 384, 99, 105, 112, 8033, 8036, 8039, 108, 59, 16417, 115, 244, 1390, 256, 101, 111, 8044, 8052, 99, 116, 97, 116, 105, 111, 238, 1369, 110, 101, 110, 116, 105, 97, 108, 229, 1401, 2529, 8082, 0, 8094, 0, 8097, 8103, 0, 0, 8134, 8140, 0, 8147, 0, 8166, 8170, 8192, 0, 8200, 8282, 108, 108, 105, 110, 103, 100, 111, 116, 115, 101, 241, 7748, 121, 59, 17476, 109, 97, 108, 101, 59, 26176, 384, 105, 108, 114, 8109, 8115, 8129, 108, 105, 103, 59, 32768, 64259, 617, 8121, 0, 0, 8125, 103, 59, 32768, 64256, 105, 103, 59, 32768, 64260, 59, 49152, 55349, 56611, 108, 105, 103, 59, 32768, 64257, 108, 105, 103, 59, 49152, 102, 106, 384, 97, 108, 116, 8153, 8156, 8161, 116, 59, 26221, 105, 103, 59, 32768, 64258, 110, 115, 59, 26033, 111, 102, 59, 16786, 496, 8174, 0, 8179, 102, 59, 49152, 55349, 56663, 256, 97, 107, 1471, 8183, 256, 59, 118, 8188, 8189, 25300, 59, 27353, 97, 114, 116, 105, 110, 116, 59, 27149, 256, 97, 111, 8204, 8277, 256, 99, 115, 8209, 8274, 945, 8218, 8240, 8248, 8261, 8264, 0, 8272, 946, 8226, 8229, 8231, 8234, 8236, 0, 8238, 32827, 189, 16573, 59, 24915, 32827, 188, 16572, 59, 24917, 59, 24921, 59, 24923, 435, 8244, 0, 8246, 59, 24916, 59, 24918, 692, 8254, 8257, 0, 0, 8259, 32827, 190, 16574, 59, 24919, 59, 24924, 53, 59, 24920, 438, 8268, 0, 8270, 59, 24922, 59, 24925, 56, 59, 24926, 108, 59, 24644, 119, 110, 59, 25378, 99, 114, 59, 49152, 55349, 56507, 2176, 69, 97, 98, 99, 100, 101, 102, 103, 105, 106, 108, 110, 111, 114, 115, 116, 118, 8322, 8329, 8351, 8357, 8368, 8372, 8432, 8437, 8442, 8447, 8451, 8466, 8504, 791, 8510, 8530, 8606, 256, 59, 108, 1613, 8327, 59, 27276, 384, 99, 109, 112, 8336, 8341, 8349, 117, 116, 101, 59, 16885, 109, 97, 256, 59, 100, 8348, 7386, 17331, 59, 27270, 114, 101, 118, 101, 59, 16671, 256, 105, 121, 8362, 8366, 114, 99, 59, 16669, 59, 17459, 111, 116, 59, 16673, 512, 59, 108, 113, 115, 1598, 1602, 8381, 8393, 384, 59, 113, 115, 1598, 1612, 8388, 108, 97, 110, 244, 1637, 512, 59, 99, 100, 108, 1637, 8402, 8405, 8421, 99, 59, 27305, 111, 116, 256, 59, 111, 8412, 8413, 27264, 256, 59, 108, 8418, 8419, 27266, 59, 27268, 256, 59, 101, 8426, 8429, 49152, 8923, 65024, 115, 59, 27284, 114, 59, 49152, 55349, 56612, 256, 59, 103, 1651, 1563, 109, 101, 108, 59, 24887, 99, 121, 59, 17491, 512, 59, 69, 97, 106, 1626, 8460, 8462, 8464, 59, 27282, 59, 27301, 59, 27300, 512, 69, 97, 101, 115, 8475, 8477, 8489, 8500, 59, 25193, 112, 256, 59, 112, 8483, 8484, 27274, 114, 111, 120, 187, 8484, 256, 59, 113, 8494, 8495, 27272, 256, 59, 113, 8494, 8475, 105, 109, 59, 25319, 112, 102, 59, 49152, 55349, 56664, 256, 99, 105, 8515, 8518, 114, 59, 24842, 109, 384, 59, 101, 108, 1643, 8526, 8528, 59, 27278, 59, 27280, 33536, 62, 59, 99, 100, 108, 113, 114, 1518, 8544, 8554, 8558, 8563, 8569, 256, 99, 105, 8549, 8551, 59, 27303, 114, 59, 27258, 111, 116, 59, 25303, 80, 97, 114, 59, 27029, 117, 101, 115, 116, 59, 27260, 640, 97, 100, 101, 108, 115, 8580, 8554, 8592, 1622, 8603, 496, 8585, 0, 8590, 112, 114, 111, 248, 8350, 114, 59, 27000, 113, 256, 108, 113, 1599, 8598, 108, 101, 115, 243, 8328, 105, 237, 1643, 256, 101, 110, 8611, 8621, 114, 116, 110, 101, 113, 113, 59, 49152, 8809, 65024, 197, 8618, 1280, 65, 97, 98, 99, 101, 102, 107, 111, 115, 121, 8644, 8647, 8689, 8693, 8698, 8728, 8733, 8751, 8808, 8829, 114, 242, 928, 512, 105, 108, 109, 114, 8656, 8660, 8663, 8667, 114, 115, 240, 5252, 102, 187, 8228, 105, 108, 244, 1705, 256, 100, 114, 8672, 8676, 99, 121, 59, 17482, 384, 59, 99, 119, 2292, 8683, 8687, 105, 114, 59, 26952, 59, 25005, 97, 114, 59, 24847, 105, 114, 99, 59, 16677, 384, 97, 108, 114, 8705, 8718, 8723, 114, 116, 115, 256, 59, 117, 8713, 8714, 26213, 105, 116, 187, 8714, 108, 105, 112, 59, 24614, 99, 111, 110, 59, 25273, 114, 59, 49152, 55349, 56613, 115, 256, 101, 119, 8739, 8745, 97, 114, 111, 119, 59, 26917, 97, 114, 111, 119, 59, 26918, 640, 97, 109, 111, 112, 114, 8762, 8766, 8771, 8798, 8803, 114, 114, 59, 25087, 116, 104, 116, 59, 25147, 107, 256, 108, 114, 8777, 8787, 101, 102, 116, 97, 114, 114, 111, 119, 59, 25001, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 25002, 102, 59, 49152, 55349, 56665, 98, 97, 114, 59, 24597, 384, 99, 108, 116, 8815, 8820, 8824, 114, 59, 49152, 55349, 56509, 97, 115, 232, 8692, 114, 111, 107, 59, 16679, 256, 98, 112, 8834, 8839, 117, 108, 108, 59, 24643, 104, 101, 110, 187, 7259, 2785, 8867, 0, 8874, 0, 8888, 8901, 8910, 0, 8917, 8947, 0, 0, 8952, 8994, 9063, 9058, 9087, 0, 9094, 9130, 9140, 99, 117, 116, 101, 32827, 237, 16621, 384, 59, 105, 121, 1905, 8880, 8885, 114, 99, 32827, 238, 16622, 59, 17464, 256, 99, 120, 8892, 8895, 121, 59, 17461, 99, 108, 32827, 161, 16545, 256, 102, 114, 927, 8905, 59, 49152, 55349, 56614, 114, 97, 118, 101, 32827, 236, 16620, 512, 59, 105, 110, 111, 1854, 8925, 8937, 8942, 256, 105, 110, 8930, 8934, 110, 116, 59, 27148, 116, 59, 25133, 102, 105, 110, 59, 27100, 116, 97, 59, 24873, 108, 105, 103, 59, 16691, 384, 97, 111, 112, 8958, 8986, 8989, 384, 99, 103, 116, 8965, 8968, 8983, 114, 59, 16683, 384, 101, 108, 112, 1823, 8975, 8979, 105, 110, 229, 1934, 97, 114, 244, 1824, 104, 59, 16689, 102, 59, 25271, 101, 100, 59, 16821, 640, 59, 99, 102, 111, 116, 1268, 9004, 9009, 9021, 9025, 97, 114, 101, 59, 24837, 105, 110, 256, 59, 116, 9016, 9017, 25118, 105, 101, 59, 27101, 100, 111, 244, 8985, 640, 59, 99, 101, 108, 112, 1879, 9036, 9040, 9051, 9057, 97, 108, 59, 25274, 256, 103, 114, 9045, 9049, 101, 114, 243, 5475, 227, 9037, 97, 114, 104, 107, 59, 27159, 114, 111, 100, 59, 27196, 512, 99, 103, 112, 116, 9071, 9074, 9078, 9083, 121, 59, 17489, 111, 110, 59, 16687, 102, 59, 49152, 55349, 56666, 97, 59, 17337, 117, 101, 115, 116, 32827, 191, 16575, 256, 99, 105, 9098, 9103, 114, 59, 49152, 55349, 56510, 110, 640, 59, 69, 100, 115, 118, 1268, 9115, 9117, 9121, 1267, 59, 25337, 111, 116, 59, 25333, 256, 59, 118, 9126, 9127, 25332, 59, 25331, 256, 59, 105, 1911, 9134, 108, 100, 101, 59, 16681, 491, 9144, 0, 9148, 99, 121, 59, 17494, 108, 32827, 239, 16623, 768, 99, 102, 109, 111, 115, 117, 9164, 9175, 9180, 9185, 9191, 9205, 256, 105, 121, 9169, 9173, 114, 99, 59, 16693, 59, 17465, 114, 59, 49152, 55349, 56615, 97, 116, 104, 59, 16951, 112, 102, 59, 49152, 55349, 56667, 483, 9196, 0, 9201, 114, 59, 49152, 55349, 56511, 114, 99, 121, 59, 17496, 107, 99, 121, 59, 17492, 1024, 97, 99, 102, 103, 104, 106, 111, 115, 9227, 9238, 9250, 9255, 9261, 9265, 9269, 9275, 112, 112, 97, 256, 59, 118, 9235, 9236, 17338, 59, 17392, 256, 101, 121, 9243, 9248, 100, 105, 108, 59, 16695, 59, 17466, 114, 59, 49152, 55349, 56616, 114, 101, 101, 110, 59, 16696, 99, 121, 59, 17477, 99, 121, 59, 17500, 112, 102, 59, 49152, 55349, 56668, 99, 114, 59, 49152, 55349, 56512, 2944, 65, 66, 69, 72, 97, 98, 99, 100, 101, 102, 103, 104, 106, 108, 109, 110, 111, 112, 114, 115, 116, 117, 118, 9328, 9345, 9350, 9357, 9361, 9486, 9533, 9562, 9600, 9806, 9822, 9829, 9849, 9853, 9882, 9906, 9944, 10077, 10088, 10123, 10176, 10241, 10258, 384, 97, 114, 116, 9335, 9338, 9340, 114, 242, 2502, 242, 917, 97, 105, 108, 59, 26907, 97, 114, 114, 59, 26894, 256, 59, 103, 2452, 9355, 59, 27275, 97, 114, 59, 26978, 2403, 9381, 0, 9386, 0, 9393, 0, 0, 0, 0, 0, 9397, 9402, 0, 9414, 9416, 9421, 0, 9465, 117, 116, 101, 59, 16698, 109, 112, 116, 121, 118, 59, 27060, 114, 97, 238, 2124, 98, 100, 97, 59, 17339, 103, 384, 59, 100, 108, 2190, 9409, 9411, 59, 27025, 229, 2190, 59, 27269, 117, 111, 32827, 171, 16555, 114, 1024, 59, 98, 102, 104, 108, 112, 115, 116, 2201, 9438, 9446, 9449, 9451, 9454, 9457, 9461, 256, 59, 102, 2205, 9443, 115, 59, 26911, 115, 59, 26909, 235, 8786, 112, 59, 25003, 108, 59, 26937, 105, 109, 59, 26995, 108, 59, 24994, 384, 59, 97, 101, 9471, 9472, 9476, 27307, 105, 108, 59, 26905, 256, 59, 115, 9481, 9482, 27309, 59, 49152, 10925, 65024, 384, 97, 98, 114, 9493, 9497, 9501, 114, 114, 59, 26892, 114, 107, 59, 26482, 256, 97, 107, 9506, 9516, 99, 256, 101, 107, 9512, 9514, 59, 16507, 59, 16475, 256, 101, 115, 9521, 9523, 59, 27019, 108, 256, 100, 117, 9529, 9531, 59, 27023, 59, 27021, 512, 97, 101, 117, 121, 9542, 9547, 9558, 9560, 114, 111, 110, 59, 16702, 256, 100, 105, 9552, 9556, 105, 108, 59, 16700, 236, 2224, 226, 9513, 59, 17467, 512, 99, 113, 114, 115, 9571, 9574, 9581, 9597, 97, 59, 26934, 117, 111, 256, 59, 114, 3609, 5958, 256, 100, 117, 9586, 9591, 104, 97, 114, 59, 26983, 115, 104, 97, 114, 59, 26955, 104, 59, 25010, 640, 59, 102, 103, 113, 115, 9611, 9612, 2441, 9715, 9727, 25188, 116, 640, 97, 104, 108, 114, 116, 9624, 9636, 9655, 9666, 9704, 114, 114, 111, 119, 256, 59, 116, 2201, 9633, 97, 233, 9462, 97, 114, 112, 111, 111, 110, 256, 100, 117, 9647, 9652, 111, 119, 110, 187, 1114, 112, 187, 2406, 101, 102, 116, 97, 114, 114, 111, 119, 115, 59, 25031, 105, 103, 104, 116, 384, 97, 104, 115, 9677, 9686, 9694, 114, 114, 111, 119, 256, 59, 115, 2292, 2215, 97, 114, 112, 111, 111, 110, 243, 3992, 113, 117, 105, 103, 97, 114, 114, 111, 247, 8688, 104, 114, 101, 101, 116, 105, 109, 101, 115, 59, 25291, 384, 59, 113, 115, 9611, 2451, 9722, 108, 97, 110, 244, 2476, 640, 59, 99, 100, 103, 115, 2476, 9738, 9741, 9757, 9768, 99, 59, 27304, 111, 116, 256, 59, 111, 9748, 9749, 27263, 256, 59, 114, 9754, 9755, 27265, 59, 27267, 256, 59, 101, 9762, 9765, 49152, 8922, 65024, 115, 59, 27283, 640, 97, 100, 101, 103, 115, 9779, 9785, 9789, 9801, 9803, 112, 112, 114, 111, 248, 9414, 111, 116, 59, 25302, 113, 256, 103, 113, 9795, 9797, 244, 2441, 103, 116, 242, 9356, 244, 2459, 105, 237, 2482, 384, 105, 108, 114, 9813, 2273, 9818, 115, 104, 116, 59, 27004, 59, 49152, 55349, 56617, 256, 59, 69, 2460, 9827, 59, 27281, 353, 9833, 9846, 114, 256, 100, 117, 9650, 9838, 256, 59, 108, 2405, 9843, 59, 26986, 108, 107, 59, 25988, 99, 121, 59, 17497, 640, 59, 97, 99, 104, 116, 2632, 9864, 9867, 9873, 9878, 114, 242, 9665, 111, 114, 110, 101, 242, 7432, 97, 114, 100, 59, 26987, 114, 105, 59, 26106, 256, 105, 111, 9887, 9892, 100, 111, 116, 59, 16704, 117, 115, 116, 256, 59, 97, 9900, 9901, 25520, 99, 104, 101, 187, 9901, 512, 69, 97, 101, 115, 9915, 9917, 9929, 9940, 59, 25192, 112, 256, 59, 112, 9923, 9924, 27273, 114, 111, 120, 187, 9924, 256, 59, 113, 9934, 9935, 27271, 256, 59, 113, 9934, 9915, 105, 109, 59, 25318, 1024, 97, 98, 110, 111, 112, 116, 119, 122, 9961, 9972, 9975, 10010, 10031, 10049, 10055, 10064, 256, 110, 114, 9966, 9969, 103, 59, 26604, 114, 59, 25085, 114, 235, 2241, 103, 384, 108, 109, 114, 9983, 9997, 10004, 101, 102, 116, 256, 97, 114, 2534, 9991, 105, 103, 104, 116, 225, 2546, 97, 112, 115, 116, 111, 59, 26620, 105, 103, 104, 116, 225, 2557, 112, 97, 114, 114, 111, 119, 256, 108, 114, 10021, 10025, 101, 102, 244, 9453, 105, 103, 104, 116, 59, 25004, 384, 97, 102, 108, 10038, 10041, 10045, 114, 59, 27013, 59, 49152, 55349, 56669, 117, 115, 59, 27181, 105, 109, 101, 115, 59, 27188, 353, 10059, 10063, 115, 116, 59, 25111, 225, 4942, 384, 59, 101, 102, 10071, 10072, 6144, 26058, 110, 103, 101, 187, 10072, 97, 114, 256, 59, 108, 10084, 10085, 16424, 116, 59, 27027, 640, 97, 99, 104, 109, 116, 10099, 10102, 10108, 10117, 10119, 114, 242, 2216, 111, 114, 110, 101, 242, 7564, 97, 114, 256, 59, 100, 3992, 10115, 59, 26989, 59, 24590, 114, 105, 59, 25279, 768, 97, 99, 104, 105, 113, 116, 10136, 10141, 2624, 10146, 10158, 10171, 113, 117, 111, 59, 24633, 114, 59, 49152, 55349, 56513, 109, 384, 59, 101, 103, 2482, 10154, 10156, 59, 27277, 59, 27279, 256, 98, 117, 9514, 10163, 111, 256, 59, 114, 3615, 10169, 59, 24602, 114, 111, 107, 59, 16706, 33792, 60, 59, 99, 100, 104, 105, 108, 113, 114, 2091, 10194, 9785, 10204, 10208, 10213, 10218, 10224, 256, 99, 105, 10199, 10201, 59, 27302, 114, 59, 27257, 114, 101, 229, 9714, 109, 101, 115, 59, 25289, 97, 114, 114, 59, 26998, 117, 101, 115, 116, 59, 27259, 256, 80, 105, 10229, 10233, 97, 114, 59, 27030, 384, 59, 101, 102, 10240, 2349, 6171, 26051, 114, 256, 100, 117, 10247, 10253, 115, 104, 97, 114, 59, 26954, 104, 97, 114, 59, 26982, 256, 101, 110, 10263, 10273, 114, 116, 110, 101, 113, 113, 59, 49152, 8808, 65024, 197, 10270, 1792, 68, 97, 99, 100, 101, 102, 104, 105, 108, 110, 111, 112, 115, 117, 10304, 10309, 10370, 10382, 10387, 10400, 10405, 10408, 10458, 10466, 10468, 2691, 10483, 10498, 68, 111, 116, 59, 25146, 512, 99, 108, 112, 114, 10318, 10322, 10339, 10365, 114, 32827, 175, 16559, 256, 101, 116, 10327, 10329, 59, 26178, 256, 59, 101, 10334, 10335, 26400, 115, 101, 187, 10335, 256, 59, 115, 4155, 10344, 116, 111, 512, 59, 100, 108, 117, 4155, 10355, 10359, 10363, 111, 119, 238, 1164, 101, 102, 244, 2319, 240, 5073, 107, 101, 114, 59, 26030, 256, 111, 121, 10375, 10380, 109, 109, 97, 59, 27177, 59, 17468, 97, 115, 104, 59, 24596, 97, 115, 117, 114, 101, 100, 97, 110, 103, 108, 101, 187, 5670, 114, 59, 49152, 55349, 56618, 111, 59, 24871, 384, 99, 100, 110, 10415, 10420, 10441, 114, 111, 32827, 181, 16565, 512, 59, 97, 99, 100, 5220, 10429, 10432, 10436, 115, 244, 5799, 105, 114, 59, 27376, 111, 116, 32955, 183, 437, 117, 115, 384, 59, 98, 100, 10450, 6403, 10451, 25106, 256, 59, 117, 7484, 10456, 59, 27178, 355, 10462, 10465, 112, 59, 27355, 242, 8722, 240, 2689, 256, 100, 112, 10473, 10478, 101, 108, 115, 59, 25255, 102, 59, 49152, 55349, 56670, 256, 99, 116, 10488, 10493, 114, 59, 49152, 55349, 56514, 112, 111, 115, 187, 5533, 384, 59, 108, 109, 10505, 10506, 10509, 17340, 116, 105, 109, 97, 112, 59, 25272, 3072, 71, 76, 82, 86, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 108, 109, 111, 112, 114, 115, 116, 117, 118, 119, 10562, 10579, 10622, 10633, 10648, 10714, 10729, 10773, 10778, 10840, 10845, 10883, 10901, 10916, 10920, 11012, 11015, 11076, 11135, 11182, 11316, 11367, 11388, 11497, 256, 103, 116, 10567, 10571, 59, 49152, 8921, 824, 256, 59, 118, 10576, 3023, 49152, 8811, 8402, 384, 101, 108, 116, 10586, 10610, 10614, 102, 116, 256, 97, 114, 10593, 10599, 114, 114, 111, 119, 59, 25037, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 25038, 59, 49152, 8920, 824, 256, 59, 118, 10619, 3143, 49152, 8810, 8402, 105, 103, 104, 116, 97, 114, 114, 111, 119, 59, 25039, 256, 68, 100, 10638, 10643, 97, 115, 104, 59, 25263, 97, 115, 104, 59, 25262, 640, 98, 99, 110, 112, 116, 10659, 10663, 10668, 10673, 10700, 108, 97, 187, 734, 117, 116, 101, 59, 16708, 103, 59, 49152, 8736, 8402, 640, 59, 69, 105, 111, 112, 3460, 10684, 10688, 10693, 10696, 59, 49152, 10864, 824, 100, 59, 49152, 8779, 824, 115, 59, 16713, 114, 111, 248, 3460, 117, 114, 256, 59, 97, 10707, 10708, 26222, 108, 256, 59, 115, 10707, 2872, 499, 10719, 0, 10723, 112, 32955, 160, 2871, 109, 112, 256, 59, 101, 3065, 3072, 640, 97, 101, 111, 117, 121, 10740, 10750, 10755, 10768, 10771, 496, 10745, 0, 10747, 59, 27203, 111, 110, 59, 16712, 100, 105, 108, 59, 16710, 110, 103, 256, 59, 100, 3454, 10762, 111, 116, 59, 49152, 10861, 824, 112, 59, 27202, 59, 17469, 97, 115, 104, 59, 24595, 896, 59, 65, 97, 100, 113, 115, 120, 2962, 10793, 10797, 10811, 10817, 10821, 10832, 114, 114, 59, 25047, 114, 256, 104, 114, 10803, 10806, 107, 59, 26916, 256, 59, 111, 5106, 5104, 111, 116, 59, 49152, 8784, 824, 117, 105, 246, 2915, 256, 101, 105, 10826, 10830, 97, 114, 59, 26920, 237, 2968, 105, 115, 116, 256, 59, 115, 2976, 2975, 114, 59, 49152, 55349, 56619, 512, 69, 101, 115, 116, 3013, 10854, 10873, 10876, 384, 59, 113, 115, 3004, 10861, 3041, 384, 59, 113, 115, 3004, 3013, 10868, 108, 97, 110, 244, 3042, 105, 237, 3050, 256, 59, 114, 2998, 10881, 187, 2999, 384, 65, 97, 112, 10890, 10893, 10897, 114, 242, 10609, 114, 114, 59, 25006, 97, 114, 59, 27378, 384, 59, 115, 118, 3981, 10908, 3980, 256, 59, 100, 10913, 10914, 25340, 59, 25338, 99, 121, 59, 17498, 896, 65, 69, 97, 100, 101, 115, 116, 10935, 10938, 10942, 10946, 10949, 10998, 11001, 114, 242, 10598, 59, 49152, 8806, 824, 114, 114, 59, 24986, 114, 59, 24613, 512, 59, 102, 113, 115, 3131, 10958, 10979, 10991, 116, 256, 97, 114, 10964, 10969, 114, 114, 111, 247, 10945, 105, 103, 104, 116, 97, 114, 114, 111, 247, 10896, 384, 59, 113, 115, 3131, 10938, 10986, 108, 97, 110, 244, 3157, 256, 59, 115, 3157, 10996, 187, 3126, 105, 237, 3165, 256, 59, 114, 3125, 11006, 105, 256, 59, 101, 3098, 3109, 105, 228, 3472, 256, 112, 116, 11020, 11025, 102, 59, 49152, 55349, 56671, 33152, 172, 59, 105, 110, 11033, 11034, 11062, 16556, 110, 512, 59, 69, 100, 118, 2953, 11044, 11048, 11054, 59, 49152, 8953, 824, 111, 116, 59, 49152, 8949, 824, 481, 2953, 11059, 11061, 59, 25335, 59, 25334, 105, 256, 59, 118, 3256, 11068, 481, 3256, 11073, 11075, 59, 25342, 59, 25341, 384, 97, 111, 114, 11083, 11107, 11113, 114, 512, 59, 97, 115, 116, 2939, 11093, 11098, 11103, 108, 108, 101, 236, 2939, 108, 59, 49152, 11005, 8421, 59, 49152, 8706, 824, 108, 105, 110, 116, 59, 27156, 384, 59, 99, 101, 3218, 11120, 11123, 117, 229, 3237, 256, 59, 99, 3224, 11128, 256, 59, 101, 3218, 11133, 241, 3224, 512, 65, 97, 105, 116, 11144, 11147, 11165, 11175, 114, 242, 10632, 114, 114, 384, 59, 99, 119, 11156, 11157, 11161, 24987, 59, 49152, 10547, 824, 59, 49152, 8605, 824, 103, 104, 116, 97, 114, 114, 111, 119, 187, 11157, 114, 105, 256, 59, 101, 3275, 3286, 896, 99, 104, 105, 109, 112, 113, 117, 11197, 11213, 11225, 11012, 2936, 11236, 11247, 512, 59, 99, 101, 114, 3378, 11206, 3383, 11209, 117, 229, 3397, 59, 49152, 55349, 56515, 111, 114, 116, 621, 11013, 0, 0, 11222, 97, 114, 225, 11094, 109, 256, 59, 101, 3438, 11231, 256, 59, 113, 3444, 3443, 115, 117, 256, 98, 112, 11243, 11245, 229, 3320, 229, 3339, 384, 98, 99, 112, 11254, 11281, 11289, 512, 59, 69, 101, 115, 11263, 11264, 3362, 11268, 25220, 59, 49152, 10949, 824, 101, 116, 256, 59, 101, 3355, 11275, 113, 256, 59, 113, 3363, 11264, 99, 256, 59, 101, 3378, 11287, 241, 3384, 512, 59, 69, 101, 115, 11298, 11299, 3423, 11303, 25221, 59, 49152, 10950, 824, 101, 116, 256, 59, 101, 3416, 11310, 113, 256, 59, 113, 3424, 11299, 512, 103, 105, 108, 114, 11325, 11327, 11333, 11335, 236, 3031, 108, 100, 101, 32827, 241, 16625, 231, 3139, 105, 97, 110, 103, 108, 101, 256, 108, 114, 11346, 11356, 101, 102, 116, 256, 59, 101, 3098, 11354, 241, 3110, 105, 103, 104, 116, 256, 59, 101, 3275, 11365, 241, 3287, 256, 59, 109, 11372, 11373, 17341, 384, 59, 101, 115, 11380, 11381, 11385, 16419, 114, 111, 59, 24854, 112, 59, 24583, 1152, 68, 72, 97, 100, 103, 105, 108, 114, 115, 11407, 11412, 11417, 11422, 11427, 11440, 11446, 11475, 11491, 97, 115, 104, 59, 25261, 97, 114, 114, 59, 26884, 112, 59, 49152, 8781, 8402, 97, 115, 104, 59, 25260, 256, 101, 116, 11432, 11436, 59, 49152, 8805, 8402, 59, 49152, 62, 8402, 110, 102, 105, 110, 59, 27102, 384, 65, 101, 116, 11453, 11457, 11461, 114, 114, 59, 26882, 59, 49152, 8804, 8402, 256, 59, 114, 11466, 11469, 49152, 60, 8402, 105, 101, 59, 49152, 8884, 8402, 256, 65, 116, 11480, 11484, 114, 114, 59, 26883, 114, 105, 101, 59, 49152, 8885, 8402, 105, 109, 59, 49152, 8764, 8402, 384, 65, 97, 110, 11504, 11508, 11522, 114, 114, 59, 25046, 114, 256, 104, 114, 11514, 11517, 107, 59, 26915, 256, 59, 111, 5095, 5093, 101, 97, 114, 59, 26919, 4691, 6805, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11565, 0, 11576, 11592, 11616, 11621, 11634, 11652, 6919, 0, 0, 11661, 11691, 0, 11720, 11726, 0, 11740, 11801, 11819, 11838, 11843, 256, 99, 115, 11569, 6807, 117, 116, 101, 32827, 243, 16627, 256, 105, 121, 11580, 11589, 114, 256, 59, 99, 6814, 11586, 32827, 244, 16628, 59, 17470, 640, 97, 98, 105, 111, 115, 6816, 11602, 11607, 456, 11610, 108, 97, 99, 59, 16721, 118, 59, 27192, 111, 108, 100, 59, 27068, 108, 105, 103, 59, 16723, 256, 99, 114, 11625, 11629, 105, 114, 59, 27071, 59, 49152, 55349, 56620, 879, 11641, 0, 0, 11644, 0, 11650, 110, 59, 17115, 97, 118, 101, 32827, 242, 16626, 59, 27073, 256, 98, 109, 11656, 3572, 97, 114, 59, 27061, 512, 97, 99, 105, 116, 11669, 11672, 11685, 11688, 114, 242, 6784, 256, 105, 114, 11677, 11680, 114, 59, 27070, 111, 115, 115, 59, 27067, 110, 229, 3666, 59, 27072, 384, 97, 101, 105, 11697, 11701, 11705, 99, 114, 59, 16717, 103, 97, 59, 17353, 384, 99, 100, 110, 11712, 11717, 461, 114, 111, 110, 59, 17343, 59, 27062, 112, 102, 59, 49152, 55349, 56672, 384, 97, 101, 108, 11732, 11735, 466, 114, 59, 27063, 114, 112, 59, 27065, 896, 59, 97, 100, 105, 111, 115, 118, 11754, 11755, 11758, 11784, 11789, 11792, 11798, 25128, 114, 242, 6790, 512, 59, 101, 102, 109, 11767, 11768, 11778, 11781, 27229, 114, 256, 59, 111, 11774, 11775, 24884, 102, 187, 11775, 32827, 170, 16554, 32827, 186, 16570, 103, 111, 102, 59, 25270, 114, 59, 27222, 108, 111, 112, 101, 59, 27223, 59, 27227, 384, 99, 108, 111, 11807, 11809, 11815, 242, 11777, 97, 115, 104, 32827, 248, 16632, 108, 59, 25240, 105, 364, 11823, 11828, 100, 101, 32827, 245, 16629, 101, 115, 256, 59, 97, 475, 11834, 115, 59, 27190, 109, 108, 32827, 246, 16630, 98, 97, 114, 59, 25405, 2785, 11870, 0, 11901, 0, 11904, 11933, 0, 11938, 11961, 0, 0, 11979, 3740, 0, 12051, 0, 0, 12075, 12220, 0, 12232, 114, 512, 59, 97, 115, 116, 1027, 11879, 11890, 3717, 33024, 182, 59, 108, 11885, 11886, 16566, 108, 101, 236, 1027, 617, 11896, 0, 0, 11899, 109, 59, 27379, 59, 27389, 121, 59, 17471, 114, 640, 99, 105, 109, 112, 116, 11915, 11919, 11923, 6245, 11927, 110, 116, 59, 16421, 111, 100, 59, 16430, 105, 108, 59, 24624, 101, 110, 107, 59, 24625, 114, 59, 49152, 55349, 56621, 384, 105, 109, 111, 11944, 11952, 11956, 256, 59, 118, 11949, 11950, 17350, 59, 17365, 109, 97, 244, 2678, 110, 101, 59, 26126, 384, 59, 116, 118, 11967, 11968, 11976, 17344, 99, 104, 102, 111, 114, 107, 187, 8189, 59, 17366, 256, 97, 117, 11983, 11999, 110, 256, 99, 107, 11989, 11997, 107, 256, 59, 104, 8692, 11995, 59, 24846, 246, 8692, 115, 1152, 59, 97, 98, 99, 100, 101, 109, 115, 116, 12019, 12020, 6408, 12025, 12029, 12036, 12038, 12042, 12046, 16427, 99, 105, 114, 59, 27171, 105, 114, 59, 27170, 256, 111, 117, 7488, 12034, 59, 27173, 59, 27250, 110, 32955, 177, 3741, 105, 109, 59, 27174, 119, 111, 59, 27175, 384, 105, 112, 117, 12057, 12064, 12069, 110, 116, 105, 110, 116, 59, 27157, 102, 59, 49152, 55349, 56673, 110, 100, 32827, 163, 16547, 1280, 59, 69, 97, 99, 101, 105, 110, 111, 115, 117, 3784, 12095, 12097, 12100, 12103, 12161, 12169, 12178, 12158, 12214, 59, 27315, 112, 59, 27319, 117, 229, 3801, 256, 59, 99, 3790, 12108, 768, 59, 97, 99, 101, 110, 115, 3784, 12121, 12127, 12134, 12136, 12158, 112, 112, 114, 111, 248, 12099, 117, 114, 108, 121, 101, 241, 3801, 241, 3790, 384, 97, 101, 115, 12143, 12150, 12154, 112, 112, 114, 111, 120, 59, 27321, 113, 113, 59, 27317, 105, 109, 59, 25320, 105, 237, 3807, 109, 101, 256, 59, 115, 12168, 3758, 24626, 384, 69, 97, 115, 12152, 12176, 12154, 240, 12149, 384, 100, 102, 112, 3820, 12185, 12207, 384, 97, 108, 115, 12192, 12197, 12202, 108, 97, 114, 59, 25390, 105, 110, 101, 59, 25362, 117, 114, 102, 59, 25363, 256, 59, 116, 3835, 12212, 239, 3835, 114, 101, 108, 59, 25264, 256, 99, 105, 12224, 12229, 114, 59, 49152, 55349, 56517, 59, 17352, 110, 99, 115, 112, 59, 24584, 768, 102, 105, 111, 112, 115, 117, 12250, 8930, 12255, 12261, 12267, 12273, 114, 59, 49152, 55349, 56622, 112, 102, 59, 49152, 55349, 56674, 114, 105, 109, 101, 59, 24663, 99, 114, 59, 49152, 55349, 56518, 384, 97, 101, 111, 12280, 12297, 12307, 116, 256, 101, 105, 12286, 12293, 114, 110, 105, 111, 110, 243, 1712, 110, 116, 59, 27158, 115, 116, 256, 59, 101, 12304, 12305, 16447, 241, 7961, 244, 3860, 2688, 65, 66, 72, 97, 98, 99, 100, 101, 102, 104, 105, 108, 109, 110, 111, 112, 114, 115, 116, 117, 120, 12352, 12369, 12373, 12377, 12512, 12558, 12587, 12615, 12642, 12658, 12686, 12806, 12821, 12836, 12841, 12888, 12910, 12914, 12944, 12976, 12983, 384, 97, 114, 116, 12359, 12362, 12364, 114, 242, 4275, 242, 989, 97, 105, 108, 59, 26908, 97, 114, 242, 7269, 97, 114, 59, 26980, 896, 99, 100, 101, 110, 113, 114, 116, 12392, 12405, 12408, 12415, 12431, 12436, 12492, 256, 101, 117, 12397, 12401, 59, 49152, 8765, 817, 116, 101, 59, 16725, 105, 227, 4462, 109, 112, 116, 121, 118, 59, 27059, 103, 512, 59, 100, 101, 108, 4049, 12425, 12427, 12429, 59, 27026, 59, 27045, 229, 4049, 117, 111, 32827, 187, 16571, 114, 1408, 59, 97, 98, 99, 102, 104, 108, 112, 115, 116, 119, 4060, 12460, 12463, 12471, 12473, 12476, 12478, 12480, 12483, 12487, 12490, 112, 59, 26997, 256, 59, 102, 4064, 12468, 115, 59, 26912, 59, 26931, 115, 59, 26910, 235, 8797, 240, 10030, 108, 59, 26949, 105, 109, 59, 26996, 108, 59, 24995, 59, 24989, 256, 97, 105, 12497, 12501, 105, 108, 59, 26906, 111, 256, 59, 110, 12507, 12508, 25142, 97, 108, 243, 3870, 384, 97, 98, 114, 12519, 12522, 12526, 114, 242, 6117, 114, 107, 59, 26483, 256, 97, 107, 12531, 12541, 99, 256, 101, 107, 12537, 12539, 59, 16509, 59, 16477, 256, 101, 115, 12546, 12548, 59, 27020, 108, 256, 100, 117, 12554, 12556, 59, 27022, 59, 27024, 512, 97, 101, 117, 121, 12567, 12572, 12583, 12585, 114, 111, 110, 59, 16729, 256, 100, 105, 12577, 12581, 105, 108, 59, 16727, 236, 4082, 226, 12538, 59, 17472, 512, 99, 108, 113, 115, 12596, 12599, 12605, 12612, 97, 59, 26935, 100, 104, 97, 114, 59, 26985, 117, 111, 256, 59, 114, 526, 525, 104, 59, 25011, 384, 97, 99, 103, 12622, 12639, 3908, 108, 512, 59, 105, 112, 115, 3960, 12632, 12635, 4252, 110, 229, 4283, 97, 114, 244, 4009, 116, 59, 26029, 384, 105, 108, 114, 12649, 4131, 12654, 115, 104, 116, 59, 27005, 59, 49152, 55349, 56623, 256, 97, 111, 12663, 12678, 114, 256, 100, 117, 12669, 12671, 187, 1147, 256, 59, 108, 4241, 12676, 59, 26988, 256, 59, 118, 12683, 12684, 17345, 59, 17393, 384, 103, 110, 115, 12693, 12793, 12796, 104, 116, 768, 97, 104, 108, 114, 115, 116, 12708, 12720, 12738, 12760, 12772, 12782, 114, 114, 111, 119, 256, 59, 116, 4060, 12717, 97, 233, 12488, 97, 114, 112, 111, 111, 110, 256, 100, 117, 12731, 12735, 111, 119, 238, 12670, 112, 187, 4242, 101, 102, 116, 256, 97, 104, 12746, 12752, 114, 114, 111, 119, 243, 4074, 97, 114, 112, 111, 111, 110, 243, 1361, 105, 103, 104, 116, 97, 114, 114, 111, 119, 115, 59, 25033, 113, 117, 105, 103, 97, 114, 114, 111, 247, 12491, 104, 114, 101, 101, 116, 105, 109, 101, 115, 59, 25292, 103, 59, 17114, 105, 110, 103, 100, 111, 116, 115, 101, 241, 7986, 384, 97, 104, 109, 12813, 12816, 12819, 114, 242, 4074, 97, 242, 1361, 59, 24591, 111, 117, 115, 116, 256, 59, 97, 12830, 12831, 25521, 99, 104, 101, 187, 12831, 109, 105, 100, 59, 27374, 512, 97, 98, 112, 116, 12850, 12861, 12864, 12882, 256, 110, 114, 12855, 12858, 103, 59, 26605, 114, 59, 25086, 114, 235, 4099, 384, 97, 102, 108, 12871, 12874, 12878, 114, 59, 27014, 59, 49152, 55349, 56675, 117, 115, 59, 27182, 105, 109, 101, 115, 59, 27189, 256, 97, 112, 12893, 12903, 114, 256, 59, 103, 12899, 12900, 16425, 116, 59, 27028, 111, 108, 105, 110, 116, 59, 27154, 97, 114, 242, 12771, 512, 97, 99, 104, 113, 12923, 12928, 4284, 12933, 113, 117, 111, 59, 24634, 114, 59, 49152, 55349, 56519, 256, 98, 117, 12539, 12938, 111, 256, 59, 114, 532, 531, 384, 104, 105, 114, 12951, 12955, 12960, 114, 101, 229, 12792, 109, 101, 115, 59, 25290, 105, 512, 59, 101, 102, 108, 12970, 4185, 6177, 12971, 26041, 116, 114, 105, 59, 27086, 108, 117, 104, 97, 114, 59, 26984, 59, 24862, 3425, 13013, 13019, 13023, 13100, 13112, 13169, 0, 13178, 13220, 0, 0, 13292, 13296, 0, 13352, 13384, 13402, 13485, 13489, 13514, 13553, 0, 13846, 0, 0, 13875, 99, 117, 116, 101, 59, 16731, 113, 117, 239, 10170, 1280, 59, 69, 97, 99, 101, 105, 110, 112, 115, 121, 4589, 13043, 13045, 13055, 13058, 13067, 13071, 13087, 13094, 13097, 59, 27316, 496, 13050, 0, 13052, 59, 27320, 111, 110, 59, 16737, 117, 229, 4606, 256, 59, 100, 4595, 13063, 105, 108, 59, 16735, 114, 99, 59, 16733, 384, 69, 97, 115, 13078, 13080, 13083, 59, 27318, 112, 59, 27322, 105, 109, 59, 25321, 111, 108, 105, 110, 116, 59, 27155, 105, 237, 4612, 59, 17473, 111, 116, 384, 59, 98, 101, 13108, 7495, 13109, 25285, 59, 27238, 896, 65, 97, 99, 109, 115, 116, 120, 13126, 13130, 13143, 13147, 13150, 13155, 13165, 114, 114, 59, 25048, 114, 256, 104, 114, 13136, 13138, 235, 8744, 256, 59, 111, 2614, 2612, 116, 32827, 167, 16551, 105, 59, 16443, 119, 97, 114, 59, 26921, 109, 256, 105, 110, 13161, 240, 110, 117, 243, 241, 116, 59, 26422, 114, 256, 59, 111, 13174, 8277, 49152, 55349, 56624, 512, 97, 99, 111, 121, 13186, 13190, 13201, 13216, 114, 112, 59, 26223, 256, 104, 121, 13195, 13199, 99, 121, 59, 17481, 59, 17480, 114, 116, 621, 13209, 0, 0, 13212, 105, 228, 5220, 97, 114, 97, 236, 11887, 32827, 173, 16557, 256, 103, 109, 13224, 13236, 109, 97, 384, 59, 102, 118, 13233, 13234, 13234, 17347, 59, 17346, 1024, 59, 100, 101, 103, 108, 110, 112, 114, 4779, 13253, 13257, 13262, 13270, 13278, 13281, 13286, 111, 116, 59, 27242, 256, 59, 113, 4785, 4784, 256, 59, 69, 13267, 13268, 27294, 59, 27296, 256, 59, 69, 13275, 13276, 27293, 59, 27295, 101, 59, 25158, 108, 117, 115, 59, 27172, 97, 114, 114, 59, 26994, 97, 114, 242, 4413, 512, 97, 101, 105, 116, 13304, 13320, 13327, 13335, 256, 108, 115, 13309, 13316, 108, 115, 101, 116, 109, 233, 13162, 104, 112, 59, 27187, 112, 97, 114, 115, 108, 59, 27108, 256, 100, 108, 5219, 13332, 101, 59, 25379, 256, 59, 101, 13340, 13341, 27306, 256, 59, 115, 13346, 13347, 27308, 59, 49152, 10924, 65024, 384, 102, 108, 112, 13358, 13363, 13378, 116, 99, 121, 59, 17484, 256, 59, 98, 13368, 13369, 16431, 256, 59, 97, 13374, 13375, 27076, 114, 59, 25407, 102, 59, 49152, 55349, 56676, 97, 256, 100, 114, 13389, 1026, 101, 115, 256, 59, 117, 13396, 13397, 26208, 105, 116, 187, 13397, 384, 99, 115, 117, 13408, 13433, 13471, 256, 97, 117, 13413, 13423, 112, 256, 59, 115, 4488, 13419, 59, 49152, 8851, 65024, 112, 256, 59, 115, 4532, 13429, 59, 49152, 8852, 65024, 117, 256, 98, 112, 13439, 13455, 384, 59, 101, 115, 4503, 4508, 13446, 101, 116, 256, 59, 101, 4503, 13453, 241, 4509, 384, 59, 101, 115, 4520, 4525, 13462, 101, 116, 256, 59, 101, 4520, 13469, 241, 4526, 384, 59, 97, 102, 4475, 13478, 1456, 114, 357, 13483, 1457, 187, 4476, 97, 114, 242, 4424, 512, 99, 101, 109, 116, 13497, 13502, 13506, 13509, 114, 59, 49152, 55349, 56520, 116, 109, 238, 241, 105, 236, 13333, 97, 114, 230, 4542, 256, 97, 114, 13518, 13525, 114, 256, 59, 102, 13524, 6079, 26118, 256, 97, 110, 13530, 13549, 105, 103, 104, 116, 256, 101, 112, 13539, 13546, 112, 115, 105, 108, 111, 238, 7904, 104, 233, 11951, 115, 187, 10322, 640, 98, 99, 109, 110, 112, 13563, 13662, 4617, 13707, 13710, 1152, 59, 69, 100, 101, 109, 110, 112, 114, 115, 13582, 13583, 13585, 13589, 13598, 13603, 13612, 13617, 13622, 25218, 59, 27333, 111, 116, 59, 27325, 256, 59, 100, 4570, 13594, 111, 116, 59, 27331, 117, 108, 116, 59, 27329, 256, 69, 101, 13608, 13610, 59, 27339, 59, 25226, 108, 117, 115, 59, 27327, 97, 114, 114, 59, 27001, 384, 101, 105, 117, 13629, 13650, 13653, 116, 384, 59, 101, 110, 13582, 13637, 13643, 113, 256, 59, 113, 4570, 13583, 101, 113, 256, 59, 113, 13611, 13608, 109, 59, 27335, 256, 98, 112, 13658, 13660, 59, 27349, 59, 27347, 99, 768, 59, 97, 99, 101, 110, 115, 4589, 13676, 13682, 13689, 13691, 13094, 112, 112, 114, 111, 248, 13050, 117, 114, 108, 121, 101, 241, 4606, 241, 4595, 384, 97, 101, 115, 13698, 13704, 13083, 112, 112, 114, 111, 248, 13082, 113, 241, 13079, 103, 59, 26218, 1664, 49, 50, 51, 59, 69, 100, 101, 104, 108, 109, 110, 112, 115, 13737, 13740, 13743, 4636, 13746, 13748, 13760, 13769, 13781, 13786, 13791, 13800, 13805, 32827, 185, 16569, 32827, 178, 16562, 32827, 179, 16563, 59, 27334, 256, 111, 115, 13753, 13756, 116, 59, 27326, 117, 98, 59, 27352, 256, 59, 100, 4642, 13765, 111, 116, 59, 27332, 115, 256, 111, 117, 13775, 13778, 108, 59, 26569, 98, 59, 27351, 97, 114, 114, 59, 27003, 117, 108, 116, 59, 27330, 256, 69, 101, 13796, 13798, 59, 27340, 59, 25227, 108, 117, 115, 59, 27328, 384, 101, 105, 117, 13812, 13833, 13836, 116, 384, 59, 101, 110, 4636, 13820, 13826, 113, 256, 59, 113, 4642, 13746, 101, 113, 256, 59, 113, 13799, 13796, 109, 59, 27336, 256, 98, 112, 13841, 13843, 59, 27348, 59, 27350, 384, 65, 97, 110, 13852, 13856, 13869, 114, 114, 59, 25049, 114, 256, 104, 114, 13862, 13864, 235, 8750, 256, 59, 111, 2603, 2601, 119, 97, 114, 59, 26922, 108, 105, 103, 32827, 223, 16607, 3041, 13905, 13917, 13920, 4814, 13939, 13945, 0, 13950, 14018, 0, 0, 0, 0, 0, 14043, 14083, 0, 14089, 14188, 0, 0, 0, 14215, 626, 13910, 0, 0, 13915, 103, 101, 116, 59, 25366, 59, 17348, 114, 235, 3679, 384, 97, 101, 121, 13926, 13931, 13936, 114, 111, 110, 59, 16741, 100, 105, 108, 59, 16739, 59, 17474, 108, 114, 101, 99, 59, 25365, 114, 59, 49152, 55349, 56625, 512, 101, 105, 107, 111, 13958, 13981, 14005, 14012, 498, 13963, 0, 13969, 101, 256, 52, 102, 4740, 4737, 97, 384, 59, 115, 118, 13976, 13977, 13979, 17336, 121, 109, 59, 17361, 256, 99, 110, 13986, 14002, 107, 256, 97, 115, 13992, 13998, 112, 112, 114, 111, 248, 4801, 105, 109, 187, 4780, 115, 240, 4766, 256, 97, 115, 14010, 13998, 240, 4801, 114, 110, 32827, 254, 16638, 492, 799, 14022, 8935, 101, 115, 33152, 215, 59, 98, 100, 14031, 14032, 14040, 16599, 256, 59, 97, 6415, 14037, 114, 59, 27185, 59, 27184, 384, 101, 112, 115, 14049, 14051, 14080, 225, 10829, 512, 59, 98, 99, 102, 1158, 14060, 14064, 14068, 111, 116, 59, 25398, 105, 114, 59, 27377, 256, 59, 111, 14073, 14076, 49152, 55349, 56677, 114, 107, 59, 27354, 225, 13154, 114, 105, 109, 101, 59, 24628, 384, 97, 105, 112, 14095, 14098, 14180, 100, 229, 4680, 896, 97, 100, 101, 109, 112, 115, 116, 14113, 14157, 14144, 14161, 14167, 14172, 14175, 110, 103, 108, 101, 640, 59, 100, 108, 113, 114, 14128, 14129, 14134, 14144, 14146, 26037, 111, 119, 110, 187, 7611, 101, 102, 116, 256, 59, 101, 10240, 14142, 241, 2350, 59, 25180, 105, 103, 104, 116, 256, 59, 101, 12970, 14155, 241, 4186, 111, 116, 59, 26092, 105, 110, 117, 115, 59, 27194, 108, 117, 115, 59, 27193, 98, 59, 27085, 105, 109, 101, 59, 27195, 101, 122, 105, 117, 109, 59, 25570, 384, 99, 104, 116, 14194, 14205, 14209, 256, 114, 121, 14199, 14203, 59, 49152, 55349, 56521, 59, 17478, 99, 121, 59, 17499, 114, 111, 107, 59, 16743, 256, 105, 111, 14219, 14222, 120, 244, 6007, 104, 101, 97, 100, 256, 108, 114, 14231, 14240, 101, 102, 116, 97, 114, 114, 111, 247, 2127, 105, 103, 104, 116, 97, 114, 114, 111, 119, 187, 3933, 2304, 65, 72, 97, 98, 99, 100, 102, 103, 104, 108, 109, 111, 112, 114, 115, 116, 117, 119, 14288, 14291, 14295, 14308, 14320, 14332, 14350, 14364, 14371, 14388, 14417, 14429, 14443, 14505, 14540, 14546, 14570, 14582, 114, 242, 1005, 97, 114, 59, 26979, 256, 99, 114, 14300, 14306, 117, 116, 101, 32827, 250, 16634, 242, 4432, 114, 483, 14314, 0, 14317, 121, 59, 17502, 118, 101, 59, 16749, 256, 105, 121, 14325, 14330, 114, 99, 32827, 251, 16635, 59, 17475, 384, 97, 98, 104, 14339, 14342, 14347, 114, 242, 5037, 108, 97, 99, 59, 16753, 97, 242, 5059, 256, 105, 114, 14355, 14360, 115, 104, 116, 59, 27006, 59, 49152, 55349, 56626, 114, 97, 118, 101, 32827, 249, 16633, 353, 14375, 14385, 114, 256, 108, 114, 14380, 14382, 187, 2391, 187, 4227, 108, 107, 59, 25984, 256, 99, 116, 14393, 14413, 623, 14399, 0, 0, 14410, 114, 110, 256, 59, 101, 14405, 14406, 25372, 114, 187, 14406, 111, 112, 59, 25359, 114, 105, 59, 26104, 256, 97, 108, 14422, 14426, 99, 114, 59, 16747, 32955, 168, 841, 256, 103, 112, 14434, 14438, 111, 110, 59, 16755, 102, 59, 49152, 55349, 56678, 768, 97, 100, 104, 108, 115, 117, 4427, 14456, 14461, 4978, 14481, 14496, 111, 119, 110, 225, 5043, 97, 114, 112, 111, 111, 110, 256, 108, 114, 14472, 14476, 101, 102, 244, 14381, 105, 103, 104, 244, 14383, 105, 384, 59, 104, 108, 14489, 14490, 14492, 17349, 187, 5114, 111, 110, 187, 14490, 112, 97, 114, 114, 111, 119, 115, 59, 25032, 384, 99, 105, 116, 14512, 14532, 14536, 623, 14518, 0, 0, 14529, 114, 110, 256, 59, 101, 14524, 14525, 25373, 114, 187, 14525, 111, 112, 59, 25358, 110, 103, 59, 16751, 114, 105, 59, 26105, 99, 114, 59, 49152, 55349, 56522, 384, 100, 105, 114, 14553, 14557, 14562, 111, 116, 59, 25328, 108, 100, 101, 59, 16745, 105, 256, 59, 102, 14128, 14568, 187, 6163, 256, 97, 109, 14575, 14578, 114, 242, 14504, 108, 32827, 252, 16636, 97, 110, 103, 108, 101, 59, 27047, 1920, 65, 66, 68, 97, 99, 100, 101, 102, 108, 110, 111, 112, 114, 115, 122, 14620, 14623, 14633, 14637, 14773, 14776, 14781, 14815, 14820, 14824, 14835, 14841, 14845, 14849, 14880, 114, 242, 1015, 97, 114, 256, 59, 118, 14630, 14631, 27368, 59, 27369, 97, 115, 232, 993, 256, 110, 114, 14642, 14647, 103, 114, 116, 59, 27036, 896, 101, 107, 110, 112, 114, 115, 116, 13539, 14662, 14667, 14674, 14685, 14692, 14742, 97, 112, 112, 225, 9237, 111, 116, 104, 105, 110, 231, 7830, 384, 104, 105, 114, 13547, 11976, 14681, 111, 112, 244, 12213, 256, 59, 104, 5047, 14690, 239, 12685, 256, 105, 117, 14697, 14701, 103, 109, 225, 13235, 256, 98, 112, 14706, 14724, 115, 101, 116, 110, 101, 113, 256, 59, 113, 14717, 14720, 49152, 8842, 65024, 59, 49152, 10955, 65024, 115, 101, 116, 110, 101, 113, 256, 59, 113, 14735, 14738, 49152, 8843, 65024, 59, 49152, 10956, 65024, 256, 104, 114, 14747, 14751, 101, 116, 225, 13980, 105, 97, 110, 103, 108, 101, 256, 108, 114, 14762, 14767, 101, 102, 116, 187, 2341, 105, 103, 104, 116, 187, 4177, 121, 59, 17458, 97, 115, 104, 187, 4150, 384, 101, 108, 114, 14788, 14802, 14807, 384, 59, 98, 101, 11754, 14795, 14799, 97, 114, 59, 25275, 113, 59, 25178, 108, 105, 112, 59, 25326, 256, 98, 116, 14812, 5224, 97, 242, 5225, 114, 59, 49152, 55349, 56627, 116, 114, 233, 14766, 115, 117, 256, 98, 112, 14831, 14833, 187, 3356, 187, 3417, 112, 102, 59, 49152, 55349, 56679, 114, 111, 240, 3835, 116, 114, 233, 14772, 256, 99, 117, 14854, 14859, 114, 59, 49152, 55349, 56523, 256, 98, 112, 14864, 14872, 110, 256, 69, 101, 14720, 14870, 187, 14718, 110, 256, 69, 101, 14738, 14878, 187, 14736, 105, 103, 122, 97, 103, 59, 27034, 896, 99, 101, 102, 111, 112, 114, 115, 14902, 14907, 14934, 14939, 14932, 14945, 14954, 105, 114, 99, 59, 16757, 256, 100, 105, 14912, 14929, 256, 98, 103, 14917, 14921, 97, 114, 59, 27231, 101, 256, 59, 113, 5626, 14927, 59, 25177, 101, 114, 112, 59, 24856, 114, 59, 49152, 55349, 56628, 112, 102, 59, 49152, 55349, 56680, 256, 59, 101, 5241, 14950, 97, 116, 232, 5241, 99, 114, 59, 49152, 55349, 56524, 2787, 6030, 14983, 0, 14987, 0, 14992, 15003, 0, 0, 15005, 15016, 15019, 15023, 0, 0, 15043, 15054, 0, 15064, 6108, 6111, 116, 114, 233, 6097, 114, 59, 49152, 55349, 56629, 256, 65, 97, 14996, 14999, 114, 242, 963, 114, 242, 2550, 59, 17342, 256, 65, 97, 15009, 15012, 114, 242, 952, 114, 242, 2539, 97, 240, 10003, 105, 115, 59, 25339, 384, 100, 112, 116, 6052, 15029, 15038, 256, 102, 108, 15034, 6057, 59, 49152, 55349, 56681, 105, 109, 229, 6066, 256, 65, 97, 15047, 15050, 114, 242, 974, 114, 242, 2561, 256, 99, 113, 15058, 6072, 114, 59, 49152, 55349, 56525, 256, 112, 116, 6102, 15068, 114, 233, 6100, 1024, 97, 99, 101, 102, 105, 111, 115, 117, 15088, 15101, 15112, 15116, 15121, 15125, 15131, 15137, 99, 256, 117, 121, 15094, 15099, 116, 101, 32827, 253, 16637, 59, 17487, 256, 105, 121, 15106, 15110, 114, 99, 59, 16759, 59, 17483, 110, 32827, 165, 16549, 114, 59, 49152, 55349, 56630, 99, 121, 59, 17495, 112, 102, 59, 49152, 55349, 56682, 99, 114, 59, 49152, 55349, 56526, 256, 99, 109, 15142, 15145, 121, 59, 17486, 108, 32827, 255, 16639, 1280, 97, 99, 100, 101, 102, 104, 105, 111, 115, 119, 15170, 15176, 15188, 15192, 15204, 15209, 15213, 15220, 15226, 15232, 99, 117, 116, 101, 59, 16762, 256, 97, 121, 15181, 15186, 114, 111, 110, 59, 16766, 59, 17463, 111, 116, 59, 16764, 256, 101, 116, 15197, 15201, 116, 114, 230, 5471, 97, 59, 17334, 114, 59, 49152, 55349, 56631, 99, 121, 59, 17462, 103, 114, 97, 114, 114, 59, 25053, 112, 102, 59, 49152, 55349, 56683, 99, 114, 59, 49152, 55349, 56527, 256, 106, 110, 15237, 15239, 59, 24589, 106, 59, 24588]);
 
-},{}],67:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
-// Generated using scripts/write-decode-map.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = new Uint16Array(
+// Generated using scripts/write-decode-map.ts
 // prettier-ignore
-"\u0200aglq\t\x15\x18\x1b\u026d\x0f\0\0\x12p;\u4026os;\u4027t;\u403et;\u403cuot;\u4022"
-    .split("")
-    .map(function (c) { return c.charCodeAt(0); }));
+exports.default = new Uint16Array([512, 97, 103, 108, 113, 9, 21, 24, 27, 621, 15, 0, 0, 18, 112, 59, 16422, 111, 115, 59, 16423, 116, 59, 16446, 116, 59, 16444, 117, 111, 116, 59, 16418]);
 
-},{}],68:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 // Generated using scripts/write-encode-map.ts
 Object.defineProperty(exports, "__esModule", { value: true });
-function restoreDiff(arr) {
-    for (var i = 1; i < arr.length; i++) {
-        arr[i][0] += arr[i - 1][0] + 1;
-    }
-    return arr;
-}
 // prettier-ignore
-exports.default = new Map(/* #__PURE__ */ restoreDiff([[9, "&Tab;"], [0, "&NewLine;"], [22, "&excl;"], [0, "&quot;"], [0, "&num;"], [0, "&dollar;"], [0, "&percnt;"], [0, "&amp;"], [0, "&apos;"], [0, "&lpar;"], [0, "&rpar;"], [0, "&ast;"], [0, "&plus;"], [0, "&comma;"], [1, "&period;"], [0, "&sol;"], [10, "&colon;"], [0, "&semi;"], [0, { v: "&lt;", n: 8402, o: "&nvlt;" }], [0, { v: "&equals;", n: 8421, o: "&bne;" }], [0, { v: "&gt;", n: 8402, o: "&nvgt;" }], [0, "&quest;"], [0, "&commat;"], [26, "&lbrack;"], [0, "&bsol;"], [0, "&rbrack;"], [0, "&Hat;"], [0, "&lowbar;"], [0, "&DiacriticalGrave;"], [5, { n: 106, o: "&fjlig;" }], [20, "&lbrace;"], [0, "&verbar;"], [0, "&rbrace;"], [34, "&nbsp;"], [0, "&iexcl;"], [0, "&cent;"], [0, "&pound;"], [0, "&curren;"], [0, "&yen;"], [0, "&brvbar;"], [0, "&sect;"], [0, "&die;"], [0, "&copy;"], [0, "&ordf;"], [0, "&laquo;"], [0, "&not;"], [0, "&shy;"], [0, "&circledR;"], [0, "&macr;"], [0, "&deg;"], [0, "&PlusMinus;"], [0, "&sup2;"], [0, "&sup3;"], [0, "&acute;"], [0, "&micro;"], [0, "&para;"], [0, "&centerdot;"], [0, "&cedil;"], [0, "&sup1;"], [0, "&ordm;"], [0, "&raquo;"], [0, "&frac14;"], [0, "&frac12;"], [0, "&frac34;"], [0, "&iquest;"], [0, "&Agrave;"], [0, "&Aacute;"], [0, "&Acirc;"], [0, "&Atilde;"], [0, "&Auml;"], [0, "&angst;"], [0, "&AElig;"], [0, "&Ccedil;"], [0, "&Egrave;"], [0, "&Eacute;"], [0, "&Ecirc;"], [0, "&Euml;"], [0, "&Igrave;"], [0, "&Iacute;"], [0, "&Icirc;"], [0, "&Iuml;"], [0, "&ETH;"], [0, "&Ntilde;"], [0, "&Ograve;"], [0, "&Oacute;"], [0, "&Ocirc;"], [0, "&Otilde;"], [0, "&Ouml;"], [0, "&times;"], [0, "&Oslash;"], [0, "&Ugrave;"], [0, "&Uacute;"], [0, "&Ucirc;"], [0, "&Uuml;"], [0, "&Yacute;"], [0, "&THORN;"], [0, "&szlig;"], [0, "&agrave;"], [0, "&aacute;"], [0, "&acirc;"], [0, "&atilde;"], [0, "&auml;"], [0, "&aring;"], [0, "&aelig;"], [0, "&ccedil;"], [0, "&egrave;"], [0, "&eacute;"], [0, "&ecirc;"], [0, "&euml;"], [0, "&igrave;"], [0, "&iacute;"], [0, "&icirc;"], [0, "&iuml;"], [0, "&eth;"], [0, "&ntilde;"], [0, "&ograve;"], [0, "&oacute;"], [0, "&ocirc;"], [0, "&otilde;"], [0, "&ouml;"], [0, "&div;"], [0, "&oslash;"], [0, "&ugrave;"], [0, "&uacute;"], [0, "&ucirc;"], [0, "&uuml;"], [0, "&yacute;"], [0, "&thorn;"], [0, "&yuml;"], [0, "&Amacr;"], [0, "&amacr;"], [0, "&Abreve;"], [0, "&abreve;"], [0, "&Aogon;"], [0, "&aogon;"], [0, "&Cacute;"], [0, "&cacute;"], [0, "&Ccirc;"], [0, "&ccirc;"], [0, "&Cdot;"], [0, "&cdot;"], [0, "&Ccaron;"], [0, "&ccaron;"], [0, "&Dcaron;"], [0, "&dcaron;"], [0, "&Dstrok;"], [0, "&dstrok;"], [0, "&Emacr;"], [0, "&emacr;"], [2, "&Edot;"], [0, "&edot;"], [0, "&Eogon;"], [0, "&eogon;"], [0, "&Ecaron;"], [0, "&ecaron;"], [0, "&Gcirc;"], [0, "&gcirc;"], [0, "&Gbreve;"], [0, "&gbreve;"], [0, "&Gdot;"], [0, "&gdot;"], [0, "&Gcedil;"], [1, "&Hcirc;"], [0, "&hcirc;"], [0, "&Hstrok;"], [0, "&hstrok;"], [0, "&Itilde;"], [0, "&itilde;"], [0, "&Imacr;"], [0, "&imacr;"], [2, "&Iogon;"], [0, "&iogon;"], [0, "&Idot;"], [0, "&imath;"], [0, "&IJlig;"], [0, "&ijlig;"], [0, "&Jcirc;"], [0, "&jcirc;"], [0, "&Kcedil;"], [0, "&kcedil;"], [0, "&kgreen;"], [0, "&Lacute;"], [0, "&lacute;"], [0, "&Lcedil;"], [0, "&lcedil;"], [0, "&Lcaron;"], [0, "&lcaron;"], [0, "&Lmidot;"], [0, "&lmidot;"], [0, "&Lstrok;"], [0, "&lstrok;"], [0, "&Nacute;"], [0, "&nacute;"], [0, "&Ncedil;"], [0, "&ncedil;"], [0, "&Ncaron;"], [0, "&ncaron;"], [0, "&napos;"], [0, "&ENG;"], [0, "&eng;"], [0, "&Omacr;"], [0, "&omacr;"], [2, "&Odblac;"], [0, "&odblac;"], [0, "&OElig;"], [0, "&oelig;"], [0, "&Racute;"], [0, "&racute;"], [0, "&Rcedil;"], [0, "&rcedil;"], [0, "&Rcaron;"], [0, "&rcaron;"], [0, "&Sacute;"], [0, "&sacute;"], [0, "&Scirc;"], [0, "&scirc;"], [0, "&Scedil;"], [0, "&scedil;"], [0, "&Scaron;"], [0, "&scaron;"], [0, "&Tcedil;"], [0, "&tcedil;"], [0, "&Tcaron;"], [0, "&tcaron;"], [0, "&Tstrok;"], [0, "&tstrok;"], [0, "&Utilde;"], [0, "&utilde;"], [0, "&Umacr;"], [0, "&umacr;"], [0, "&Ubreve;"], [0, "&ubreve;"], [0, "&Uring;"], [0, "&uring;"], [0, "&Udblac;"], [0, "&udblac;"], [0, "&Uogon;"], [0, "&uogon;"], [0, "&Wcirc;"], [0, "&wcirc;"], [0, "&Ycirc;"], [0, "&ycirc;"], [0, "&Yuml;"], [0, "&Zacute;"], [0, "&zacute;"], [0, "&Zdot;"], [0, "&zdot;"], [0, "&Zcaron;"], [0, "&zcaron;"], [19, "&fnof;"], [34, "&imped;"], [63, "&gacute;"], [65, "&jmath;"], [142, "&circ;"], [0, "&caron;"], [16, "&breve;"], [0, "&DiacriticalDot;"], [0, "&ring;"], [0, "&ogon;"], [0, "&DiacriticalTilde;"], [0, "&dblac;"], [51, "&DownBreve;"], [127, "&Alpha;"], [0, "&Beta;"], [0, "&Gamma;"], [0, "&Delta;"], [0, "&Epsilon;"], [0, "&Zeta;"], [0, "&Eta;"], [0, "&Theta;"], [0, "&Iota;"], [0, "&Kappa;"], [0, "&Lambda;"], [0, "&Mu;"], [0, "&Nu;"], [0, "&Xi;"], [0, "&Omicron;"], [0, "&Pi;"], [0, "&Rho;"], [1, "&Sigma;"], [0, "&Tau;"], [0, "&Upsilon;"], [0, "&Phi;"], [0, "&Chi;"], [0, "&Psi;"], [0, "&ohm;"], [7, "&alpha;"], [0, "&beta;"], [0, "&gamma;"], [0, "&delta;"], [0, "&epsi;"], [0, "&zeta;"], [0, "&eta;"], [0, "&theta;"], [0, "&iota;"], [0, "&kappa;"], [0, "&lambda;"], [0, "&mu;"], [0, "&nu;"], [0, "&xi;"], [0, "&omicron;"], [0, "&pi;"], [0, "&rho;"], [0, "&sigmaf;"], [0, "&sigma;"], [0, "&tau;"], [0, "&upsi;"], [0, "&phi;"], [0, "&chi;"], [0, "&psi;"], [0, "&omega;"], [7, "&thetasym;"], [0, "&Upsi;"], [2, "&phiv;"], [0, "&piv;"], [5, "&Gammad;"], [0, "&digamma;"], [18, "&kappav;"], [0, "&rhov;"], [3, "&epsiv;"], [0, "&backepsilon;"], [10, "&IOcy;"], [0, "&DJcy;"], [0, "&GJcy;"], [0, "&Jukcy;"], [0, "&DScy;"], [0, "&Iukcy;"], [0, "&YIcy;"], [0, "&Jsercy;"], [0, "&LJcy;"], [0, "&NJcy;"], [0, "&TSHcy;"], [0, "&KJcy;"], [1, "&Ubrcy;"], [0, "&DZcy;"], [0, "&Acy;"], [0, "&Bcy;"], [0, "&Vcy;"], [0, "&Gcy;"], [0, "&Dcy;"], [0, "&IEcy;"], [0, "&ZHcy;"], [0, "&Zcy;"], [0, "&Icy;"], [0, "&Jcy;"], [0, "&Kcy;"], [0, "&Lcy;"], [0, "&Mcy;"], [0, "&Ncy;"], [0, "&Ocy;"], [0, "&Pcy;"], [0, "&Rcy;"], [0, "&Scy;"], [0, "&Tcy;"], [0, "&Ucy;"], [0, "&Fcy;"], [0, "&KHcy;"], [0, "&TScy;"], [0, "&CHcy;"], [0, "&SHcy;"], [0, "&SHCHcy;"], [0, "&HARDcy;"], [0, "&Ycy;"], [0, "&SOFTcy;"], [0, "&Ecy;"], [0, "&YUcy;"], [0, "&YAcy;"], [0, "&acy;"], [0, "&bcy;"], [0, "&vcy;"], [0, "&gcy;"], [0, "&dcy;"], [0, "&iecy;"], [0, "&zhcy;"], [0, "&zcy;"], [0, "&icy;"], [0, "&jcy;"], [0, "&kcy;"], [0, "&lcy;"], [0, "&mcy;"], [0, "&ncy;"], [0, "&ocy;"], [0, "&pcy;"], [0, "&rcy;"], [0, "&scy;"], [0, "&tcy;"], [0, "&ucy;"], [0, "&fcy;"], [0, "&khcy;"], [0, "&tscy;"], [0, "&chcy;"], [0, "&shcy;"], [0, "&shchcy;"], [0, "&hardcy;"], [0, "&ycy;"], [0, "&softcy;"], [0, "&ecy;"], [0, "&yucy;"], [0, "&yacy;"], [1, "&iocy;"], [0, "&djcy;"], [0, "&gjcy;"], [0, "&jukcy;"], [0, "&dscy;"], [0, "&iukcy;"], [0, "&yicy;"], [0, "&jsercy;"], [0, "&ljcy;"], [0, "&njcy;"], [0, "&tshcy;"], [0, "&kjcy;"], [1, "&ubrcy;"], [0, "&dzcy;"], [7074, "&ensp;"], [0, "&emsp;"], [0, "&emsp13;"], [0, "&emsp14;"], [1, "&numsp;"], [0, "&puncsp;"], [0, "&ThinSpace;"], [0, "&hairsp;"], [0, "&NegativeMediumSpace;"], [0, "&zwnj;"], [0, "&zwj;"], [0, "&lrm;"], [0, "&rlm;"], [0, "&dash;"], [2, "&ndash;"], [0, "&mdash;"], [0, "&horbar;"], [0, "&Verbar;"], [1, "&lsquo;"], [0, "&CloseCurlyQuote;"], [0, "&lsquor;"], [1, "&ldquo;"], [0, "&CloseCurlyDoubleQuote;"], [0, "&bdquo;"], [1, "&dagger;"], [0, "&Dagger;"], [0, "&bull;"], [2, "&nldr;"], [0, "&hellip;"], [9, "&permil;"], [0, "&pertenk;"], [0, "&prime;"], [0, "&Prime;"], [0, "&tprime;"], [0, "&backprime;"], [3, "&lsaquo;"], [0, "&rsaquo;"], [3, "&oline;"], [2, "&caret;"], [1, "&hybull;"], [0, "&frasl;"], [10, "&bsemi;"], [7, "&qprime;"], [7, { v: "&MediumSpace;", n: 8202, o: "&ThickSpace;" }], [0, "&NoBreak;"], [0, "&af;"], [0, "&InvisibleTimes;"], [0, "&ic;"], [72, "&euro;"], [46, "&tdot;"], [0, "&DotDot;"], [37, "&complexes;"], [2, "&incare;"], [4, "&gscr;"], [0, "&hamilt;"], [0, "&Hfr;"], [0, "&Hopf;"], [0, "&planckh;"], [0, "&hbar;"], [0, "&imagline;"], [0, "&Ifr;"], [0, "&lagran;"], [0, "&ell;"], [1, "&naturals;"], [0, "&numero;"], [0, "&copysr;"], [0, "&weierp;"], [0, "&Popf;"], [0, "&Qopf;"], [0, "&realine;"], [0, "&real;"], [0, "&reals;"], [0, "&rx;"], [3, "&trade;"], [1, "&integers;"], [2, "&mho;"], [0, "&zeetrf;"], [0, "&iiota;"], [2, "&bernou;"], [0, "&Cayleys;"], [1, "&escr;"], [0, "&Escr;"], [0, "&Fouriertrf;"], [1, "&Mellintrf;"], [0, "&order;"], [0, "&alefsym;"], [0, "&beth;"], [0, "&gimel;"], [0, "&daleth;"], [12, "&CapitalDifferentialD;"], [0, "&dd;"], [0, "&ee;"], [0, "&ii;"], [10, "&frac13;"], [0, "&frac23;"], [0, "&frac15;"], [0, "&frac25;"], [0, "&frac35;"], [0, "&frac45;"], [0, "&frac16;"], [0, "&frac56;"], [0, "&frac18;"], [0, "&frac38;"], [0, "&frac58;"], [0, "&frac78;"], [49, "&larr;"], [0, "&ShortUpArrow;"], [0, "&rarr;"], [0, "&darr;"], [0, "&harr;"], [0, "&updownarrow;"], [0, "&nwarr;"], [0, "&nearr;"], [0, "&LowerRightArrow;"], [0, "&LowerLeftArrow;"], [0, "&nlarr;"], [0, "&nrarr;"], [1, { v: "&rarrw;", n: 824, o: "&nrarrw;" }], [0, "&Larr;"], [0, "&Uarr;"], [0, "&Rarr;"], [0, "&Darr;"], [0, "&larrtl;"], [0, "&rarrtl;"], [0, "&LeftTeeArrow;"], [0, "&mapstoup;"], [0, "&map;"], [0, "&DownTeeArrow;"], [1, "&hookleftarrow;"], [0, "&hookrightarrow;"], [0, "&larrlp;"], [0, "&looparrowright;"], [0, "&harrw;"], [0, "&nharr;"], [1, "&lsh;"], [0, "&rsh;"], [0, "&ldsh;"], [0, "&rdsh;"], [1, "&crarr;"], [0, "&cularr;"], [0, "&curarr;"], [2, "&circlearrowleft;"], [0, "&circlearrowright;"], [0, "&leftharpoonup;"], [0, "&DownLeftVector;"], [0, "&RightUpVector;"], [0, "&LeftUpVector;"], [0, "&rharu;"], [0, "&DownRightVector;"], [0, "&dharr;"], [0, "&dharl;"], [0, "&RightArrowLeftArrow;"], [0, "&udarr;"], [0, "&LeftArrowRightArrow;"], [0, "&leftleftarrows;"], [0, "&upuparrows;"], [0, "&rightrightarrows;"], [0, "&ddarr;"], [0, "&leftrightharpoons;"], [0, "&Equilibrium;"], [0, "&nlArr;"], [0, "&nhArr;"], [0, "&nrArr;"], [0, "&DoubleLeftArrow;"], [0, "&DoubleUpArrow;"], [0, "&DoubleRightArrow;"], [0, "&dArr;"], [0, "&DoubleLeftRightArrow;"], [0, "&DoubleUpDownArrow;"], [0, "&nwArr;"], [0, "&neArr;"], [0, "&seArr;"], [0, "&swArr;"], [0, "&lAarr;"], [0, "&rAarr;"], [1, "&zigrarr;"], [6, "&larrb;"], [0, "&rarrb;"], [15, "&DownArrowUpArrow;"], [7, "&loarr;"], [0, "&roarr;"], [0, "&hoarr;"], [0, "&forall;"], [0, "&comp;"], [0, { v: "&part;", n: 824, o: "&npart;" }], [0, "&exist;"], [0, "&nexist;"], [0, "&empty;"], [1, "&Del;"], [0, "&Element;"], [0, "&NotElement;"], [1, "&ni;"], [0, "&notni;"], [2, "&prod;"], [0, "&coprod;"], [0, "&sum;"], [0, "&minus;"], [0, "&MinusPlus;"], [0, "&dotplus;"], [1, "&Backslash;"], [0, "&lowast;"], [0, "&compfn;"], [1, "&radic;"], [2, "&prop;"], [0, "&infin;"], [0, "&angrt;"], [0, { v: "&ang;", n: 8402, o: "&nang;" }], [0, "&angmsd;"], [0, "&angsph;"], [0, "&mid;"], [0, "&nmid;"], [0, "&DoubleVerticalBar;"], [0, "&NotDoubleVerticalBar;"], [0, "&and;"], [0, "&or;"], [0, { v: "&cap;", n: 65024, o: "&caps;" }], [0, { v: "&cup;", n: 65024, o: "&cups;" }], [0, "&int;"], [0, "&Int;"], [0, "&iiint;"], [0, "&conint;"], [0, "&Conint;"], [0, "&Cconint;"], [0, "&cwint;"], [0, "&ClockwiseContourIntegral;"], [0, "&awconint;"], [0, "&there4;"], [0, "&becaus;"], [0, "&ratio;"], [0, "&Colon;"], [0, "&dotminus;"], [1, "&mDDot;"], [0, "&homtht;"], [0, { v: "&sim;", n: 8402, o: "&nvsim;" }], [0, { v: "&backsim;", n: 817, o: "&race;" }], [0, { v: "&ac;", n: 819, o: "&acE;" }], [0, "&acd;"], [0, "&VerticalTilde;"], [0, "&NotTilde;"], [0, { v: "&eqsim;", n: 824, o: "&nesim;" }], [0, "&sime;"], [0, "&NotTildeEqual;"], [0, "&cong;"], [0, "&simne;"], [0, "&ncong;"], [0, "&ap;"], [0, "&nap;"], [0, "&ape;"], [0, { v: "&apid;", n: 824, o: "&napid;" }], [0, "&backcong;"], [0, { v: "&asympeq;", n: 8402, o: "&nvap;" }], [0, { v: "&bump;", n: 824, o: "&nbump;" }], [0, { v: "&bumpe;", n: 824, o: "&nbumpe;" }], [0, { v: "&doteq;", n: 824, o: "&nedot;" }], [0, "&doteqdot;"], [0, "&efDot;"], [0, "&erDot;"], [0, "&Assign;"], [0, "&ecolon;"], [0, "&ecir;"], [0, "&circeq;"], [1, "&wedgeq;"], [0, "&veeeq;"], [1, "&triangleq;"], [2, "&equest;"], [0, "&ne;"], [0, { v: "&Congruent;", n: 8421, o: "&bnequiv;" }], [0, "&nequiv;"], [1, { v: "&le;", n: 8402, o: "&nvle;" }], [0, { v: "&ge;", n: 8402, o: "&nvge;" }], [0, { v: "&lE;", n: 824, o: "&nlE;" }], [0, { v: "&gE;", n: 824, o: "&ngE;" }], [0, { v: "&lnE;", n: 65024, o: "&lvertneqq;" }], [0, { v: "&gnE;", n: 65024, o: "&gvertneqq;" }], [0, { v: "&ll;", n: new Map(/* #__PURE__ */ restoreDiff([[824, "&nLtv;"], [7577, "&nLt;"]])) }], [0, { v: "&gg;", n: new Map(/* #__PURE__ */ restoreDiff([[824, "&nGtv;"], [7577, "&nGt;"]])) }], [0, "&between;"], [0, "&NotCupCap;"], [0, "&nless;"], [0, "&ngt;"], [0, "&nle;"], [0, "&nge;"], [0, "&lesssim;"], [0, "&GreaterTilde;"], [0, "&nlsim;"], [0, "&ngsim;"], [0, "&LessGreater;"], [0, "&gl;"], [0, "&NotLessGreater;"], [0, "&NotGreaterLess;"], [0, "&pr;"], [0, "&sc;"], [0, "&prcue;"], [0, "&sccue;"], [0, "&PrecedesTilde;"], [0, { v: "&scsim;", n: 824, o: "&NotSucceedsTilde;" }], [0, "&NotPrecedes;"], [0, "&NotSucceeds;"], [0, { v: "&sub;", n: 8402, o: "&NotSubset;" }], [0, { v: "&sup;", n: 8402, o: "&NotSuperset;" }], [0, "&nsub;"], [0, "&nsup;"], [0, "&sube;"], [0, "&supe;"], [0, "&NotSubsetEqual;"], [0, "&NotSupersetEqual;"], [0, { v: "&subne;", n: 65024, o: "&varsubsetneq;" }], [0, { v: "&supne;", n: 65024, o: "&varsupsetneq;" }], [1, "&cupdot;"], [0, "&UnionPlus;"], [0, { v: "&sqsub;", n: 824, o: "&NotSquareSubset;" }], [0, { v: "&sqsup;", n: 824, o: "&NotSquareSuperset;" }], [0, "&sqsube;"], [0, "&sqsupe;"], [0, { v: "&sqcap;", n: 65024, o: "&sqcaps;" }], [0, { v: "&sqcup;", n: 65024, o: "&sqcups;" }], [0, "&CirclePlus;"], [0, "&CircleMinus;"], [0, "&CircleTimes;"], [0, "&osol;"], [0, "&CircleDot;"], [0, "&circledcirc;"], [0, "&circledast;"], [1, "&circleddash;"], [0, "&boxplus;"], [0, "&boxminus;"], [0, "&boxtimes;"], [0, "&dotsquare;"], [0, "&RightTee;"], [0, "&dashv;"], [0, "&DownTee;"], [0, "&bot;"], [1, "&models;"], [0, "&DoubleRightTee;"], [0, "&Vdash;"], [0, "&Vvdash;"], [0, "&VDash;"], [0, "&nvdash;"], [0, "&nvDash;"], [0, "&nVdash;"], [0, "&nVDash;"], [0, "&prurel;"], [1, "&LeftTriangle;"], [0, "&RightTriangle;"], [0, { v: "&LeftTriangleEqual;", n: 8402, o: "&nvltrie;" }], [0, { v: "&RightTriangleEqual;", n: 8402, o: "&nvrtrie;" }], [0, "&origof;"], [0, "&imof;"], [0, "&multimap;"], [0, "&hercon;"], [0, "&intcal;"], [0, "&veebar;"], [1, "&barvee;"], [0, "&angrtvb;"], [0, "&lrtri;"], [0, "&bigwedge;"], [0, "&bigvee;"], [0, "&bigcap;"], [0, "&bigcup;"], [0, "&diam;"], [0, "&sdot;"], [0, "&sstarf;"], [0, "&divideontimes;"], [0, "&bowtie;"], [0, "&ltimes;"], [0, "&rtimes;"], [0, "&leftthreetimes;"], [0, "&rightthreetimes;"], [0, "&backsimeq;"], [0, "&curlyvee;"], [0, "&curlywedge;"], [0, "&Sub;"], [0, "&Sup;"], [0, "&Cap;"], [0, "&Cup;"], [0, "&fork;"], [0, "&epar;"], [0, "&lessdot;"], [0, "&gtdot;"], [0, { v: "&Ll;", n: 824, o: "&nLl;" }], [0, { v: "&Gg;", n: 824, o: "&nGg;" }], [0, { v: "&leg;", n: 65024, o: "&lesg;" }], [0, { v: "&gel;", n: 65024, o: "&gesl;" }], [2, "&cuepr;"], [0, "&cuesc;"], [0, "&NotPrecedesSlantEqual;"], [0, "&NotSucceedsSlantEqual;"], [0, "&NotSquareSubsetEqual;"], [0, "&NotSquareSupersetEqual;"], [2, "&lnsim;"], [0, "&gnsim;"], [0, "&precnsim;"], [0, "&scnsim;"], [0, "&nltri;"], [0, "&NotRightTriangle;"], [0, "&nltrie;"], [0, "&NotRightTriangleEqual;"], [0, "&vellip;"], [0, "&ctdot;"], [0, "&utdot;"], [0, "&dtdot;"], [0, "&disin;"], [0, "&isinsv;"], [0, "&isins;"], [0, { v: "&isindot;", n: 824, o: "&notindot;" }], [0, "&notinvc;"], [0, "&notinvb;"], [1, { v: "&isinE;", n: 824, o: "&notinE;" }], [0, "&nisd;"], [0, "&xnis;"], [0, "&nis;"], [0, "&notnivc;"], [0, "&notnivb;"], [6, "&barwed;"], [0, "&Barwed;"], [1, "&lceil;"], [0, "&rceil;"], [0, "&LeftFloor;"], [0, "&rfloor;"], [0, "&drcrop;"], [0, "&dlcrop;"], [0, "&urcrop;"], [0, "&ulcrop;"], [0, "&bnot;"], [1, "&profline;"], [0, "&profsurf;"], [1, "&telrec;"], [0, "&target;"], [5, "&ulcorn;"], [0, "&urcorn;"], [0, "&dlcorn;"], [0, "&drcorn;"], [2, "&frown;"], [0, "&smile;"], [9, "&cylcty;"], [0, "&profalar;"], [7, "&topbot;"], [6, "&ovbar;"], [1, "&solbar;"], [60, "&angzarr;"], [51, "&lmoustache;"], [0, "&rmoustache;"], [2, "&OverBracket;"], [0, "&bbrk;"], [0, "&bbrktbrk;"], [37, "&OverParenthesis;"], [0, "&UnderParenthesis;"], [0, "&OverBrace;"], [0, "&UnderBrace;"], [2, "&trpezium;"], [4, "&elinters;"], [59, "&blank;"], [164, "&circledS;"], [55, "&boxh;"], [1, "&boxv;"], [9, "&boxdr;"], [3, "&boxdl;"], [3, "&boxur;"], [3, "&boxul;"], [3, "&boxvr;"], [7, "&boxvl;"], [7, "&boxhd;"], [7, "&boxhu;"], [7, "&boxvh;"], [19, "&boxH;"], [0, "&boxV;"], [0, "&boxdR;"], [0, "&boxDr;"], [0, "&boxDR;"], [0, "&boxdL;"], [0, "&boxDl;"], [0, "&boxDL;"], [0, "&boxuR;"], [0, "&boxUr;"], [0, "&boxUR;"], [0, "&boxuL;"], [0, "&boxUl;"], [0, "&boxUL;"], [0, "&boxvR;"], [0, "&boxVr;"], [0, "&boxVR;"], [0, "&boxvL;"], [0, "&boxVl;"], [0, "&boxVL;"], [0, "&boxHd;"], [0, "&boxhD;"], [0, "&boxHD;"], [0, "&boxHu;"], [0, "&boxhU;"], [0, "&boxHU;"], [0, "&boxvH;"], [0, "&boxVh;"], [0, "&boxVH;"], [19, "&uhblk;"], [3, "&lhblk;"], [3, "&block;"], [8, "&blk14;"], [0, "&blk12;"], [0, "&blk34;"], [13, "&square;"], [8, "&blacksquare;"], [0, "&EmptyVerySmallSquare;"], [1, "&rect;"], [0, "&marker;"], [2, "&fltns;"], [1, "&bigtriangleup;"], [0, "&blacktriangle;"], [0, "&triangle;"], [2, "&blacktriangleright;"], [0, "&rtri;"], [3, "&bigtriangledown;"], [0, "&blacktriangledown;"], [0, "&dtri;"], [2, "&blacktriangleleft;"], [0, "&ltri;"], [6, "&loz;"], [0, "&cir;"], [32, "&tridot;"], [2, "&bigcirc;"], [8, "&ultri;"], [0, "&urtri;"], [0, "&lltri;"], [0, "&EmptySmallSquare;"], [0, "&FilledSmallSquare;"], [8, "&bigstar;"], [0, "&star;"], [7, "&phone;"], [49, "&female;"], [1, "&male;"], [29, "&spades;"], [2, "&clubs;"], [1, "&hearts;"], [0, "&diamondsuit;"], [3, "&sung;"], [2, "&flat;"], [0, "&natural;"], [0, "&sharp;"], [163, "&check;"], [3, "&cross;"], [8, "&malt;"], [21, "&sext;"], [33, "&VerticalSeparator;"], [25, "&lbbrk;"], [0, "&rbbrk;"], [84, "&bsolhsub;"], [0, "&suphsol;"], [28, "&LeftDoubleBracket;"], [0, "&RightDoubleBracket;"], [0, "&lang;"], [0, "&rang;"], [0, "&Lang;"], [0, "&Rang;"], [0, "&loang;"], [0, "&roang;"], [7, "&longleftarrow;"], [0, "&longrightarrow;"], [0, "&longleftrightarrow;"], [0, "&DoubleLongLeftArrow;"], [0, "&DoubleLongRightArrow;"], [0, "&DoubleLongLeftRightArrow;"], [1, "&longmapsto;"], [2, "&dzigrarr;"], [258, "&nvlArr;"], [0, "&nvrArr;"], [0, "&nvHarr;"], [0, "&Map;"], [6, "&lbarr;"], [0, "&bkarow;"], [0, "&lBarr;"], [0, "&dbkarow;"], [0, "&drbkarow;"], [0, "&DDotrahd;"], [0, "&UpArrowBar;"], [0, "&DownArrowBar;"], [2, "&Rarrtl;"], [2, "&latail;"], [0, "&ratail;"], [0, "&lAtail;"], [0, "&rAtail;"], [0, "&larrfs;"], [0, "&rarrfs;"], [0, "&larrbfs;"], [0, "&rarrbfs;"], [2, "&nwarhk;"], [0, "&nearhk;"], [0, "&hksearow;"], [0, "&hkswarow;"], [0, "&nwnear;"], [0, "&nesear;"], [0, "&seswar;"], [0, "&swnwar;"], [8, { v: "&rarrc;", n: 824, o: "&nrarrc;" }], [1, "&cudarrr;"], [0, "&ldca;"], [0, "&rdca;"], [0, "&cudarrl;"], [0, "&larrpl;"], [2, "&curarrm;"], [0, "&cularrp;"], [7, "&rarrpl;"], [2, "&harrcir;"], [0, "&Uarrocir;"], [0, "&lurdshar;"], [0, "&ldrushar;"], [2, "&LeftRightVector;"], [0, "&RightUpDownVector;"], [0, "&DownLeftRightVector;"], [0, "&LeftUpDownVector;"], [0, "&LeftVectorBar;"], [0, "&RightVectorBar;"], [0, "&RightUpVectorBar;"], [0, "&RightDownVectorBar;"], [0, "&DownLeftVectorBar;"], [0, "&DownRightVectorBar;"], [0, "&LeftUpVectorBar;"], [0, "&LeftDownVectorBar;"], [0, "&LeftTeeVector;"], [0, "&RightTeeVector;"], [0, "&RightUpTeeVector;"], [0, "&RightDownTeeVector;"], [0, "&DownLeftTeeVector;"], [0, "&DownRightTeeVector;"], [0, "&LeftUpTeeVector;"], [0, "&LeftDownTeeVector;"], [0, "&lHar;"], [0, "&uHar;"], [0, "&rHar;"], [0, "&dHar;"], [0, "&luruhar;"], [0, "&ldrdhar;"], [0, "&ruluhar;"], [0, "&rdldhar;"], [0, "&lharul;"], [0, "&llhard;"], [0, "&rharul;"], [0, "&lrhard;"], [0, "&udhar;"], [0, "&duhar;"], [0, "&RoundImplies;"], [0, "&erarr;"], [0, "&simrarr;"], [0, "&larrsim;"], [0, "&rarrsim;"], [0, "&rarrap;"], [0, "&ltlarr;"], [1, "&gtrarr;"], [0, "&subrarr;"], [1, "&suplarr;"], [0, "&lfisht;"], [0, "&rfisht;"], [0, "&ufisht;"], [0, "&dfisht;"], [5, "&lopar;"], [0, "&ropar;"], [4, "&lbrke;"], [0, "&rbrke;"], [0, "&lbrkslu;"], [0, "&rbrksld;"], [0, "&lbrksld;"], [0, "&rbrkslu;"], [0, "&langd;"], [0, "&rangd;"], [0, "&lparlt;"], [0, "&rpargt;"], [0, "&gtlPar;"], [0, "&ltrPar;"], [3, "&vzigzag;"], [1, "&vangrt;"], [0, "&angrtvbd;"], [6, "&ange;"], [0, "&range;"], [0, "&dwangle;"], [0, "&uwangle;"], [0, "&angmsdaa;"], [0, "&angmsdab;"], [0, "&angmsdac;"], [0, "&angmsdad;"], [0, "&angmsdae;"], [0, "&angmsdaf;"], [0, "&angmsdag;"], [0, "&angmsdah;"], [0, "&bemptyv;"], [0, "&demptyv;"], [0, "&cemptyv;"], [0, "&raemptyv;"], [0, "&laemptyv;"], [0, "&ohbar;"], [0, "&omid;"], [0, "&opar;"], [1, "&operp;"], [1, "&olcross;"], [0, "&odsold;"], [1, "&olcir;"], [0, "&ofcir;"], [0, "&olt;"], [0, "&ogt;"], [0, "&cirscir;"], [0, "&cirE;"], [0, "&solb;"], [0, "&bsolb;"], [3, "&boxbox;"], [3, "&trisb;"], [0, "&rtriltri;"], [0, { v: "&LeftTriangleBar;", n: 824, o: "&NotLeftTriangleBar;" }], [0, { v: "&RightTriangleBar;", n: 824, o: "&NotRightTriangleBar;" }], [11, "&iinfin;"], [0, "&infintie;"], [0, "&nvinfin;"], [4, "&eparsl;"], [0, "&smeparsl;"], [0, "&eqvparsl;"], [5, "&blacklozenge;"], [8, "&RuleDelayed;"], [1, "&dsol;"], [9, "&bigodot;"], [0, "&bigoplus;"], [0, "&bigotimes;"], [1, "&biguplus;"], [1, "&bigsqcup;"], [5, "&iiiint;"], [0, "&fpartint;"], [2, "&cirfnint;"], [0, "&awint;"], [0, "&rppolint;"], [0, "&scpolint;"], [0, "&npolint;"], [0, "&pointint;"], [0, "&quatint;"], [0, "&intlarhk;"], [10, "&pluscir;"], [0, "&plusacir;"], [0, "&simplus;"], [0, "&plusdu;"], [0, "&plussim;"], [0, "&plustwo;"], [1, "&mcomma;"], [0, "&minusdu;"], [2, "&loplus;"], [0, "&roplus;"], [0, "&Cross;"], [0, "&timesd;"], [0, "&timesbar;"], [1, "&smashp;"], [0, "&lotimes;"], [0, "&rotimes;"], [0, "&otimesas;"], [0, "&Otimes;"], [0, "&odiv;"], [0, "&triplus;"], [0, "&triminus;"], [0, "&tritime;"], [0, "&intprod;"], [2, "&amalg;"], [0, "&capdot;"], [1, "&ncup;"], [0, "&ncap;"], [0, "&capand;"], [0, "&cupor;"], [0, "&cupcap;"], [0, "&capcup;"], [0, "&cupbrcap;"], [0, "&capbrcup;"], [0, "&cupcup;"], [0, "&capcap;"], [0, "&ccups;"], [0, "&ccaps;"], [2, "&ccupssm;"], [2, "&And;"], [0, "&Or;"], [0, "&andand;"], [0, "&oror;"], [0, "&orslope;"], [0, "&andslope;"], [1, "&andv;"], [0, "&orv;"], [0, "&andd;"], [0, "&ord;"], [1, "&wedbar;"], [6, "&sdote;"], [3, "&simdot;"], [2, { v: "&congdot;", n: 824, o: "&ncongdot;" }], [0, "&easter;"], [0, "&apacir;"], [0, { v: "&apE;", n: 824, o: "&napE;" }], [0, "&eplus;"], [0, "&pluse;"], [0, "&Esim;"], [0, "&Colone;"], [0, "&Equal;"], [1, "&ddotseq;"], [0, "&equivDD;"], [0, "&ltcir;"], [0, "&gtcir;"], [0, "&ltquest;"], [0, "&gtquest;"], [0, { v: "&leqslant;", n: 824, o: "&nleqslant;" }], [0, { v: "&geqslant;", n: 824, o: "&ngeqslant;" }], [0, "&lesdot;"], [0, "&gesdot;"], [0, "&lesdoto;"], [0, "&gesdoto;"], [0, "&lesdotor;"], [0, "&gesdotol;"], [0, "&lap;"], [0, "&gap;"], [0, "&lne;"], [0, "&gne;"], [0, "&lnap;"], [0, "&gnap;"], [0, "&lEg;"], [0, "&gEl;"], [0, "&lsime;"], [0, "&gsime;"], [0, "&lsimg;"], [0, "&gsiml;"], [0, "&lgE;"], [0, "&glE;"], [0, "&lesges;"], [0, "&gesles;"], [0, "&els;"], [0, "&egs;"], [0, "&elsdot;"], [0, "&egsdot;"], [0, "&el;"], [0, "&eg;"], [2, "&siml;"], [0, "&simg;"], [0, "&simlE;"], [0, "&simgE;"], [0, { v: "&LessLess;", n: 824, o: "&NotNestedLessLess;" }], [0, { v: "&GreaterGreater;", n: 824, o: "&NotNestedGreaterGreater;" }], [1, "&glj;"], [0, "&gla;"], [0, "&ltcc;"], [0, "&gtcc;"], [0, "&lescc;"], [0, "&gescc;"], [0, "&smt;"], [0, "&lat;"], [0, { v: "&smte;", n: 65024, o: "&smtes;" }], [0, { v: "&late;", n: 65024, o: "&lates;" }], [0, "&bumpE;"], [0, { v: "&PrecedesEqual;", n: 824, o: "&NotPrecedesEqual;" }], [0, { v: "&sce;", n: 824, o: "&NotSucceedsEqual;" }], [2, "&prE;"], [0, "&scE;"], [0, "&precneqq;"], [0, "&scnE;"], [0, "&prap;"], [0, "&scap;"], [0, "&precnapprox;"], [0, "&scnap;"], [0, "&Pr;"], [0, "&Sc;"], [0, "&subdot;"], [0, "&supdot;"], [0, "&subplus;"], [0, "&supplus;"], [0, "&submult;"], [0, "&supmult;"], [0, "&subedot;"], [0, "&supedot;"], [0, { v: "&subE;", n: 824, o: "&nsubE;" }], [0, { v: "&supE;", n: 824, o: "&nsupE;" }], [0, "&subsim;"], [0, "&supsim;"], [2, { v: "&subnE;", n: 65024, o: "&varsubsetneqq;" }], [0, { v: "&supnE;", n: 65024, o: "&varsupsetneqq;" }], [2, "&csub;"], [0, "&csup;"], [0, "&csube;"], [0, "&csupe;"], [0, "&subsup;"], [0, "&supsub;"], [0, "&subsub;"], [0, "&supsup;"], [0, "&suphsub;"], [0, "&supdsub;"], [0, "&forkv;"], [0, "&topfork;"], [0, "&mlcp;"], [8, "&Dashv;"], [1, "&Vdashl;"], [0, "&Barv;"], [0, "&vBar;"], [0, "&vBarv;"], [1, "&Vbar;"], [0, "&Not;"], [0, "&bNot;"], [0, "&rnmid;"], [0, "&cirmid;"], [0, "&midcir;"], [0, "&topcir;"], [0, "&nhpar;"], [0, "&parsim;"], [9, { v: "&parsl;", n: 8421, o: "&nparsl;" }], [44343, { n: new Map(/* #__PURE__ */ restoreDiff([[56476, "&Ascr;"], [1, "&Cscr;"], [0, "&Dscr;"], [2, "&Gscr;"], [2, "&Jscr;"], [0, "&Kscr;"], [2, "&Nscr;"], [0, "&Oscr;"], [0, "&Pscr;"], [0, "&Qscr;"], [1, "&Sscr;"], [0, "&Tscr;"], [0, "&Uscr;"], [0, "&Vscr;"], [0, "&Wscr;"], [0, "&Xscr;"], [0, "&Yscr;"], [0, "&Zscr;"], [0, "&ascr;"], [0, "&bscr;"], [0, "&cscr;"], [0, "&dscr;"], [1, "&fscr;"], [1, "&hscr;"], [0, "&iscr;"], [0, "&jscr;"], [0, "&kscr;"], [0, "&lscr;"], [0, "&mscr;"], [0, "&nscr;"], [1, "&pscr;"], [0, "&qscr;"], [0, "&rscr;"], [0, "&sscr;"], [0, "&tscr;"], [0, "&uscr;"], [0, "&vscr;"], [0, "&wscr;"], [0, "&xscr;"], [0, "&yscr;"], [0, "&zscr;"], [52, "&Afr;"], [0, "&Bfr;"], [1, "&Dfr;"], [0, "&Efr;"], [0, "&Ffr;"], [0, "&Gfr;"], [2, "&Jfr;"], [0, "&Kfr;"], [0, "&Lfr;"], [0, "&Mfr;"], [0, "&Nfr;"], [0, "&Ofr;"], [0, "&Pfr;"], [0, "&Qfr;"], [1, "&Sfr;"], [0, "&Tfr;"], [0, "&Ufr;"], [0, "&Vfr;"], [0, "&Wfr;"], [0, "&Xfr;"], [0, "&Yfr;"], [1, "&afr;"], [0, "&bfr;"], [0, "&cfr;"], [0, "&dfr;"], [0, "&efr;"], [0, "&ffr;"], [0, "&gfr;"], [0, "&hfr;"], [0, "&ifr;"], [0, "&jfr;"], [0, "&kfr;"], [0, "&lfr;"], [0, "&mfr;"], [0, "&nfr;"], [0, "&ofr;"], [0, "&pfr;"], [0, "&qfr;"], [0, "&rfr;"], [0, "&sfr;"], [0, "&tfr;"], [0, "&ufr;"], [0, "&vfr;"], [0, "&wfr;"], [0, "&xfr;"], [0, "&yfr;"], [0, "&zfr;"], [0, "&Aopf;"], [0, "&Bopf;"], [1, "&Dopf;"], [0, "&Eopf;"], [0, "&Fopf;"], [0, "&Gopf;"], [1, "&Iopf;"], [0, "&Jopf;"], [0, "&Kopf;"], [0, "&Lopf;"], [0, "&Mopf;"], [1, "&Oopf;"], [3, "&Sopf;"], [0, "&Topf;"], [0, "&Uopf;"], [0, "&Vopf;"], [0, "&Wopf;"], [0, "&Xopf;"], [0, "&Yopf;"], [1, "&aopf;"], [0, "&bopf;"], [0, "&copf;"], [0, "&dopf;"], [0, "&eopf;"], [0, "&fopf;"], [0, "&gopf;"], [0, "&hopf;"], [0, "&iopf;"], [0, "&jopf;"], [0, "&kopf;"], [0, "&lopf;"], [0, "&mopf;"], [0, "&nopf;"], [0, "&oopf;"], [0, "&popf;"], [0, "&qopf;"], [0, "&ropf;"], [0, "&sopf;"], [0, "&topf;"], [0, "&uopf;"], [0, "&vopf;"], [0, "&wopf;"], [0, "&xopf;"], [0, "&yopf;"], [0, "&zopf;"]])) }], [8906, "&fflig;"], [0, "&filig;"], [0, "&fllig;"], [0, "&ffilig;"], [0, "&ffllig;"]]));
+exports.default = new Map([[9, "&Tab;"], [10, "&NewLine;"], [33, "&excl;"], [34, "&quot;"], [35, "&num;"], [36, "&dollar;"], [37, "&percnt;"], [38, "&amp;"], [39, "&apos;"], [40, "&lpar;"], [41, "&rpar;"], [42, "&ast;"], [43, "&plus;"], [44, "&comma;"], [46, "&period;"], [47, "&sol;"], [58, "&colon;"], [59, "&semi;"], [60, { v: "&lt;", n: 8402, o: "&nvlt;" }], [61, { v: "&equals;", n: 8421, o: "&bne;" }], [62, { v: "&gt;", n: 8402, o: "&nvgt;" }], [63, "&quest;"], [64, "&commat;"], [91, "&lbrack;"], [92, "&bsol;"], [93, "&rbrack;"], [94, "&Hat;"], [95, "&lowbar;"], [96, "&DiacriticalGrave;"], [102, { n: 106, o: "&fjlig;" }], [123, "&lbrace;"], [124, "&verbar;"], [125, "&rbrace;"], [160, "&nbsp;"], [161, "&iexcl;"], [162, "&cent;"], [163, "&pound;"], [164, "&curren;"], [165, "&yen;"], [166, "&brvbar;"], [167, "&sect;"], [168, "&die;"], [169, "&copy;"], [170, "&ordf;"], [171, "&laquo;"], [172, "&not;"], [173, "&shy;"], [174, "&circledR;"], [175, "&macr;"], [176, "&deg;"], [177, "&PlusMinus;"], [178, "&sup2;"], [179, "&sup3;"], [180, "&acute;"], [181, "&micro;"], [182, "&para;"], [183, "&centerdot;"], [184, "&cedil;"], [185, "&sup1;"], [186, "&ordm;"], [187, "&raquo;"], [188, "&frac14;"], [189, "&frac12;"], [190, "&frac34;"], [191, "&iquest;"], [192, "&Agrave;"], [193, "&Aacute;"], [194, "&Acirc;"], [195, "&Atilde;"], [196, "&Auml;"], [197, "&angst;"], [198, "&AElig;"], [199, "&Ccedil;"], [200, "&Egrave;"], [201, "&Eacute;"], [202, "&Ecirc;"], [203, "&Euml;"], [204, "&Igrave;"], [205, "&Iacute;"], [206, "&Icirc;"], [207, "&Iuml;"], [208, "&ETH;"], [209, "&Ntilde;"], [210, "&Ograve;"], [211, "&Oacute;"], [212, "&Ocirc;"], [213, "&Otilde;"], [214, "&Ouml;"], [215, "&times;"], [216, "&Oslash;"], [217, "&Ugrave;"], [218, "&Uacute;"], [219, "&Ucirc;"], [220, "&Uuml;"], [221, "&Yacute;"], [222, "&THORN;"], [223, "&szlig;"], [224, "&agrave;"], [225, "&aacute;"], [226, "&acirc;"], [227, "&atilde;"], [228, "&auml;"], [229, "&aring;"], [230, "&aelig;"], [231, "&ccedil;"], [232, "&egrave;"], [233, "&eacute;"], [234, "&ecirc;"], [235, "&euml;"], [236, "&igrave;"], [237, "&iacute;"], [238, "&icirc;"], [239, "&iuml;"], [240, "&eth;"], [241, "&ntilde;"], [242, "&ograve;"], [243, "&oacute;"], [244, "&ocirc;"], [245, "&otilde;"], [246, "&ouml;"], [247, "&div;"], [248, "&oslash;"], [249, "&ugrave;"], [250, "&uacute;"], [251, "&ucirc;"], [252, "&uuml;"], [253, "&yacute;"], [254, "&thorn;"], [255, "&yuml;"], [256, "&Amacr;"], [257, "&amacr;"], [258, "&Abreve;"], [259, "&abreve;"], [260, "&Aogon;"], [261, "&aogon;"], [262, "&Cacute;"], [263, "&cacute;"], [264, "&Ccirc;"], [265, "&ccirc;"], [266, "&Cdot;"], [267, "&cdot;"], [268, "&Ccaron;"], [269, "&ccaron;"], [270, "&Dcaron;"], [271, "&dcaron;"], [272, "&Dstrok;"], [273, "&dstrok;"], [274, "&Emacr;"], [275, "&emacr;"], [278, "&Edot;"], [279, "&edot;"], [280, "&Eogon;"], [281, "&eogon;"], [282, "&Ecaron;"], [283, "&ecaron;"], [284, "&Gcirc;"], [285, "&gcirc;"], [286, "&Gbreve;"], [287, "&gbreve;"], [288, "&Gdot;"], [289, "&gdot;"], [290, "&Gcedil;"], [292, "&Hcirc;"], [293, "&hcirc;"], [294, "&Hstrok;"], [295, "&hstrok;"], [296, "&Itilde;"], [297, "&itilde;"], [298, "&Imacr;"], [299, "&imacr;"], [302, "&Iogon;"], [303, "&iogon;"], [304, "&Idot;"], [305, "&imath;"], [306, "&IJlig;"], [307, "&ijlig;"], [308, "&Jcirc;"], [309, "&jcirc;"], [310, "&Kcedil;"], [311, "&kcedil;"], [312, "&kgreen;"], [313, "&Lacute;"], [314, "&lacute;"], [315, "&Lcedil;"], [316, "&lcedil;"], [317, "&Lcaron;"], [318, "&lcaron;"], [319, "&Lmidot;"], [320, "&lmidot;"], [321, "&Lstrok;"], [322, "&lstrok;"], [323, "&Nacute;"], [324, "&nacute;"], [325, "&Ncedil;"], [326, "&ncedil;"], [327, "&Ncaron;"], [328, "&ncaron;"], [329, "&napos;"], [330, "&ENG;"], [331, "&eng;"], [332, "&Omacr;"], [333, "&omacr;"], [336, "&Odblac;"], [337, "&odblac;"], [338, "&OElig;"], [339, "&oelig;"], [340, "&Racute;"], [341, "&racute;"], [342, "&Rcedil;"], [343, "&rcedil;"], [344, "&Rcaron;"], [345, "&rcaron;"], [346, "&Sacute;"], [347, "&sacute;"], [348, "&Scirc;"], [349, "&scirc;"], [350, "&Scedil;"], [351, "&scedil;"], [352, "&Scaron;"], [353, "&scaron;"], [354, "&Tcedil;"], [355, "&tcedil;"], [356, "&Tcaron;"], [357, "&tcaron;"], [358, "&Tstrok;"], [359, "&tstrok;"], [360, "&Utilde;"], [361, "&utilde;"], [362, "&Umacr;"], [363, "&umacr;"], [364, "&Ubreve;"], [365, "&ubreve;"], [366, "&Uring;"], [367, "&uring;"], [368, "&Udblac;"], [369, "&udblac;"], [370, "&Uogon;"], [371, "&uogon;"], [372, "&Wcirc;"], [373, "&wcirc;"], [374, "&Ycirc;"], [375, "&ycirc;"], [376, "&Yuml;"], [377, "&Zacute;"], [378, "&zacute;"], [379, "&Zdot;"], [380, "&zdot;"], [381, "&Zcaron;"], [382, "&zcaron;"], [402, "&fnof;"], [437, "&imped;"], [501, "&gacute;"], [567, "&jmath;"], [710, "&circ;"], [711, "&caron;"], [728, "&breve;"], [729, "&DiacriticalDot;"], [730, "&ring;"], [731, "&ogon;"], [732, "&DiacriticalTilde;"], [733, "&dblac;"], [785, "&DownBreve;"], [913, "&Alpha;"], [914, "&Beta;"], [915, "&Gamma;"], [916, "&Delta;"], [917, "&Epsilon;"], [918, "&Zeta;"], [919, "&Eta;"], [920, "&Theta;"], [921, "&Iota;"], [922, "&Kappa;"], [923, "&Lambda;"], [924, "&Mu;"], [925, "&Nu;"], [926, "&Xi;"], [927, "&Omicron;"], [928, "&Pi;"], [929, "&Rho;"], [931, "&Sigma;"], [932, "&Tau;"], [933, "&Upsilon;"], [934, "&Phi;"], [935, "&Chi;"], [936, "&Psi;"], [937, "&ohm;"], [945, "&alpha;"], [946, "&beta;"], [947, "&gamma;"], [948, "&delta;"], [949, "&epsi;"], [950, "&zeta;"], [951, "&eta;"], [952, "&theta;"], [953, "&iota;"], [954, "&kappa;"], [955, "&lambda;"], [956, "&mu;"], [957, "&nu;"], [958, "&xi;"], [959, "&omicron;"], [960, "&pi;"], [961, "&rho;"], [962, "&sigmaf;"], [963, "&sigma;"], [964, "&tau;"], [965, "&upsi;"], [966, "&phi;"], [967, "&chi;"], [968, "&psi;"], [969, "&omega;"], [977, "&thetasym;"], [978, "&Upsi;"], [981, "&phiv;"], [982, "&piv;"], [988, "&Gammad;"], [989, "&digamma;"], [1008, "&kappav;"], [1009, "&rhov;"], [1013, "&epsiv;"], [1014, "&backepsilon;"], [1025, "&IOcy;"], [1026, "&DJcy;"], [1027, "&GJcy;"], [1028, "&Jukcy;"], [1029, "&DScy;"], [1030, "&Iukcy;"], [1031, "&YIcy;"], [1032, "&Jsercy;"], [1033, "&LJcy;"], [1034, "&NJcy;"], [1035, "&TSHcy;"], [1036, "&KJcy;"], [1038, "&Ubrcy;"], [1039, "&DZcy;"], [1040, "&Acy;"], [1041, "&Bcy;"], [1042, "&Vcy;"], [1043, "&Gcy;"], [1044, "&Dcy;"], [1045, "&IEcy;"], [1046, "&ZHcy;"], [1047, "&Zcy;"], [1048, "&Icy;"], [1049, "&Jcy;"], [1050, "&Kcy;"], [1051, "&Lcy;"], [1052, "&Mcy;"], [1053, "&Ncy;"], [1054, "&Ocy;"], [1055, "&Pcy;"], [1056, "&Rcy;"], [1057, "&Scy;"], [1058, "&Tcy;"], [1059, "&Ucy;"], [1060, "&Fcy;"], [1061, "&KHcy;"], [1062, "&TScy;"], [1063, "&CHcy;"], [1064, "&SHcy;"], [1065, "&SHCHcy;"], [1066, "&HARDcy;"], [1067, "&Ycy;"], [1068, "&SOFTcy;"], [1069, "&Ecy;"], [1070, "&YUcy;"], [1071, "&YAcy;"], [1072, "&acy;"], [1073, "&bcy;"], [1074, "&vcy;"], [1075, "&gcy;"], [1076, "&dcy;"], [1077, "&iecy;"], [1078, "&zhcy;"], [1079, "&zcy;"], [1080, "&icy;"], [1081, "&jcy;"], [1082, "&kcy;"], [1083, "&lcy;"], [1084, "&mcy;"], [1085, "&ncy;"], [1086, "&ocy;"], [1087, "&pcy;"], [1088, "&rcy;"], [1089, "&scy;"], [1090, "&tcy;"], [1091, "&ucy;"], [1092, "&fcy;"], [1093, "&khcy;"], [1094, "&tscy;"], [1095, "&chcy;"], [1096, "&shcy;"], [1097, "&shchcy;"], [1098, "&hardcy;"], [1099, "&ycy;"], [1100, "&softcy;"], [1101, "&ecy;"], [1102, "&yucy;"], [1103, "&yacy;"], [1105, "&iocy;"], [1106, "&djcy;"], [1107, "&gjcy;"], [1108, "&jukcy;"], [1109, "&dscy;"], [1110, "&iukcy;"], [1111, "&yicy;"], [1112, "&jsercy;"], [1113, "&ljcy;"], [1114, "&njcy;"], [1115, "&tshcy;"], [1116, "&kjcy;"], [1118, "&ubrcy;"], [1119, "&dzcy;"], [8194, "&ensp;"], [8195, "&emsp;"], [8196, "&emsp13;"], [8197, "&emsp14;"], [8199, "&numsp;"], [8200, "&puncsp;"], [8201, "&ThinSpace;"], [8202, "&hairsp;"], [8203, "&NegativeMediumSpace;"], [8204, "&zwnj;"], [8205, "&zwj;"], [8206, "&lrm;"], [8207, "&rlm;"], [8208, "&dash;"], [8211, "&ndash;"], [8212, "&mdash;"], [8213, "&horbar;"], [8214, "&Verbar;"], [8216, "&lsquo;"], [8217, "&CloseCurlyQuote;"], [8218, "&lsquor;"], [8220, "&ldquo;"], [8221, "&CloseCurlyDoubleQuote;"], [8222, "&bdquo;"], [8224, "&dagger;"], [8225, "&Dagger;"], [8226, "&bull;"], [8229, "&nldr;"], [8230, "&hellip;"], [8240, "&permil;"], [8241, "&pertenk;"], [8242, "&prime;"], [8243, "&Prime;"], [8244, "&tprime;"], [8245, "&backprime;"], [8249, "&lsaquo;"], [8250, "&rsaquo;"], [8254, "&oline;"], [8257, "&caret;"], [8259, "&hybull;"], [8260, "&frasl;"], [8271, "&bsemi;"], [8279, "&qprime;"], [8287, { v: "&MediumSpace;", n: 8202, o: "&ThickSpace;" }], [8288, "&NoBreak;"], [8289, "&af;"], [8290, "&InvisibleTimes;"], [8291, "&ic;"], [8364, "&euro;"], [8411, "&tdot;"], [8412, "&DotDot;"], [8450, "&complexes;"], [8453, "&incare;"], [8458, "&gscr;"], [8459, "&hamilt;"], [8460, "&Hfr;"], [8461, "&Hopf;"], [8462, "&planckh;"], [8463, "&hbar;"], [8464, "&imagline;"], [8465, "&Ifr;"], [8466, "&lagran;"], [8467, "&ell;"], [8469, "&naturals;"], [8470, "&numero;"], [8471, "&copysr;"], [8472, "&weierp;"], [8473, "&Popf;"], [8474, "&Qopf;"], [8475, "&realine;"], [8476, "&real;"], [8477, "&reals;"], [8478, "&rx;"], [8482, "&trade;"], [8484, "&integers;"], [8487, "&mho;"], [8488, "&zeetrf;"], [8489, "&iiota;"], [8492, "&bernou;"], [8493, "&Cayleys;"], [8495, "&escr;"], [8496, "&Escr;"], [8497, "&Fouriertrf;"], [8499, "&Mellintrf;"], [8500, "&order;"], [8501, "&alefsym;"], [8502, "&beth;"], [8503, "&gimel;"], [8504, "&daleth;"], [8517, "&CapitalDifferentialD;"], [8518, "&dd;"], [8519, "&ee;"], [8520, "&ii;"], [8531, "&frac13;"], [8532, "&frac23;"], [8533, "&frac15;"], [8534, "&frac25;"], [8535, "&frac35;"], [8536, "&frac45;"], [8537, "&frac16;"], [8538, "&frac56;"], [8539, "&frac18;"], [8540, "&frac38;"], [8541, "&frac58;"], [8542, "&frac78;"], [8592, "&larr;"], [8593, "&ShortUpArrow;"], [8594, "&rarr;"], [8595, "&darr;"], [8596, "&harr;"], [8597, "&updownarrow;"], [8598, "&nwarr;"], [8599, "&nearr;"], [8600, "&LowerRightArrow;"], [8601, "&LowerLeftArrow;"], [8602, "&nlarr;"], [8603, "&nrarr;"], [8605, { v: "&rarrw;", n: 824, o: "&nrarrw;" }], [8606, "&Larr;"], [8607, "&Uarr;"], [8608, "&Rarr;"], [8609, "&Darr;"], [8610, "&larrtl;"], [8611, "&rarrtl;"], [8612, "&LeftTeeArrow;"], [8613, "&mapstoup;"], [8614, "&map;"], [8615, "&DownTeeArrow;"], [8617, "&hookleftarrow;"], [8618, "&hookrightarrow;"], [8619, "&larrlp;"], [8620, "&looparrowright;"], [8621, "&harrw;"], [8622, "&nharr;"], [8624, "&lsh;"], [8625, "&rsh;"], [8626, "&ldsh;"], [8627, "&rdsh;"], [8629, "&crarr;"], [8630, "&cularr;"], [8631, "&curarr;"], [8634, "&circlearrowleft;"], [8635, "&circlearrowright;"], [8636, "&leftharpoonup;"], [8637, "&DownLeftVector;"], [8638, "&RightUpVector;"], [8639, "&LeftUpVector;"], [8640, "&rharu;"], [8641, "&DownRightVector;"], [8642, "&dharr;"], [8643, "&dharl;"], [8644, "&RightArrowLeftArrow;"], [8645, "&udarr;"], [8646, "&LeftArrowRightArrow;"], [8647, "&leftleftarrows;"], [8648, "&upuparrows;"], [8649, "&rightrightarrows;"], [8650, "&ddarr;"], [8651, "&leftrightharpoons;"], [8652, "&Equilibrium;"], [8653, "&nlArr;"], [8654, "&nhArr;"], [8655, "&nrArr;"], [8656, "&DoubleLeftArrow;"], [8657, "&DoubleUpArrow;"], [8658, "&DoubleRightArrow;"], [8659, "&dArr;"], [8660, "&DoubleLeftRightArrow;"], [8661, "&DoubleUpDownArrow;"], [8662, "&nwArr;"], [8663, "&neArr;"], [8664, "&seArr;"], [8665, "&swArr;"], [8666, "&lAarr;"], [8667, "&rAarr;"], [8669, "&zigrarr;"], [8676, "&larrb;"], [8677, "&rarrb;"], [8693, "&DownArrowUpArrow;"], [8701, "&loarr;"], [8702, "&roarr;"], [8703, "&hoarr;"], [8704, "&forall;"], [8705, "&comp;"], [8706, { v: "&part;", n: 824, o: "&npart;" }], [8707, "&exist;"], [8708, "&nexist;"], [8709, "&empty;"], [8711, "&Del;"], [8712, "&Element;"], [8713, "&NotElement;"], [8715, "&ni;"], [8716, "&notni;"], [8719, "&prod;"], [8720, "&coprod;"], [8721, "&sum;"], [8722, "&minus;"], [8723, "&MinusPlus;"], [8724, "&dotplus;"], [8726, "&Backslash;"], [8727, "&lowast;"], [8728, "&compfn;"], [8730, "&radic;"], [8733, "&prop;"], [8734, "&infin;"], [8735, "&angrt;"], [8736, { v: "&ang;", n: 8402, o: "&nang;" }], [8737, "&angmsd;"], [8738, "&angsph;"], [8739, "&mid;"], [8740, "&nmid;"], [8741, "&DoubleVerticalBar;"], [8742, "&NotDoubleVerticalBar;"], [8743, "&and;"], [8744, "&or;"], [8745, { v: "&cap;", n: 65024, o: "&caps;" }], [8746, { v: "&cup;", n: 65024, o: "&cups;" }], [8747, "&int;"], [8748, "&Int;"], [8749, "&iiint;"], [8750, "&conint;"], [8751, "&Conint;"], [8752, "&Cconint;"], [8753, "&cwint;"], [8754, "&ClockwiseContourIntegral;"], [8755, "&awconint;"], [8756, "&there4;"], [8757, "&becaus;"], [8758, "&ratio;"], [8759, "&Colon;"], [8760, "&dotminus;"], [8762, "&mDDot;"], [8763, "&homtht;"], [8764, { v: "&sim;", n: 8402, o: "&nvsim;" }], [8765, { v: "&backsim;", n: 817, o: "&race;" }], [8766, { v: "&ac;", n: 819, o: "&acE;" }], [8767, "&acd;"], [8768, "&VerticalTilde;"], [8769, "&NotTilde;"], [8770, { v: "&eqsim;", n: 824, o: "&nesim;" }], [8771, "&sime;"], [8772, "&NotTildeEqual;"], [8773, "&cong;"], [8774, "&simne;"], [8775, "&ncong;"], [8776, "&ap;"], [8777, "&nap;"], [8778, "&ape;"], [8779, { v: "&apid;", n: 824, o: "&napid;" }], [8780, "&backcong;"], [8781, { v: "&asympeq;", n: 8402, o: "&nvap;" }], [8782, { v: "&bump;", n: 824, o: "&nbump;" }], [8783, { v: "&bumpe;", n: 824, o: "&nbumpe;" }], [8784, { v: "&doteq;", n: 824, o: "&nedot;" }], [8785, "&doteqdot;"], [8786, "&efDot;"], [8787, "&erDot;"], [8788, "&Assign;"], [8789, "&ecolon;"], [8790, "&ecir;"], [8791, "&circeq;"], [8793, "&wedgeq;"], [8794, "&veeeq;"], [8796, "&triangleq;"], [8799, "&equest;"], [8800, "&ne;"], [8801, { v: "&Congruent;", n: 8421, o: "&bnequiv;" }], [8802, "&nequiv;"], [8804, { v: "&le;", n: 8402, o: "&nvle;" }], [8805, { v: "&ge;", n: 8402, o: "&nvge;" }], [8806, { v: "&lE;", n: 824, o: "&nlE;" }], [8807, { v: "&gE;", n: 824, o: "&ngE;" }], [8808, { v: "&lnE;", n: 65024, o: "&lvertneqq;" }], [8809, { v: "&gnE;", n: 65024, o: "&gvertneqq;" }], [8810, { v: "&ll;", n: new Map([[824, "&nLtv;"], [8402, "&nLt;"]]) }], [8811, { v: "&gg;", n: new Map([[824, "&nGtv;"], [8402, "&nGt;"]]) }], [8812, "&between;"], [8813, "&NotCupCap;"], [8814, "&nless;"], [8815, "&ngt;"], [8816, "&nle;"], [8817, "&nge;"], [8818, "&lesssim;"], [8819, "&GreaterTilde;"], [8820, "&nlsim;"], [8821, "&ngsim;"], [8822, "&LessGreater;"], [8823, "&gl;"], [8824, "&NotLessGreater;"], [8825, "&NotGreaterLess;"], [8826, "&pr;"], [8827, "&sc;"], [8828, "&prcue;"], [8829, "&sccue;"], [8830, "&PrecedesTilde;"], [8831, { v: "&scsim;", n: 824, o: "&NotSucceedsTilde;" }], [8832, "&NotPrecedes;"], [8833, "&NotSucceeds;"], [8834, { v: "&sub;", n: 8402, o: "&NotSubset;" }], [8835, { v: "&sup;", n: 8402, o: "&NotSuperset;" }], [8836, "&nsub;"], [8837, "&nsup;"], [8838, "&sube;"], [8839, "&supe;"], [8840, "&NotSubsetEqual;"], [8841, "&NotSupersetEqual;"], [8842, { v: "&subne;", n: 65024, o: "&varsubsetneq;" }], [8843, { v: "&supne;", n: 65024, o: "&varsupsetneq;" }], [8845, "&cupdot;"], [8846, "&UnionPlus;"], [8847, { v: "&sqsub;", n: 824, o: "&NotSquareSubset;" }], [8848, { v: "&sqsup;", n: 824, o: "&NotSquareSuperset;" }], [8849, "&sqsube;"], [8850, "&sqsupe;"], [8851, { v: "&sqcap;", n: 65024, o: "&sqcaps;" }], [8852, { v: "&sqcup;", n: 65024, o: "&sqcups;" }], [8853, "&CirclePlus;"], [8854, "&CircleMinus;"], [8855, "&CircleTimes;"], [8856, "&osol;"], [8857, "&CircleDot;"], [8858, "&circledcirc;"], [8859, "&circledast;"], [8861, "&circleddash;"], [8862, "&boxplus;"], [8863, "&boxminus;"], [8864, "&boxtimes;"], [8865, "&dotsquare;"], [8866, "&RightTee;"], [8867, "&dashv;"], [8868, "&DownTee;"], [8869, "&bot;"], [8871, "&models;"], [8872, "&DoubleRightTee;"], [8873, "&Vdash;"], [8874, "&Vvdash;"], [8875, "&VDash;"], [8876, "&nvdash;"], [8877, "&nvDash;"], [8878, "&nVdash;"], [8879, "&nVDash;"], [8880, "&prurel;"], [8882, "&LeftTriangle;"], [8883, "&RightTriangle;"], [8884, { v: "&LeftTriangleEqual;", n: 8402, o: "&nvltrie;" }], [8885, { v: "&RightTriangleEqual;", n: 8402, o: "&nvrtrie;" }], [8886, "&origof;"], [8887, "&imof;"], [8888, "&multimap;"], [8889, "&hercon;"], [8890, "&intcal;"], [8891, "&veebar;"], [8893, "&barvee;"], [8894, "&angrtvb;"], [8895, "&lrtri;"], [8896, "&bigwedge;"], [8897, "&bigvee;"], [8898, "&bigcap;"], [8899, "&bigcup;"], [8900, "&diam;"], [8901, "&sdot;"], [8902, "&sstarf;"], [8903, "&divideontimes;"], [8904, "&bowtie;"], [8905, "&ltimes;"], [8906, "&rtimes;"], [8907, "&leftthreetimes;"], [8908, "&rightthreetimes;"], [8909, "&backsimeq;"], [8910, "&curlyvee;"], [8911, "&curlywedge;"], [8912, "&Sub;"], [8913, "&Sup;"], [8914, "&Cap;"], [8915, "&Cup;"], [8916, "&fork;"], [8917, "&epar;"], [8918, "&lessdot;"], [8919, "&gtdot;"], [8920, { v: "&Ll;", n: 824, o: "&nLl;" }], [8921, { v: "&Gg;", n: 824, o: "&nGg;" }], [8922, { v: "&leg;", n: 65024, o: "&lesg;" }], [8923, { v: "&gel;", n: 65024, o: "&gesl;" }], [8926, "&cuepr;"], [8927, "&cuesc;"], [8928, "&NotPrecedesSlantEqual;"], [8929, "&NotSucceedsSlantEqual;"], [8930, "&NotSquareSubsetEqual;"], [8931, "&NotSquareSupersetEqual;"], [8934, "&lnsim;"], [8935, "&gnsim;"], [8936, "&precnsim;"], [8937, "&scnsim;"], [8938, "&nltri;"], [8939, "&NotRightTriangle;"], [8940, "&nltrie;"], [8941, "&NotRightTriangleEqual;"], [8942, "&vellip;"], [8943, "&ctdot;"], [8944, "&utdot;"], [8945, "&dtdot;"], [8946, "&disin;"], [8947, "&isinsv;"], [8948, "&isins;"], [8949, { v: "&isindot;", n: 824, o: "&notindot;" }], [8950, "&notinvc;"], [8951, "&notinvb;"], [8953, { v: "&isinE;", n: 824, o: "&notinE;" }], [8954, "&nisd;"], [8955, "&xnis;"], [8956, "&nis;"], [8957, "&notnivc;"], [8958, "&notnivb;"], [8965, "&barwed;"], [8966, "&Barwed;"], [8968, "&lceil;"], [8969, "&rceil;"], [8970, "&LeftFloor;"], [8971, "&rfloor;"], [8972, "&drcrop;"], [8973, "&dlcrop;"], [8974, "&urcrop;"], [8975, "&ulcrop;"], [8976, "&bnot;"], [8978, "&profline;"], [8979, "&profsurf;"], [8981, "&telrec;"], [8982, "&target;"], [8988, "&ulcorn;"], [8989, "&urcorn;"], [8990, "&dlcorn;"], [8991, "&drcorn;"], [8994, "&frown;"], [8995, "&smile;"], [9005, "&cylcty;"], [9006, "&profalar;"], [9014, "&topbot;"], [9021, "&ovbar;"], [9023, "&solbar;"], [9084, "&angzarr;"], [9136, "&lmoustache;"], [9137, "&rmoustache;"], [9140, "&OverBracket;"], [9141, "&bbrk;"], [9142, "&bbrktbrk;"], [9180, "&OverParenthesis;"], [9181, "&UnderParenthesis;"], [9182, "&OverBrace;"], [9183, "&UnderBrace;"], [9186, "&trpezium;"], [9191, "&elinters;"], [9251, "&blank;"], [9416, "&circledS;"], [9472, "&boxh;"], [9474, "&boxv;"], [9484, "&boxdr;"], [9488, "&boxdl;"], [9492, "&boxur;"], [9496, "&boxul;"], [9500, "&boxvr;"], [9508, "&boxvl;"], [9516, "&boxhd;"], [9524, "&boxhu;"], [9532, "&boxvh;"], [9552, "&boxH;"], [9553, "&boxV;"], [9554, "&boxdR;"], [9555, "&boxDr;"], [9556, "&boxDR;"], [9557, "&boxdL;"], [9558, "&boxDl;"], [9559, "&boxDL;"], [9560, "&boxuR;"], [9561, "&boxUr;"], [9562, "&boxUR;"], [9563, "&boxuL;"], [9564, "&boxUl;"], [9565, "&boxUL;"], [9566, "&boxvR;"], [9567, "&boxVr;"], [9568, "&boxVR;"], [9569, "&boxvL;"], [9570, "&boxVl;"], [9571, "&boxVL;"], [9572, "&boxHd;"], [9573, "&boxhD;"], [9574, "&boxHD;"], [9575, "&boxHu;"], [9576, "&boxhU;"], [9577, "&boxHU;"], [9578, "&boxvH;"], [9579, "&boxVh;"], [9580, "&boxVH;"], [9600, "&uhblk;"], [9604, "&lhblk;"], [9608, "&block;"], [9617, "&blk14;"], [9618, "&blk12;"], [9619, "&blk34;"], [9633, "&square;"], [9642, "&blacksquare;"], [9643, "&EmptyVerySmallSquare;"], [9645, "&rect;"], [9646, "&marker;"], [9649, "&fltns;"], [9651, "&bigtriangleup;"], [9652, "&blacktriangle;"], [9653, "&triangle;"], [9656, "&blacktriangleright;"], [9657, "&rtri;"], [9661, "&bigtriangledown;"], [9662, "&blacktriangledown;"], [9663, "&dtri;"], [9666, "&blacktriangleleft;"], [9667, "&ltri;"], [9674, "&loz;"], [9675, "&cir;"], [9708, "&tridot;"], [9711, "&bigcirc;"], [9720, "&ultri;"], [9721, "&urtri;"], [9722, "&lltri;"], [9723, "&EmptySmallSquare;"], [9724, "&FilledSmallSquare;"], [9733, "&bigstar;"], [9734, "&star;"], [9742, "&phone;"], [9792, "&female;"], [9794, "&male;"], [9824, "&spades;"], [9827, "&clubs;"], [9829, "&hearts;"], [9830, "&diamondsuit;"], [9834, "&sung;"], [9837, "&flat;"], [9838, "&natural;"], [9839, "&sharp;"], [10003, "&check;"], [10007, "&cross;"], [10016, "&malt;"], [10038, "&sext;"], [10072, "&VerticalSeparator;"], [10098, "&lbbrk;"], [10099, "&rbbrk;"], [10184, "&bsolhsub;"], [10185, "&suphsol;"], [10214, "&LeftDoubleBracket;"], [10215, "&RightDoubleBracket;"], [10216, "&lang;"], [10217, "&rang;"], [10218, "&Lang;"], [10219, "&Rang;"], [10220, "&loang;"], [10221, "&roang;"], [10229, "&longleftarrow;"], [10230, "&longrightarrow;"], [10231, "&longleftrightarrow;"], [10232, "&DoubleLongLeftArrow;"], [10233, "&DoubleLongRightArrow;"], [10234, "&DoubleLongLeftRightArrow;"], [10236, "&longmapsto;"], [10239, "&dzigrarr;"], [10498, "&nvlArr;"], [10499, "&nvrArr;"], [10500, "&nvHarr;"], [10501, "&Map;"], [10508, "&lbarr;"], [10509, "&bkarow;"], [10510, "&lBarr;"], [10511, "&dbkarow;"], [10512, "&drbkarow;"], [10513, "&DDotrahd;"], [10514, "&UpArrowBar;"], [10515, "&DownArrowBar;"], [10518, "&Rarrtl;"], [10521, "&latail;"], [10522, "&ratail;"], [10523, "&lAtail;"], [10524, "&rAtail;"], [10525, "&larrfs;"], [10526, "&rarrfs;"], [10527, "&larrbfs;"], [10528, "&rarrbfs;"], [10531, "&nwarhk;"], [10532, "&nearhk;"], [10533, "&hksearow;"], [10534, "&hkswarow;"], [10535, "&nwnear;"], [10536, "&nesear;"], [10537, "&seswar;"], [10538, "&swnwar;"], [10547, { v: "&rarrc;", n: 824, o: "&nrarrc;" }], [10549, "&cudarrr;"], [10550, "&ldca;"], [10551, "&rdca;"], [10552, "&cudarrl;"], [10553, "&larrpl;"], [10556, "&curarrm;"], [10557, "&cularrp;"], [10565, "&rarrpl;"], [10568, "&harrcir;"], [10569, "&Uarrocir;"], [10570, "&lurdshar;"], [10571, "&ldrushar;"], [10574, "&LeftRightVector;"], [10575, "&RightUpDownVector;"], [10576, "&DownLeftRightVector;"], [10577, "&LeftUpDownVector;"], [10578, "&LeftVectorBar;"], [10579, "&RightVectorBar;"], [10580, "&RightUpVectorBar;"], [10581, "&RightDownVectorBar;"], [10582, "&DownLeftVectorBar;"], [10583, "&DownRightVectorBar;"], [10584, "&LeftUpVectorBar;"], [10585, "&LeftDownVectorBar;"], [10586, "&LeftTeeVector;"], [10587, "&RightTeeVector;"], [10588, "&RightUpTeeVector;"], [10589, "&RightDownTeeVector;"], [10590, "&DownLeftTeeVector;"], [10591, "&DownRightTeeVector;"], [10592, "&LeftUpTeeVector;"], [10593, "&LeftDownTeeVector;"], [10594, "&lHar;"], [10595, "&uHar;"], [10596, "&rHar;"], [10597, "&dHar;"], [10598, "&luruhar;"], [10599, "&ldrdhar;"], [10600, "&ruluhar;"], [10601, "&rdldhar;"], [10602, "&lharul;"], [10603, "&llhard;"], [10604, "&rharul;"], [10605, "&lrhard;"], [10606, "&udhar;"], [10607, "&duhar;"], [10608, "&RoundImplies;"], [10609, "&erarr;"], [10610, "&simrarr;"], [10611, "&larrsim;"], [10612, "&rarrsim;"], [10613, "&rarrap;"], [10614, "&ltlarr;"], [10616, "&gtrarr;"], [10617, "&subrarr;"], [10619, "&suplarr;"], [10620, "&lfisht;"], [10621, "&rfisht;"], [10622, "&ufisht;"], [10623, "&dfisht;"], [10629, "&lopar;"], [10630, "&ropar;"], [10635, "&lbrke;"], [10636, "&rbrke;"], [10637, "&lbrkslu;"], [10638, "&rbrksld;"], [10639, "&lbrksld;"], [10640, "&rbrkslu;"], [10641, "&langd;"], [10642, "&rangd;"], [10643, "&lparlt;"], [10644, "&rpargt;"], [10645, "&gtlPar;"], [10646, "&ltrPar;"], [10650, "&vzigzag;"], [10652, "&vangrt;"], [10653, "&angrtvbd;"], [10660, "&ange;"], [10661, "&range;"], [10662, "&dwangle;"], [10663, "&uwangle;"], [10664, "&angmsdaa;"], [10665, "&angmsdab;"], [10666, "&angmsdac;"], [10667, "&angmsdad;"], [10668, "&angmsdae;"], [10669, "&angmsdaf;"], [10670, "&angmsdag;"], [10671, "&angmsdah;"], [10672, "&bemptyv;"], [10673, "&demptyv;"], [10674, "&cemptyv;"], [10675, "&raemptyv;"], [10676, "&laemptyv;"], [10677, "&ohbar;"], [10678, "&omid;"], [10679, "&opar;"], [10681, "&operp;"], [10683, "&olcross;"], [10684, "&odsold;"], [10686, "&olcir;"], [10687, "&ofcir;"], [10688, "&olt;"], [10689, "&ogt;"], [10690, "&cirscir;"], [10691, "&cirE;"], [10692, "&solb;"], [10693, "&bsolb;"], [10697, "&boxbox;"], [10701, "&trisb;"], [10702, "&rtriltri;"], [10703, { v: "&LeftTriangleBar;", n: 824, o: "&NotLeftTriangleBar;" }], [10704, { v: "&RightTriangleBar;", n: 824, o: "&NotRightTriangleBar;" }], [10716, "&iinfin;"], [10717, "&infintie;"], [10718, "&nvinfin;"], [10723, "&eparsl;"], [10724, "&smeparsl;"], [10725, "&eqvparsl;"], [10731, "&blacklozenge;"], [10740, "&RuleDelayed;"], [10742, "&dsol;"], [10752, "&bigodot;"], [10753, "&bigoplus;"], [10754, "&bigotimes;"], [10756, "&biguplus;"], [10758, "&bigsqcup;"], [10764, "&iiiint;"], [10765, "&fpartint;"], [10768, "&cirfnint;"], [10769, "&awint;"], [10770, "&rppolint;"], [10771, "&scpolint;"], [10772, "&npolint;"], [10773, "&pointint;"], [10774, "&quatint;"], [10775, "&intlarhk;"], [10786, "&pluscir;"], [10787, "&plusacir;"], [10788, "&simplus;"], [10789, "&plusdu;"], [10790, "&plussim;"], [10791, "&plustwo;"], [10793, "&mcomma;"], [10794, "&minusdu;"], [10797, "&loplus;"], [10798, "&roplus;"], [10799, "&Cross;"], [10800, "&timesd;"], [10801, "&timesbar;"], [10803, "&smashp;"], [10804, "&lotimes;"], [10805, "&rotimes;"], [10806, "&otimesas;"], [10807, "&Otimes;"], [10808, "&odiv;"], [10809, "&triplus;"], [10810, "&triminus;"], [10811, "&tritime;"], [10812, "&intprod;"], [10815, "&amalg;"], [10816, "&capdot;"], [10818, "&ncup;"], [10819, "&ncap;"], [10820, "&capand;"], [10821, "&cupor;"], [10822, "&cupcap;"], [10823, "&capcup;"], [10824, "&cupbrcap;"], [10825, "&capbrcup;"], [10826, "&cupcup;"], [10827, "&capcap;"], [10828, "&ccups;"], [10829, "&ccaps;"], [10832, "&ccupssm;"], [10835, "&And;"], [10836, "&Or;"], [10837, "&andand;"], [10838, "&oror;"], [10839, "&orslope;"], [10840, "&andslope;"], [10842, "&andv;"], [10843, "&orv;"], [10844, "&andd;"], [10845, "&ord;"], [10847, "&wedbar;"], [10854, "&sdote;"], [10858, "&simdot;"], [10861, { v: "&congdot;", n: 824, o: "&ncongdot;" }], [10862, "&easter;"], [10863, "&apacir;"], [10864, { v: "&apE;", n: 824, o: "&napE;" }], [10865, "&eplus;"], [10866, "&pluse;"], [10867, "&Esim;"], [10868, "&Colone;"], [10869, "&Equal;"], [10871, "&ddotseq;"], [10872, "&equivDD;"], [10873, "&ltcir;"], [10874, "&gtcir;"], [10875, "&ltquest;"], [10876, "&gtquest;"], [10877, { v: "&leqslant;", n: 824, o: "&nleqslant;" }], [10878, { v: "&geqslant;", n: 824, o: "&ngeqslant;" }], [10879, "&lesdot;"], [10880, "&gesdot;"], [10881, "&lesdoto;"], [10882, "&gesdoto;"], [10883, "&lesdotor;"], [10884, "&gesdotol;"], [10885, "&lap;"], [10886, "&gap;"], [10887, "&lne;"], [10888, "&gne;"], [10889, "&lnap;"], [10890, "&gnap;"], [10891, "&lEg;"], [10892, "&gEl;"], [10893, "&lsime;"], [10894, "&gsime;"], [10895, "&lsimg;"], [10896, "&gsiml;"], [10897, "&lgE;"], [10898, "&glE;"], [10899, "&lesges;"], [10900, "&gesles;"], [10901, "&els;"], [10902, "&egs;"], [10903, "&elsdot;"], [10904, "&egsdot;"], [10905, "&el;"], [10906, "&eg;"], [10909, "&siml;"], [10910, "&simg;"], [10911, "&simlE;"], [10912, "&simgE;"], [10913, { v: "&LessLess;", n: 824, o: "&NotNestedLessLess;" }], [10914, { v: "&GreaterGreater;", n: 824, o: "&NotNestedGreaterGreater;" }], [10916, "&glj;"], [10917, "&gla;"], [10918, "&ltcc;"], [10919, "&gtcc;"], [10920, "&lescc;"], [10921, "&gescc;"], [10922, "&smt;"], [10923, "&lat;"], [10924, { v: "&smte;", n: 65024, o: "&smtes;" }], [10925, { v: "&late;", n: 65024, o: "&lates;" }], [10926, "&bumpE;"], [10927, { v: "&PrecedesEqual;", n: 824, o: "&NotPrecedesEqual;" }], [10928, { v: "&sce;", n: 824, o: "&NotSucceedsEqual;" }], [10931, "&prE;"], [10932, "&scE;"], [10933, "&precneqq;"], [10934, "&scnE;"], [10935, "&prap;"], [10936, "&scap;"], [10937, "&precnapprox;"], [10938, "&scnap;"], [10939, "&Pr;"], [10940, "&Sc;"], [10941, "&subdot;"], [10942, "&supdot;"], [10943, "&subplus;"], [10944, "&supplus;"], [10945, "&submult;"], [10946, "&supmult;"], [10947, "&subedot;"], [10948, "&supedot;"], [10949, { v: "&subE;", n: 824, o: "&nsubE;" }], [10950, { v: "&supE;", n: 824, o: "&nsupE;" }], [10951, "&subsim;"], [10952, "&supsim;"], [10955, { v: "&subnE;", n: 65024, o: "&varsubsetneqq;" }], [10956, { v: "&supnE;", n: 65024, o: "&varsupsetneqq;" }], [10959, "&csub;"], [10960, "&csup;"], [10961, "&csube;"], [10962, "&csupe;"], [10963, "&subsup;"], [10964, "&supsub;"], [10965, "&subsub;"], [10966, "&supsup;"], [10967, "&suphsub;"], [10968, "&supdsub;"], [10969, "&forkv;"], [10970, "&topfork;"], [10971, "&mlcp;"], [10980, "&Dashv;"], [10982, "&Vdashl;"], [10983, "&Barv;"], [10984, "&vBar;"], [10985, "&vBarv;"], [10987, "&Vbar;"], [10988, "&Not;"], [10989, "&bNot;"], [10990, "&rnmid;"], [10991, "&cirmid;"], [10992, "&midcir;"], [10993, "&topcir;"], [10994, "&nhpar;"], [10995, "&parsim;"], [11005, { v: "&parsl;", n: 8421, o: "&nparsl;" }], [55349, { n: new Map([[56476, "&Ascr;"], [56478, "&Cscr;"], [56479, "&Dscr;"], [56482, "&Gscr;"], [56485, "&Jscr;"], [56486, "&Kscr;"], [56489, "&Nscr;"], [56490, "&Oscr;"], [56491, "&Pscr;"], [56492, "&Qscr;"], [56494, "&Sscr;"], [56495, "&Tscr;"], [56496, "&Uscr;"], [56497, "&Vscr;"], [56498, "&Wscr;"], [56499, "&Xscr;"], [56500, "&Yscr;"], [56501, "&Zscr;"], [56502, "&ascr;"], [56503, "&bscr;"], [56504, "&cscr;"], [56505, "&dscr;"], [56507, "&fscr;"], [56509, "&hscr;"], [56510, "&iscr;"], [56511, "&jscr;"], [56512, "&kscr;"], [56513, "&lscr;"], [56514, "&mscr;"], [56515, "&nscr;"], [56517, "&pscr;"], [56518, "&qscr;"], [56519, "&rscr;"], [56520, "&sscr;"], [56521, "&tscr;"], [56522, "&uscr;"], [56523, "&vscr;"], [56524, "&wscr;"], [56525, "&xscr;"], [56526, "&yscr;"], [56527, "&zscr;"], [56580, "&Afr;"], [56581, "&Bfr;"], [56583, "&Dfr;"], [56584, "&Efr;"], [56585, "&Ffr;"], [56586, "&Gfr;"], [56589, "&Jfr;"], [56590, "&Kfr;"], [56591, "&Lfr;"], [56592, "&Mfr;"], [56593, "&Nfr;"], [56594, "&Ofr;"], [56595, "&Pfr;"], [56596, "&Qfr;"], [56598, "&Sfr;"], [56599, "&Tfr;"], [56600, "&Ufr;"], [56601, "&Vfr;"], [56602, "&Wfr;"], [56603, "&Xfr;"], [56604, "&Yfr;"], [56606, "&afr;"], [56607, "&bfr;"], [56608, "&cfr;"], [56609, "&dfr;"], [56610, "&efr;"], [56611, "&ffr;"], [56612, "&gfr;"], [56613, "&hfr;"], [56614, "&ifr;"], [56615, "&jfr;"], [56616, "&kfr;"], [56617, "&lfr;"], [56618, "&mfr;"], [56619, "&nfr;"], [56620, "&ofr;"], [56621, "&pfr;"], [56622, "&qfr;"], [56623, "&rfr;"], [56624, "&sfr;"], [56625, "&tfr;"], [56626, "&ufr;"], [56627, "&vfr;"], [56628, "&wfr;"], [56629, "&xfr;"], [56630, "&yfr;"], [56631, "&zfr;"], [56632, "&Aopf;"], [56633, "&Bopf;"], [56635, "&Dopf;"], [56636, "&Eopf;"], [56637, "&Fopf;"], [56638, "&Gopf;"], [56640, "&Iopf;"], [56641, "&Jopf;"], [56642, "&Kopf;"], [56643, "&Lopf;"], [56644, "&Mopf;"], [56646, "&Oopf;"], [56650, "&Sopf;"], [56651, "&Topf;"], [56652, "&Uopf;"], [56653, "&Vopf;"], [56654, "&Wopf;"], [56655, "&Xopf;"], [56656, "&Yopf;"], [56658, "&aopf;"], [56659, "&bopf;"], [56660, "&copf;"], [56661, "&dopf;"], [56662, "&eopf;"], [56663, "&fopf;"], [56664, "&gopf;"], [56665, "&hopf;"], [56666, "&iopf;"], [56667, "&jopf;"], [56668, "&kopf;"], [56669, "&lopf;"], [56670, "&mopf;"], [56671, "&nopf;"], [56672, "&oopf;"], [56673, "&popf;"], [56674, "&qopf;"], [56675, "&ropf;"], [56676, "&sopf;"], [56677, "&topf;"], [56678, "&uopf;"], [56679, "&vopf;"], [56680, "&wopf;"], [56681, "&xopf;"], [56682, "&yopf;"], [56683, "&zopf;"]]) }], [64256, "&fflig;"], [64257, "&filig;"], [64258, "&fllig;"], [64259, "&ffilig;"], [64260, "&ffllig;"]]);
 
-},{}],69:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeXMLStrict = exports.decodeHTML5Strict = exports.decodeHTML4Strict = exports.decodeHTML5 = exports.decodeHTML4 = exports.decodeHTMLAttribute = exports.decodeHTMLStrict = exports.decodeHTML = exports.decodeXML = exports.DecodingMode = exports.EntityDecoder = exports.encodeHTML5 = exports.encodeHTML4 = exports.encodeNonAsciiHTML = exports.encodeHTML = exports.escapeText = exports.escapeAttribute = exports.escapeUTF8 = exports.escape = exports.encodeXML = exports.encode = exports.decodeStrict = exports.decode = exports.EncodingMode = exports.EntityLevel = void 0;
+exports.decodeXMLStrict = exports.decodeHTML5Strict = exports.decodeHTML4Strict = exports.decodeHTML5 = exports.decodeHTML4 = exports.decodeHTMLStrict = exports.decodeHTML = exports.decodeXML = exports.encodeHTML5 = exports.encodeHTML4 = exports.encodeNonAsciiHTML = exports.encodeHTML = exports.escapeText = exports.escapeAttribute = exports.escapeUTF8 = exports.escape = exports.encodeXML = exports.encode = exports.decodeStrict = exports.decode = exports.EncodingMode = exports.DecodingMode = exports.EntityLevel = void 0;
 var decode_js_1 = require("./decode.js");
 var encode_js_1 = require("./encode.js");
 var escape_js_1 = require("./escape.js");
@@ -1320,11 +448,19 @@ var EntityLevel;
     /** Support HTML entities, which are a superset of XML entities. */
     EntityLevel[EntityLevel["HTML"] = 1] = "HTML";
 })(EntityLevel = exports.EntityLevel || (exports.EntityLevel = {}));
+/** Determines whether some entities are allowed to be written without a trailing `;`. */
+var DecodingMode;
+(function (DecodingMode) {
+    /** Support legacy HTML entities. */
+    DecodingMode[DecodingMode["Legacy"] = 0] = "Legacy";
+    /** Do not support legacy HTML entities. */
+    DecodingMode[DecodingMode["Strict"] = 1] = "Strict";
+})(DecodingMode = exports.DecodingMode || (exports.DecodingMode = {}));
 var EncodingMode;
 (function (EncodingMode) {
     /**
      * The output is UTF-8 encoded. Only characters that need escaping within
-     * XML will be escaped.
+     * HTML will be escaped.
      */
     EncodingMode[EncodingMode["UTF8"] = 0] = "UTF8";
     /**
@@ -1357,10 +493,12 @@ var EncodingMode;
  */
 function decode(data, options) {
     if (options === void 0) { options = EntityLevel.XML; }
-    var level = typeof options === "number" ? options : options.level;
-    if (level === EntityLevel.HTML) {
-        var mode = typeof options === "object" ? options.mode : undefined;
-        return (0, decode_js_1.decodeHTML)(data, mode);
+    var opts = typeof options === "number" ? { level: options } : options;
+    if (opts.level === EntityLevel.HTML) {
+        if (opts.mode === DecodingMode.Strict) {
+            return (0, decode_js_1.decodeHTMLStrict)(data);
+        }
+        return (0, decode_js_1.decodeHTML)(data);
     }
     return (0, decode_js_1.decodeXML)(data);
 }
@@ -1373,11 +511,15 @@ exports.decode = decode;
  * @deprecated Use `decode` with the `mode` set to `Strict`.
  */
 function decodeStrict(data, options) {
-    var _a;
     if (options === void 0) { options = EntityLevel.XML; }
     var opts = typeof options === "number" ? { level: options } : options;
-    (_a = opts.mode) !== null && _a !== void 0 ? _a : (opts.mode = decode_js_1.DecodingMode.Strict);
-    return decode(data, opts);
+    if (opts.level === EntityLevel.HTML) {
+        if (opts.mode === DecodingMode.Legacy) {
+            return (0, decode_js_1.decodeHTML)(data);
+        }
+        return (0, decode_js_1.decodeHTMLStrict)(data);
+    }
+    return (0, decode_js_1.decodeXML)(data);
 }
 exports.decodeStrict = decodeStrict;
 /**
@@ -1419,12 +561,9 @@ Object.defineProperty(exports, "encodeNonAsciiHTML", { enumerable: true, get: fu
 Object.defineProperty(exports, "encodeHTML4", { enumerable: true, get: function () { return encode_js_2.encodeHTML; } });
 Object.defineProperty(exports, "encodeHTML5", { enumerable: true, get: function () { return encode_js_2.encodeHTML; } });
 var decode_js_2 = require("./decode.js");
-Object.defineProperty(exports, "EntityDecoder", { enumerable: true, get: function () { return decode_js_2.EntityDecoder; } });
-Object.defineProperty(exports, "DecodingMode", { enumerable: true, get: function () { return decode_js_2.DecodingMode; } });
 Object.defineProperty(exports, "decodeXML", { enumerable: true, get: function () { return decode_js_2.decodeXML; } });
 Object.defineProperty(exports, "decodeHTML", { enumerable: true, get: function () { return decode_js_2.decodeHTML; } });
 Object.defineProperty(exports, "decodeHTMLStrict", { enumerable: true, get: function () { return decode_js_2.decodeHTMLStrict; } });
-Object.defineProperty(exports, "decodeHTMLAttribute", { enumerable: true, get: function () { return decode_js_2.decodeHTMLAttribute; } });
 // Legacy aliases (deprecated)
 Object.defineProperty(exports, "decodeHTML4", { enumerable: true, get: function () { return decode_js_2.decodeHTML; } });
 Object.defineProperty(exports, "decodeHTML5", { enumerable: true, get: function () { return decode_js_2.decodeHTML; } });
@@ -1432,43 +571,18837 @@ Object.defineProperty(exports, "decodeHTML4Strict", { enumerable: true, get: fun
 Object.defineProperty(exports, "decodeHTML5Strict", { enumerable: true, get: function () { return decode_js_2.decodeHTMLStrict; } });
 Object.defineProperty(exports, "decodeXMLStrict", { enumerable: true, get: function () { return decode_js_2.decodeXML; } });
 
-},{"./decode.js":62,"./encode.js":64,"./escape.js":65}],70:[function(require,module,exports){
+},{"./decode.js":2,"./encode.js":4,"./escape.js":5}],10:[function(require,module,exports){
+exports = module.exports = stringify
+exports.getSerialize = serializer
+
+function stringify(obj, replacer, spaces, cycleReplacer) {
+  return JSON.stringify(obj, serializer(replacer, cycleReplacer), spaces)
+}
+
+function serializer(replacer, cycleReplacer) {
+  var stack = [], keys = []
+
+  if (cycleReplacer == null) cycleReplacer = function(key, value) {
+    if (stack[0] === value) return "[Circular ~]"
+    return "[Circular ~." + keys.slice(0, stack.indexOf(value)).join(".") + "]"
+  }
+
+  return function(key, value) {
+    if (stack.length > 0) {
+      var thisPos = stack.indexOf(this)
+      ~thisPos ? stack.splice(thisPos + 1) : stack.push(this)
+      ~thisPos ? keys.splice(thisPos, Infinity, key) : keys.push(key)
+      if (~stack.indexOf(value)) value = cycleReplacer.call(this, key, value)
+    }
+    else stack.push(value)
+
+    return replacer == null ? value : replacer.call(this, key, value)
+  }
+}
+
+},{}],11:[function(require,module,exports){
+"use strict";
+/**
+ * Request objects hold information for a particular source (see sources for example)
+ * This allows us to to use a generic api to make the calls against any source
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.urlEncodeObject = exports.convertTime = exports.Source = void 0;
+class Source {
+    constructor(cheerio) {
+        this.cheerio = cheerio;
+    }
+    /**
+     * @deprecated use {@link Source.getSearchResults getSearchResults} instead
+     */
+    searchRequest(query, metadata) {
+        return this.getSearchResults(query, metadata);
+    }
+    /**
+     * @deprecated use {@link Source.getSearchTags} instead
+     */
+    getTags() {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            // @ts-ignore
+            return (_a = this.getSearchTags) === null || _a === void 0 ? void 0 : _a.call(this);
+        });
+    }
+}
+exports.Source = Source;
+// Many sites use '[x] time ago' - Figured it would be good to handle these cases in general
+function convertTime(timeAgo) {
+    var _a;
+    let time;
+    let trimmed = Number(((_a = /\d*/.exec(timeAgo)) !== null && _a !== void 0 ? _a : [])[0]);
+    trimmed = (trimmed == 0 && timeAgo.includes('a')) ? 1 : trimmed;
+    if (timeAgo.includes('minutes')) {
+        time = new Date(Date.now() - trimmed * 60000);
+    }
+    else if (timeAgo.includes('hours')) {
+        time = new Date(Date.now() - trimmed * 3600000);
+    }
+    else if (timeAgo.includes('days')) {
+        time = new Date(Date.now() - trimmed * 86400000);
+    }
+    else if (timeAgo.includes('year') || timeAgo.includes('years')) {
+        time = new Date(Date.now() - trimmed * 31556952000);
+    }
+    else {
+        time = new Date(Date.now());
+    }
+    return time;
+}
+exports.convertTime = convertTime;
+/**
+ * When a function requires a POST body, it always should be defined as a JsonObject
+ * and then passed through this function to ensure that it's encoded properly.
+ * @param obj
+ */
+function urlEncodeObject(obj) {
+    let ret = {};
+    for (const entry of Object.entries(obj)) {
+        ret[encodeURIComponent(entry[0])] = encodeURIComponent(entry[1]);
+    }
+    return ret;
+}
+exports.urlEncodeObject = urlEncodeObject;
+
+},{}],12:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Tracker = void 0;
+class Tracker {
+    constructor(cheerio) {
+        this.cheerio = cheerio;
+    }
+}
+exports.Tracker = Tracker;
+
+},{}],13:[function(require,module,exports){
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./Source"), exports);
+__exportStar(require("./Tracker"), exports);
+
+},{"./Source":11,"./Tracker":12}],14:[function(require,module,exports){
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./base"), exports);
+__exportStar(require("./models"), exports);
+__exportStar(require("./APIWrapper"), exports);
+
+},{"./APIWrapper":1,"./base":13,"./models":56}],15:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+},{}],16:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],17:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],18:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],19:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],20:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],21:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],22:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],23:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],24:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],25:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],26:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],27:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],28:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],29:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],30:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],31:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],32:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],33:[function(require,module,exports){
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./Button"), exports);
+__exportStar(require("./Form"), exports);
+__exportStar(require("./Header"), exports);
+__exportStar(require("./InputField"), exports);
+__exportStar(require("./Label"), exports);
+__exportStar(require("./Link"), exports);
+__exportStar(require("./MultilineLabel"), exports);
+__exportStar(require("./NavigationButton"), exports);
+__exportStar(require("./OAuthButton"), exports);
+__exportStar(require("./Section"), exports);
+__exportStar(require("./Select"), exports);
+__exportStar(require("./Switch"), exports);
+__exportStar(require("./WebViewButton"), exports);
+__exportStar(require("./FormRow"), exports);
+__exportStar(require("./Stepper"), exports);
+
+},{"./Button":18,"./Form":19,"./FormRow":20,"./Header":21,"./InputField":22,"./Label":23,"./Link":24,"./MultilineLabel":25,"./NavigationButton":26,"./OAuthButton":27,"./Section":28,"./Select":29,"./Stepper":30,"./Switch":31,"./WebViewButton":32}],34:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HomeSectionType = void 0;
+var HomeSectionType;
+(function (HomeSectionType) {
+    HomeSectionType["singleRowNormal"] = "singleRowNormal";
+    HomeSectionType["singleRowLarge"] = "singleRowLarge";
+    HomeSectionType["doubleRow"] = "doubleRow";
+    HomeSectionType["featured"] = "featured";
+})(HomeSectionType = exports.HomeSectionType || (exports.HomeSectionType = {}));
+
+},{}],35:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.LanguageCode = void 0;
+var LanguageCode;
+(function (LanguageCode) {
+    LanguageCode["UNKNOWN"] = "_unknown";
+    LanguageCode["BENGALI"] = "bd";
+    LanguageCode["BULGARIAN"] = "bg";
+    LanguageCode["BRAZILIAN"] = "br";
+    LanguageCode["CHINEESE"] = "cn";
+    LanguageCode["CZECH"] = "cz";
+    LanguageCode["GERMAN"] = "de";
+    LanguageCode["DANISH"] = "dk";
+    LanguageCode["ENGLISH"] = "gb";
+    LanguageCode["SPANISH"] = "es";
+    LanguageCode["FINNISH"] = "fi";
+    LanguageCode["FRENCH"] = "fr";
+    LanguageCode["WELSH"] = "gb";
+    LanguageCode["GREEK"] = "gr";
+    LanguageCode["CHINEESE_HONGKONG"] = "hk";
+    LanguageCode["HUNGARIAN"] = "hu";
+    LanguageCode["INDONESIAN"] = "id";
+    LanguageCode["ISRELI"] = "il";
+    LanguageCode["INDIAN"] = "in";
+    LanguageCode["IRAN"] = "ir";
+    LanguageCode["ITALIAN"] = "it";
+    LanguageCode["JAPANESE"] = "jp";
+    LanguageCode["KOREAN"] = "kr";
+    LanguageCode["LITHUANIAN"] = "lt";
+    LanguageCode["MONGOLIAN"] = "mn";
+    LanguageCode["MEXIAN"] = "mx";
+    LanguageCode["MALAY"] = "my";
+    LanguageCode["DUTCH"] = "nl";
+    LanguageCode["NORWEGIAN"] = "no";
+    LanguageCode["PHILIPPINE"] = "ph";
+    LanguageCode["POLISH"] = "pl";
+    LanguageCode["PORTUGUESE"] = "pt";
+    LanguageCode["ROMANIAN"] = "ro";
+    LanguageCode["RUSSIAN"] = "ru";
+    LanguageCode["SANSKRIT"] = "sa";
+    LanguageCode["SAMI"] = "si";
+    LanguageCode["THAI"] = "th";
+    LanguageCode["TURKISH"] = "tr";
+    LanguageCode["UKRAINIAN"] = "ua";
+    LanguageCode["VIETNAMESE"] = "vn";
+})(LanguageCode = exports.LanguageCode || (exports.LanguageCode = {}));
+
+},{}],36:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MangaStatus = void 0;
+var MangaStatus;
+(function (MangaStatus) {
+    MangaStatus[MangaStatus["ONGOING"] = 1] = "ONGOING";
+    MangaStatus[MangaStatus["COMPLETED"] = 0] = "COMPLETED";
+    MangaStatus[MangaStatus["UNKNOWN"] = 2] = "UNKNOWN";
+    MangaStatus[MangaStatus["ABANDONED"] = 3] = "ABANDONED";
+    MangaStatus[MangaStatus["HIATUS"] = 4] = "HIATUS";
+})(MangaStatus = exports.MangaStatus || (exports.MangaStatus = {}));
+
+},{}],37:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],38:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],39:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],40:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],41:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],42:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],43:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],44:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],45:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],46:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],47:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SearchOperator = void 0;
+var SearchOperator;
+(function (SearchOperator) {
+    SearchOperator["AND"] = "AND";
+    SearchOperator["OR"] = "OR";
+})(SearchOperator = exports.SearchOperator || (exports.SearchOperator = {}));
+
+},{}],48:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContentRating = void 0;
+/**
+ * A content rating to be attributed to each source.
+ */
+var ContentRating;
+(function (ContentRating) {
+    ContentRating["EVERYONE"] = "EVERYONE";
+    ContentRating["MATURE"] = "MATURE";
+    ContentRating["ADULT"] = "ADULT";
+})(ContentRating = exports.ContentRating || (exports.ContentRating = {}));
+
+},{}],49:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],50:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],51:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TagType = void 0;
+/**
+ * An enumerator which {@link SourceTags} uses to define the color of the tag rendered on the website.
+ * Five types are available: blue, green, grey, yellow and red, the default one is blue.
+ * Common colors are red for (Broken), yellow for (+18), grey for (Country-Proof)
+ */
+var TagType;
+(function (TagType) {
+    TagType["BLUE"] = "default";
+    TagType["GREEN"] = "success";
+    TagType["GREY"] = "info";
+    TagType["YELLOW"] = "warning";
+    TagType["RED"] = "danger";
+})(TagType = exports.TagType || (exports.TagType = {}));
+
+},{}],52:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],53:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],54:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],55:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],56:[function(require,module,exports){
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+__exportStar(require("./Chapter"), exports);
+__exportStar(require("./ChapterDetails"), exports);
+__exportStar(require("./HomeSection"), exports);
+__exportStar(require("./Manga"), exports);
+__exportStar(require("./MangaTile"), exports);
+__exportStar(require("./RequestObject"), exports);
+__exportStar(require("./SearchRequest"), exports);
+__exportStar(require("./TagSection"), exports);
+__exportStar(require("./SourceTag"), exports);
+__exportStar(require("./Languages"), exports);
+__exportStar(require("./Constants"), exports);
+__exportStar(require("./MangaUpdate"), exports);
+__exportStar(require("./PagedResults"), exports);
+__exportStar(require("./ResponseObject"), exports);
+__exportStar(require("./RequestManager"), exports);
+__exportStar(require("./RequestHeaders"), exports);
+__exportStar(require("./SourceInfo"), exports);
+__exportStar(require("./SourceStateManager"), exports);
+__exportStar(require("./RequestInterceptor"), exports);
+__exportStar(require("./DynamicUI"), exports);
+__exportStar(require("./TrackedManga"), exports);
+__exportStar(require("./SourceManga"), exports);
+__exportStar(require("./TrackedMangaChapterReadAction"), exports);
+__exportStar(require("./TrackerActionQueue"), exports);
+__exportStar(require("./SearchField"), exports);
+__exportStar(require("./RawData"), exports);
+
+},{"./Chapter":15,"./ChapterDetails":16,"./Constants":17,"./DynamicUI":33,"./HomeSection":34,"./Languages":35,"./Manga":36,"./MangaTile":37,"./MangaUpdate":38,"./PagedResults":39,"./RawData":40,"./RequestHeaders":41,"./RequestInterceptor":42,"./RequestManager":43,"./RequestObject":44,"./ResponseObject":45,"./SearchField":46,"./SearchRequest":47,"./SourceInfo":48,"./SourceManga":49,"./SourceStateManager":50,"./SourceTag":51,"./TagSection":52,"./TrackedManga":53,"./TrackedMangaChapterReadAction":54,"./TrackerActionQueue":55}],57:[function(require,module,exports){
+/*
+ * random-seed
+ * https://github.com/skratchdot/random-seed
+ *
+ * This code was originally written by Steve Gibson and can be found here:
+ *
+ * https://www.grc.com/otg/uheprng.htm
+ *
+ * It was slightly modified for use in node, to pass jshint, and a few additional
+ * helper functions were added.
+ *
+ * Copyright (c) 2013 skratchdot
+ * Dual Licensed under the MIT license and the original GRC copyright/license
+ * included below.
+ */
+/*	============================================================================
+									Gibson Research Corporation
+				UHEPRNG - Ultra High Entropy Pseudo-Random Number Generator
+	============================================================================
+	LICENSE AND COPYRIGHT:  THIS CODE IS HEREBY RELEASED INTO THE PUBLIC DOMAIN
+	Gibson Research Corporation releases and disclaims ALL RIGHTS AND TITLE IN
+	THIS CODE OR ANY DERIVATIVES. Anyone may be freely use it for any purpose.
+	============================================================================
+	This is GRC's cryptographically strong PRNG (pseudo-random number generator)
+	for JavaScript. It is driven by 1536 bits of entropy, stored in an array of
+	48, 32-bit JavaScript variables.  Since many applications of this generator,
+	including ours with the "Off The Grid" Latin Square generator, may require
+	the deteriministic re-generation of a sequence of PRNs, this PRNG's initial
+	entropic state can be read and written as a static whole, and incrementally
+	evolved by pouring new source entropy into the generator's internal state.
+	----------------------------------------------------------------------------
+	ENDLESS THANKS are due Johannes Baagoe for his careful development of highly
+	robust JavaScript implementations of JS PRNGs.  This work was based upon his
+	JavaScript "Alea" PRNG which is based upon the extremely robust Multiply-
+	With-Carry (MWC) PRNG invented by George Marsaglia. MWC Algorithm References:
+	http://www.GRC.com/otg/Marsaglia_PRNGs.pdf
+	http://www.GRC.com/otg/Marsaglia_MWC_Generators.pdf
+	----------------------------------------------------------------------------
+	The quality of this algorithm's pseudo-random numbers have been verified by
+	multiple independent researchers. It handily passes the fermilab.ch tests as
+	well as the "diehard" and "dieharder" test suites.  For individuals wishing
+	to further verify the quality of this algorithm's pseudo-random numbers, a
+	256-megabyte file of this algorithm's output may be downloaded from GRC.com,
+	and a Microsoft Windows scripting host (WSH) version of this algorithm may be
+	downloaded and run from the Windows command prompt to generate unique files
+	of any size:
+	The Fermilab "ENT" tests: http://fourmilab.ch/random/
+	The 256-megabyte sample PRN file at GRC: https://www.GRC.com/otg/uheprng.bin
+	The Windows scripting host version: https://www.GRC.com/otg/wsh-uheprng.js
+	----------------------------------------------------------------------------
+	Qualifying MWC multipliers are: 187884, 686118, 898134, 1104375, 1250205,
+	1460910 and 1768863. (We use the largest one that's < 2^21)
+	============================================================================ */
+'use strict';
+var stringify = require('json-stringify-safe');
+
+/*	============================================================================
+This is based upon Johannes Baagoe's carefully designed and efficient hash
+function for use with JavaScript.  It has a proven "avalanche" effect such
+that every bit of the input affects every bit of the output 50% of the time,
+which is good.	See: http://baagoe.com/en/RandomMusings/hash/avalanche.xhtml
+============================================================================
+*/
+var Mash = function () {
+	var n = 0xefc8249d;
+	var mash = function (data) {
+		if (data) {
+			data = data.toString();
+			for (var i = 0; i < data.length; i++) {
+				n += data.charCodeAt(i);
+				var h = 0.02519603282416938 * n;
+				n = h >>> 0;
+				h -= n;
+				h *= n;
+				n = h >>> 0;
+				h -= n;
+				n += h * 0x100000000; // 2^32
+			}
+			return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+		} else {
+			n = 0xefc8249d;
+		}
+	};
+	return mash;
+};
+
+var uheprng = function (seed) {
+	return (function () {
+		var o = 48; // set the 'order' number of ENTROPY-holding 32-bit values
+		var c = 1; // init the 'carry' used by the multiply-with-carry (MWC) algorithm
+		var p = o; // init the 'phase' (max-1) of the intermediate variable pointer
+		var s = new Array(o); // declare our intermediate variables array
+		var i; // general purpose local
+		var j; // general purpose local
+		var k = 0; // general purpose local
+
+		// when our "uheprng" is initially invoked our PRNG state is initialized from the
+		// browser's own local PRNG. This is okay since although its generator might not
+		// be wonderful, it's useful for establishing large startup entropy for our usage.
+		var mash = new Mash(); // get a pointer to our high-performance "Mash" hash
+
+		// fill the array with initial mash hash values
+		for (i = 0; i < o; i++) {
+			s[i] = mash(Math.random());
+		}
+
+		// this PRIVATE (internal access only) function is the heart of the multiply-with-carry
+		// (MWC) PRNG algorithm. When called it returns a pseudo-random number in the form of a
+		// 32-bit JavaScript fraction (0.0 to <1.0) it is a PRIVATE function used by the default
+		// [0-1] return function, and by the random 'string(n)' function which returns 'n'
+		// characters from 33 to 126.
+		var rawprng = function () {
+			if (++p >= o) {
+				p = 0;
+			}
+			var t = 1768863 * s[p] + c * 2.3283064365386963e-10; // 2^-32
+			return s[p] = t - (c = t | 0);
+		};
+
+		// this EXPORTED function is the default function returned by this library.
+		// The values returned are integers in the range from 0 to range-1. We first
+		// obtain two 32-bit fractions (from rawprng) to synthesize a single high
+		// resolution 53-bit prng (0 to <1), then we multiply this by the caller's
+		// "range" param and take the "floor" to return a equally probable integer.
+		var random = function (range) {
+			return Math.floor(range * (rawprng() + (rawprng() * 0x200000 | 0) * 1.1102230246251565e-16)); // 2^-53
+		};
+
+		// this EXPORTED function 'string(n)' returns a pseudo-random string of
+		// 'n' printable characters ranging from chr(33) to chr(126) inclusive.
+		random.string = function (count) {
+			var i;
+			var s = '';
+			for (i = 0; i < count; i++) {
+				s += String.fromCharCode(33 + random(94));
+			}
+			return s;
+		};
+
+		// this PRIVATE "hash" function is used to evolve the generator's internal
+		// entropy state. It is also called by the EXPORTED addEntropy() function
+		// which is used to pour entropy into the PRNG.
+		var hash = function () {
+			var args = Array.prototype.slice.call(arguments);
+			for (i = 0; i < args.length; i++) {
+				for (j = 0; j < o; j++) {
+					s[j] -= mash(args[i]);
+					if (s[j] < 0) {
+						s[j] += 1;
+					}
+				}
+			}
+		};
+
+		// this EXPORTED "clean string" function removes leading and trailing spaces and non-printing
+		// control characters, including any embedded carriage-return (CR) and line-feed (LF) characters,
+		// from any string it is handed. this is also used by the 'hashstring' function (below) to help
+		// users always obtain the same EFFECTIVE uheprng seeding key.
+		random.cleanString = function (inStr) {
+			inStr = inStr.replace(/(^\s*)|(\s*$)/gi, ''); // remove any/all leading spaces
+			inStr = inStr.replace(/[\x00-\x1F]/gi, ''); // remove any/all control characters
+			inStr = inStr.replace(/\n /, '\n'); // remove any/all trailing spaces
+			return inStr; // return the cleaned up result
+		};
+
+		// this EXPORTED "hash string" function hashes the provided character string after first removing
+		// any leading or trailing spaces and ignoring any embedded carriage returns (CR) or Line Feeds (LF)
+		random.hashString = function (inStr) {
+			inStr = random.cleanString(inStr);
+			mash(inStr); // use the string to evolve the 'mash' state
+			for (i = 0; i < inStr.length; i++) { // scan through the characters in our string
+				k = inStr.charCodeAt(i); // get the character code at the location
+				for (j = 0; j < o; j++) { //	"mash" it into the UHEPRNG state
+					s[j] -= mash(k);
+					if (s[j] < 0) {
+						s[j] += 1;
+					}
+				}
+			}
+		};
+
+		// this EXPORTED function allows you to seed the random generator.
+		random.seed = function (seed) {
+			if (typeof seed === 'undefined' || seed === null) {
+				seed = Math.random();
+			}
+			if (typeof seed !== 'string') {
+				seed = stringify(seed, function (key, value) {
+					if (typeof value === 'function') {
+						return (value).toString();
+					}
+					return value;
+				});
+			}
+			random.initState();
+			random.hashString(seed);
+		};
+
+		// this handy exported function is used to add entropy to our uheprng at any time
+		random.addEntropy = function ( /* accept zero or more arguments */ ) {
+			var args = [];
+			for (i = 0; i < arguments.length; i++) {
+				args.push(arguments[i]);
+			}
+			hash((k++) + (new Date().getTime()) + args.join('') + Math.random());
+		};
+
+		// if we want to provide a deterministic startup context for our PRNG,
+		// but without directly setting the internal state variables, this allows
+		// us to initialize the mash hash and PRNG's internal state before providing
+		// some hashing input
+		random.initState = function () {
+			mash(); // pass a null arg to force mash hash to init
+			for (i = 0; i < o; i++) {
+				s[i] = mash(' '); // fill the array with initial mash hash values
+			}
+			c = 1; // init our multiply-with-carry carry
+			p = o; // init our phase
+		};
+
+		// we use this (optional) exported function to signal the JavaScript interpreter
+		// that we're finished using the "Mash" hash function so that it can free up the
+		// local "instance variables" is will have been maintaining.  It's not strictly
+		// necessary, of course, but it's good JavaScript citizenship.
+		random.done = function () {
+			mash = null;
+		};
+
+		// if we called "uheprng" with a seed value, then execute random.seed() before returning
+		if (typeof seed !== 'undefined') {
+			random.seed(seed);
+		}
+
+		// Returns a random integer between 0 (inclusive) and range (exclusive)
+		random.range = function (range) {
+			return random(range);
+		};
+
+		// Returns a random float between 0 (inclusive) and 1 (exclusive)
+		random.random = function () {
+			return random(Number.MAX_VALUE - 1) / Number.MAX_VALUE;
+		};
+
+		// Returns a random float between min (inclusive) and max (exclusive)
+		random.floatBetween = function (min, max) {
+			return random.random() * (max - min) + min;
+		};
+
+		// Returns a random integer between min (inclusive) and max (inclusive)
+		random.intBetween = function (min, max) {
+			return Math.floor(random.random() * (max - min + 1)) + min;
+		};
+
+		// when our main outer "uheprng" function is called, after setting up our
+		// initial variables and entropic state, we return an "instance pointer"
+		// to the internal anonymous function which can then be used to access
+		// the uheprng's various exported functions.  As with the ".done" function
+		// above, we should set the returned value to 'null' once we're finished
+		// using any of these functions.
+		return random;
+	}());
+};
+
+// Modification for use in node:
+uheprng.create = function (seed) {
+	return new uheprng(seed);
+};
+module.exports = uheprng;
+
+},{"json-stringify-safe":10}],58:[function(require,module,exports){
+/*
+ * random-useragent
+ * https://github.com/skratchdot/random-useragent
+ *
+ * Copyright (c) 2014 skratchdot
+ * Licensed under the MIT license.
+ */
+'use strict';
+
+const useragents = require('./useragent-data.json');
+const rand = require('random-seed').create();
+
+// cloning is slow, but it's only done when returning parsed user agent
+// objects (so the data can't be changed by the end user).
+// this can be a performance hit when in a loop, so use with caution.
+const cloneData = function (data) {
+	return JSON.parse(JSON.stringify(data));
+};
+
+const getData = function (filter) {
+	return typeof filter === 'function' ? useragents.filter(filter) : useragents;
+};
+
+exports.getRandom = function (filter) {
+	const data = getData(filter);
+	return data.length ? data[rand.intBetween(0, data.length - 1)].userAgent : null;
+};
+
+exports.getRandomData = function (filter) {
+	const data = getData(filter);
+	return data.length ? cloneData(data[rand.intBetween(0, data.length - 1)]) : null;
+};
+
+exports.getAll = function (filter) {
+	return getData(filter).map(function (item) {
+		return item.userAgent;
+	});
+};
+
+exports.getAllData = function (filter) {
+	return cloneData(getData(filter));
+};
+
+},{"./useragent-data.json":59,"random-seed":57}],59:[function(require,module,exports){
+module.exports=[
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Arora 0.6.0 - (Vista)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.6 (Change: )",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Arora",
+		"browserMajor": "0",
+		"browserVersion": "0.6",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "527",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Avant Browser 1.2",
+		"userAgent": "Avant Browser/1.2.789rel1 (http://www.avantbrowser.com)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Avant ",
+		"browserMajor": "1",
+		"browserVersion": "1.2.789rel1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 4.0 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.0 Safari/532.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "4",
+		"browserVersion": "4.0.249.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.5",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 5.0 (Server 2003)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.310.0 Safari/532.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "5",
+		"browserVersion": "5.0.310.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.9",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 7.0 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "7",
+		"browserVersion": "7.0.514.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.7",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 9.0 (Vista)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/534.14 (KHTML, like Gecko) Chrome/9.0.601.0 Safari/534.14",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "9",
+		"browserVersion": "9.0.601.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.14",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 10.0 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.14 (KHTML, like Gecko) Chrome/10.0.601.0 Safari/534.14",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "10",
+		"browserVersion": "10.0.601.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.14",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 12.0 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.27 (KHTML, like Gecko) Chrome/12.0.712.0 Safari/534.27",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "12",
+		"browserVersion": "12.0.712.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.27",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 15.0 (Vista)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.120 Safari/535.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "15",
+		"browserVersion": "15.0.874.120",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.2",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 16.0 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.36 Safari/535.7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "16",
+		"browserVersion": "16.0.912.36",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.7",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 18.6 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/18.6.872.0 Safari/535.2 UNTRUSTED/1.0 3gpp-gba UNTRUSTED/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "18",
+		"browserVersion": "18.6.872.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.2",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 19.0 (Win 8 - NT 6.2)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1061.1 Safari/536.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1061.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.3",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 20.0 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1092.0 Safari/536.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1092.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.6",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 20.0 (Win 8)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/536.6 (KHTML, like Gecko) Chrome/20.0.1090.0 Safari/536.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1090.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.6",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Chrome 22.0 (Win 7 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "22",
+		"browserVersion": "22.0.1207.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 3.0.2pre (Win XP 64)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0 x64; en-US; rv:1.9pre) Gecko/2008072421 Minefield/3.0.2pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9pre",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 3.0.10 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.10) Gecko/2009042316 Firefox/3.0.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.0.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.10",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 3.0.11 (Vista)   .NET",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-GB; rv:1.9.0.11) Gecko/2009060215 Firefox/3.0.11 (.NET CLR 3.5.30729)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.11",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 3.5.6 (Vista)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6 GTB5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.6",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 3.6.8 (XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; tr; rv:1.9.2.8) Gecko/20100722 Firefox/3.6.8 ( .NET CLR 3.5.30729; .NET4.0E)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.8",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 4.01 (Win 7 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 4.01 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 5.0 (XP)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 6.0a2 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0a2) Gecko/20110622 Firefox/6.0a2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "6",
+		"browserVersion": "6.0a2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "6.0a2",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 7.0.1 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:7.0.1) Gecko/20100101 Firefox/7.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "7",
+		"browserVersion": "7.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "7.0.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 10.0.1 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "10",
+		"browserVersion": "10.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 12.0 (Win 7 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; rv:12.0) Gecko/20120403211507 Firefox/12.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "12",
+		"browserVersion": "12.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "12.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 14.0.1 (Win Vista)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.0; rv:14.0) Gecko/20100101 Firefox/14.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "14",
+		"browserVersion": "14.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "14.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 15.0a1 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:15.0) Gecko/20120427 Firefox/15.0a1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "15",
+		"browserVersion": "15.0a1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "15.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 16.0 (Win 8 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; Win64; x64; rv:16.0) Gecko/16.0 Firefox/16.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "16",
+		"browserVersion": "16.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "16.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 19.0 (Win 8 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; rv:19.0) Gecko/20121129 Firefox/19.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "19",
+		"browserVersion": "19.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "19.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Firefox 20.0 (Win 8 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; rv:20.0) Gecko/20121202 Firefox/20.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "20",
+		"browserVersion": "20.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "20.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Maxthon 2.0 (Trident/MSIE) (Win  7)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Maxthon 2.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "2",
+		"browserVersion": "2.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "4.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Minefield (Firefox nightly) 4.0b4pre (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:2.0b4pre) Gecko/20100815 Minefield/4.0b4pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0b4pre",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "MSIE 5.5 (Win 2000)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0 )",
+		"appCodename": "",
+		"appName": "Microsoft Internet Explorer",
+		"appVersion": "4.0 (compatible; MSIE 5.5; Windows NT 5.0)",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "5",
+		"browserVersion": "5.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "2000",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "MSIE 5.5 (Win ME)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 5.5; Windows 98; Win 9x 4.90)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "5",
+		"browserVersion": "5.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "98",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Multizilla 1.6 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows XP) Gecko MultiZilla/1.6.1.0a",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": " X",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Netscape 2.02 (Win 95)",
+		"userAgent": "Mozilla/2.02E (Win95; U)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "95",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Netscape 3.01 gold (Win 95)",
+		"userAgent": "Mozilla/3.01Gold (Win95; I)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "95",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Netscape 4.8 (Win XP)",
+		"userAgent": "Mozilla/4.8 [en] (Windows NT 5.1; U)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Netscape 7.1 (Win 98)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Win98; en-US; rv:1.4) Gecko Netscape/7.1 (ax)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Netscape",
+		"browserMajor": "7",
+		"browserVersion": "7.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.4",
+		"osName": "Windows",
+		"osVersion": "98",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 7.5 (Win XP)",
+		"userAgent": "Opera/7.50 (Windows XP; U)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "7",
+		"browserVersion": "7.50",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": " X",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 7.5 (Win ME)",
+		"userAgent": "Opera/7.50 (Windows ME; U) [en]",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "7",
+		"browserVersion": "7.50",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": " M",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 7.51 (Win XP)",
+		"userAgent": "Opera/7.51 (Windows NT 5.1; U) [en]",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "7",
+		"browserVersion": "7.51",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 8.0 (Win 2000)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; en) Opera 8.0",
+		"appCodename": "",
+		"appName": "Microsoft Internet Explorer",
+		"appVersion": "4.0 (compatible; MSIE 6.0; Windows NT 5.0; en)",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "2000",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 9.25 - (Vista)",
+		"userAgent": "Opera/9.25 (Windows NT 6.0; U; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.25",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 10.10 (id as 9.8) (Server 2003)",
+		"userAgent": "Opera/9.80 (Windows NT 5.2; U; en) Presto/2.2.15 Version/10.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "10",
+		"browserVersion": "10.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.2.15",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 11.10 (id as 9.8) (Win XP)",
+		"userAgent": "Opera/9.80 (Windows NT 5.1; U; zh-tw) Presto/2.8.131 Version/11.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "11",
+		"browserVersion": "11.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.8.131",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 11.01 (id as 9.8) (Win 7)",
+		"userAgent": "Opera/9.80 (Windows NT 6.1; U; en) Presto/2.7.62 Version/11.01",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "11",
+		"browserVersion": "11.01",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.7.62",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 12.00 (id as 9.8) (Win 7)",
+		"userAgent": "Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "12",
+		"browserVersion": "12.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.9.181",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Opera 12.14 (id as 9.8) (Win Vista)",
+		"userAgent": "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "12",
+		"browserVersion": "12.14",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.388",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Phoenix 0.2 (NT 4.0)",
+		"userAgent": "Mozilla/5.0 (Windows; U; WinNT4.0; en-US; rv:1.2b) Gecko/20021001 Phoenix/0.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Phoenix",
+		"browserMajor": "0",
+		"browserVersion": "0.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.2b",
+		"osName": "Windows",
+		"osVersion": "NT 4.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "Safari 531.21 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/531.21.8 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "531.21.8",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "SeaMonkey 1.1.18 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.23) Gecko/20090825 SeaMonkey/1.1.18",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "1",
+		"browserVersion": "1.1.18",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.23",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "SeaMonkey (Mozilla) 2.0 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB; rv:1.9.1.17) Gecko/20110123 (like Firefox/3.x) SeaMonkey/2.0.12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.0.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.17",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows/Legacy Browsers",
+		"description": "SeaMonkey (Mozilla) 2.7.1 (NT 5.2)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.2; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.7.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Arora 0.8.0 - (Windows)",
+		"userAgent": "Mozilla/5.0 (Windows; U; ; en-NZ) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.8.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Arora",
+		"browserMajor": "0",
+		"browserVersion": "0.8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "527",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Avant Browser - MSIE 7 (Win XP)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Avant Browser; Avant Browser; .NET CLR 1.0.3705; .NET CLR 1.1.4322; Media Center PC 4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Avant ",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Beamrise - (Win 7) - Webkit 535.8",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.8 (KHTML, like Gecko) Beamrise/17.2.0.9 Chrome/17.0.939.0 Safari/535.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "17",
+		"browserVersion": "17.0.939.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.8",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 28.0 (Win 7 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/28.0.1469.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1469.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "28.0.1469.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 28.0 (Win 8 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/28.0.1469.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1469.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "28.0.1469.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 32.0 (Win 8 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "32",
+		"browserVersion": "32.0.1667.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "32.0.1667.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 36.0 (Win 8 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1985.67",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1985.67",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 37.0 (Win 8.1 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "37",
+		"browserVersion": "37.0.2049.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "37.0.2049.0",
+		"osName": "Windows",
+		"osVersion": "8.1",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 41.0 (Win 7 - 32 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "41",
+		"browserVersion": "41.0.2228.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2228.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 45.0 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.93",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.93",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 45.0 (Win Vista - 32 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.93",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.93",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 51.0 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "51",
+		"browserVersion": "51.0.2704.103",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "51.0.2704.103",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 55.0 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2869.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "55",
+		"browserVersion": "55.0.2869.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "55.0.2869.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 57.0 AOL (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 AOL/11.0 AOLBUILD/11.0.1305 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "57",
+		"browserVersion": "57.0.2987.133",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "57.0.2987.133",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Chrome 62.0 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3191.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "62",
+		"browserVersion": "62.0.3191.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "62.0.3191.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Edge (Microsoft) 12.0 (EdgeHTML) Chrome 39 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "12",
+		"browserVersion": "12.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "12.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Edge (Microsoft) 12.1 (EdgeHTML) Chrome 42 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "12",
+		"browserVersion": "12.10240",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "12.10240",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Edge (Microsoft) 14.14 (EdgeHTML) Chrome 51 (Win 10 - 64 bit)",
+		"userAgent": "Mozilla/5.0 (MSIE 9.0; Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14931",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "14.14931",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Edge (Microsoft) 15.15 (EdgeHTML) Chrome 52 (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "15",
+		"browserVersion": "15.15063",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "15.15063",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 21.0 (Win 7 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130401 Firefox/21.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "21",
+		"browserVersion": "21.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "21.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 25.0 (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "25",
+		"browserVersion": "25.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "25.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 29.0 (Win 7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/29.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "29",
+		"browserVersion": "29.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "25.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 31.0 (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "31",
+		"browserVersion": "31.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "31.0",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 35.0 (Win 7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:35.0) Gecko/20100101 Firefox/35.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "35",
+		"browserVersion": "35.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "35.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 36.0 (Win 8.1 32 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "36",
+		"browserVersion": "36.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "36.0",
+		"osName": "Windows",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 39.0 (Win 8.0 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "39",
+		"browserVersion": "39.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "39.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 40.0 (Win Vista)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "40",
+		"browserVersion": "40.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "40.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 40.0 (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "40",
+		"browserVersion": "40.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "40.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 47.0 (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "47",
+		"browserVersion": "47.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "47.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 52.0 (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:52.0) Gecko/20100101 Firefox/52.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "52",
+		"browserVersion": "52.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "52.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Firefox 57.0 (Win 10 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "57",
+		"browserVersion": "57.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "57.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "iTunes 9.0.2 (Windows)",
+		"userAgent": "iTunes/9.0.2 (Windows; N)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Konqueror 4.5 (Win XP - KDE native)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.5; Windows) KHTML/4.5.4 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.5.4",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Maxthon 3.0 (Webkit) (Vista)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/533.1 (KHTML, like Gecko) Maxthon/3.0.8.2 Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "3",
+		"browserVersion": "3.0.8.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Maxthon 4.0 (Chrome 22) (Win7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML like Gecko) Maxthon/4.0.0.2000 Chrome/22.0.1229.79 Safari/537.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "4",
+		"browserVersion": "4.0.0.2000",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.1",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Maxthon 4.4 (Chrome 30) (Win7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/4.4.6.1000 Chrome/30.0.1599.101 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "4",
+		"browserVersion": "4.4.6.1000",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.101",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Maxthon 5.0 (Chrome 47) (Win7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Maxthon/5.0.4.3000 Chrome/47.0.2526.73 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "5",
+		"browserVersion": "5.0.4.3000",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "47.0.2526.73",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 6 (Win XP)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
+		"appCodename": "",
+		"appName": "Microsoft Internet Explorer",
+		"appVersion": "4.0 (Compatible; MSIE 6.0; Windows NT 5.1)",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 7 (Vista)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+		"appCodename": "Mozilla",
+		"appName": "Microsoft Internet Explorer",
+		"appVersion": "4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+		"platform": "Win32",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 8 - standard mode (Win XP)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "4.0",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 8 - standard mode (Win 7)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "4.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 8 - compat mode (Vista)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/4.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "win32",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "4.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 8 - standard mode (Vista)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "win32",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "4.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 9 - compat mode (Vista)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; Trident/5.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 9 - standard mode (Win 7)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 9 - standard mode (NT 6.2 32 Win 8)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.2; Trident/5.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 9 - standard mode (NT 6.2 64 Win 8)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.2; WOW64; Trident/5.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 9 - standard mode (with Zune plugin) (NT 6.1 Win 7)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 10 - standard mode (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 10 - compat mode (Win 7 64)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/6.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 10.6 - (Win 7 32)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "10",
+		"browserVersion": "10.6",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 11.0 - (Win 7 64)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 11.0 - (Win 8.1 32)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 11.0 (compatibility mode IE 7)- (Win 8.1 32)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.3; Trident/7.0; .NET4.0E; .NET4.0C)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MxBrowser (Chrome 30)- (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) MxBrowser/4.5.10.7000 Chrome/30.0.1551.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1551.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1551.0",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 11.0 (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; MATBJS; rv:11.0) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "MSIE 11.0 touch (Win 10 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; MALNJS; rv:11.0) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 12.16 (id as 9.8) (Win 7)",
+		"userAgent": "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.16",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "12",
+		"browserVersion": "12.16",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.388",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 14.0 (Chrome 27) (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.12 Safari/537.36 OPR/14.0.1116.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "14",
+		"browserVersion": "14.0.1116.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.36",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 15.0 (Chrome 28) (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.29 Safari/537.36 OPR/15.0.1147.24 (Edition Next)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "15",
+		"browserVersion": "15.0.1147.24",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "28.0.1500.29",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 18.0 (Chrome 31) (Win 8.1)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36 OPR/18.0.1284.49",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "18",
+		"browserVersion": "18.0.1284.49",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "31.0.1650.57",
+		"osName": "Windows",
+		"osVersion": "8.1",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 19.0 (Chrome 32) (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.76 Safari/537.36 OPR/19.0.1326.56",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1326.56",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "32.0.1700.76",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 20.0 (Chrome 33) (Win 7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36 OPR/20.0.1387.91",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1387.91",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "33.0.1750.154",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 28.0 (Chrome 41) (Win 8 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.76 Safari/537.36 OPR/28.0.1750.40",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1750.40",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2272.76",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 31.0 (Chrome 44) (Win 7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.155 Safari/537.36 OPR/31.0.1889.174",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "31",
+		"browserVersion": "31.0.1889.174",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "44.0.2403.155",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 36.0 (Chrome 49) (Win 10 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36 OPR/36.0.2130.46",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "36",
+		"browserVersion": "36.0.2130.46",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "49.0.2623.87",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Opera 47.0 (Chrome 60) (Win 10 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36 OPR/47.0.2631.55",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "47",
+		"browserVersion": "47.0.2631.55",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.78",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Palemoon 27.4 (Firefox 45.9) (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; rv:45.9) Gecko/20100101 Goanna/3.2 Firefox/45.9 PaleMoon/27.4.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "PaleMoon",
+		"browserMajor": "27",
+		"browserVersion": "27.4.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Goanna",
+		"engineVersion": "3.2",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Safari 533.17 (Server 2003/64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.2; en-US) AppleWebKit/533.17.8 (KHTML, like Gecko) Version/5.0.1 Safari/533.17.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.8",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Safari 533.19 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.19.4",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Safari 6.0 (Win 8)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 6.2; es-US ) AppleWebKit/540.0 (KHTML like Gecko) Version/6.0 Safari/8900.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "540.0",
+		"osName": "Windows",
+		"osVersion": "8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Safari 7.0 (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.71 (KHTML like Gecko) WebVideo/1.0.1.10 Version/7.0 Safari/537.71",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.71",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "SeaMonkey (Mozilla) 2.9 (Win7 64 bit)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:12.0) Gecko/20120422 Firefox/12.0 SeaMonkey/2.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.9",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "12.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "SeaMonkey (Mozilla) 2.33 (Win Vista)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.0; rv:36.0) Gecko/20100101 Firefox/36.0 SeaMonkey/2.33.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.33.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "36.0",
+		"osName": "Windows",
+		"osVersion": "Vista",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "UBrowser 5.6 2.33 (chrome/webkit) (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.13705.206 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "UCBrowser",
+		"browserMajor": "5",
+		"browserVersion": "5.6.13705.206",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "48.0.2564.116",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Vivaldi 1.0.94 (Blink) (Win 7)",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.89 Vivaldi/1.0.94.2 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Vivaldi",
+		"browserMajor": "1",
+		"browserVersion": "1.0.94.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "40.0.2214.89",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Vivaldi 1.4 (Blink) (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.90 Safari/537.36 Vivaldi/1.4.589.11",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Vivaldi",
+		"browserMajor": "1",
+		"browserVersion": "1.4.589.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.90",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Vivaldi 1.92 (Blink) (Win 10)",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.91 Safari/537.36 Vivaldi/1.92.917.39",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Vivaldi",
+		"browserMajor": "1",
+		"browserVersion": "1.92.917.39",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.91",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Windows",
+		"description": "Yowser 2.5 (Blink - Chrome 56) (Win XP)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 YaBrowser/17.3.0.1785 Yowser/2.5 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Yandex",
+		"browserMajor": "17",
+		"browserVersion": "17.3.0.1785",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "56.0.2924.87",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Camino 2.2.1 (Firefox 4.0.1) (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Camino/2.2.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Camino",
+		"browserMajor": "2",
+		"browserVersion": "2.2.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Camino 2.2a1pre (Firefox 4.0.1) (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0b6pre) Gecko/20100907 Firefox/4.0b6pre Camino/2.2a1pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Camino",
+		"browserMajor": "2",
+		"browserVersion": "2.2a1pre",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0b6pre",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 4.0 (OS X 10_5_8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_8; en-US) AppleWebKit/532.8 (KHTML, like Gecko) Chrome/4.0.302.2 Safari/532.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "4",
+		"browserVersion": "4.0.302.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.8",
+		"osName": "Mac OS",
+		"osVersion": "10.5.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 6.0 (OS X 10_6_4 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_4; en-US) AppleWebKit/534.3 (KHTML, like Gecko) Chrome/6.0.464.0 Safari/534.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "6",
+		"browserVersion": "6.0.464.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.3",
+		"osName": "Mac OS",
+		"osVersion": "10.6.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 9.0 (OS X 10_6_5 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; en-US) AppleWebKit/534.13 (KHTML, like Gecko) Chrome/9.0.597.15 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "9",
+		"browserVersion": "9.0.597.15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "Mac OS",
+		"osVersion": "10.6.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 14.0 (OS X 10_7_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.186 Safari/535.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "14",
+		"browserVersion": "14.0.835.186",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.1",
+		"osName": "Mac OS",
+		"osVersion": "10.7.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 15.0 (OS X 10_6_8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.54 Safari/535.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "15",
+		"browserVersion": "15.0.874.54",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.2",
+		"osName": "Mac OS",
+		"osVersion": "10.6.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 16.0 (OS X 10_6_8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.36 Safari/535.7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "16",
+		"browserVersion": "16.0.912.36",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.7",
+		"osName": "Mac OS",
+		"osVersion": "10.6.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 19.0 (OS X 10_8_0 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_0) AppleWebKit/536.3 (KHTML, like Gecko) Chrome/19.0.1063.0 Safari/536.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1063.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.3",
+		"osName": "Mac OS",
+		"osVersion": "10.8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Chrome 22.0 (OS X 10_8_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.4 (KHTML like Gecko) Chrome/22.0.1229.79 Safari/537.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "22",
+		"browserVersion": "22.0.1229.79",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.4",
+		"osName": "Mac OS",
+		"osVersion": "10.8.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 0.9 (OS X Mach)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Mac OS X Mach-O; en-US; rv:2.0a) Gecko/20040614 Firefox/3.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.0.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0a",
+		"osName": "Mac OS",
+		"osVersion": "Mach",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 3.0.3 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.0.3) Gecko/2008092414 Firefox/3.0.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.0.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.3",
+		"osName": "Mac OS",
+		"osVersion": "10.5",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 3.5 (OS X 10.5 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.5; en-US; rv:1.9.1) Gecko/20090624 Firefox/3.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1",
+		"osName": "Mac OS",
+		"osVersion": "10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 3.6 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.14) Gecko/20110218 AlexaToolbar/alxf-2.0 Firefox/3.6.14",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.6.14",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.14",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 3.6 (OS X 10.5 PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X 10.5; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.6.15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.15",
+		"osName": "Mac OS",
+		"osVersion": "10.5",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 4.0.1 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 5.0 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:5.0) Gecko/20100101 Firefox/5.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "5.0",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 9.0 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:9.0) Gecko/20100101 Firefox/9.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "9.0",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 10.0.1 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "10",
+		"browserVersion": "10.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Mac OS",
+		"osVersion": "10.7.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Firefox 16.0 (OS X 10.8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20120813 Firefox/16.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "16",
+		"browserVersion": "16.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "16.0",
+		"osName": "Mac OS",
+		"osVersion": "10.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "MSIE 5.15 (OS 9)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 5.15; Mac_PowerPC)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "5",
+		"browserVersion": "5.15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Omniweb 563.15 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en-US) AppleWebKit/125.4 (KHTML, like Gecko, Safari) OmniWeb/v563.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "OmniWeb",
+		"browserMajor": "563",
+		"browserVersion": "563.15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "125.4",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Opera 9.0 (OS X PPC)",
+		"userAgent": "Opera/9.0 (Macintosh; PPC Mac OS X; U; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Opera 9.20 (OS X Intel)",
+		"userAgent": "Opera/9.20 (Macintosh; Intel Mac OS X; U; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.20",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Opera 9.64 (OS X PPC)",
+		"userAgent": "Opera/9.64 (Macintosh; PPC Mac OS X; U; en) Presto/2.1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.64",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.1.1",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Opera 10.61 (id as 9.8) (OS X Intel)",
+		"userAgent": "Opera/9.80 (Macintosh; Intel Mac OS X; U; en) Presto/2.6.30 Version/10.61",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "10",
+		"browserVersion": "10.61",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.6.30",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Opera 11.00 (id as 9.8) (OS X Intel)",
+		"userAgent": "Opera/9.80 (Macintosh; Intel Mac OS X 10.4.11; U; en) Presto/2.7.62 Version/11.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "11",
+		"browserVersion": "11.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.7.62",
+		"osName": "Mac OS",
+		"osVersion": "10.4.11",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Safari 85 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/125.2 (KHTML, like Gecko) Safari/85.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "1",
+		"browserVersion": "1.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "125.2",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Safari 125.8 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/125.2 (KHTML, like Gecko) Safari/125.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "1",
+		"browserVersion": "1.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "125.2",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Safari 312.3 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; fr-fr) AppleWebKit/312.5 (KHTML, like Gecko) Safari/312.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "1",
+		"browserVersion": "1.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "312.5",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac/Legacy Browsers",
+		"description": "Safari 419.3 (OS X PPC)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/418.8 (KHTML, like Gecko) Safari/419.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "2",
+		"browserVersion": "2.0.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "418.8",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 26.0 (OS X 10_8_4 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/537.31 (KHTML like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "26",
+		"browserVersion": "26.0.1410.63",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.31",
+		"osName": "Mac OS",
+		"osVersion": "10.8.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 28.0 (OS X 10_8_3 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 1083) AppleWebKit/537.36 (KHTML like Gecko) Chrome/28.0.1469.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1469.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "28.0.1469.0",
+		"osName": "Mac OS",
+		"osVersion": "1083",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 32.0 (OS X 10_9_0 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1664.3 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "32",
+		"browserVersion": "32.0.1664.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "32.0.1664.3",
+		"osName": "Mac OS",
+		"osVersion": "10.9.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 36.0 (OS X 10_9_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1944.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1944.0",
+		"osName": "Mac OS",
+		"osVersion": "10.9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 41.0 (OS X 10_10_1) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "41",
+		"browserVersion": "41.0.2227.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2227.1",
+		"osName": "Mac OS",
+		"osVersion": "10.10.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 51.0 (OS X 10_11_5) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "51",
+		"browserVersion": "51.0.2704.84",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "51.0.2704.84",
+		"osName": "Mac OS",
+		"osVersion": "10.11.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 52.0 (OS X 10_10_1) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.116",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.116",
+		"osName": "Mac OS",
+		"osVersion": "10.10.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 55.0 (OS X 10_10_5) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2859.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "55",
+		"browserVersion": "55.0.2859.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "55.0.2859.0",
+		"osName": "Mac OS",
+		"osVersion": "10.10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 60.0 (OS X 10_10_1) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.90",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.90",
+		"osName": "Mac OS",
+		"osVersion": "10.10.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Chrome 61.0 (OS X 10_10_5) Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.49 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "61",
+		"browserVersion": "61.0.3163.49",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "61.0.3163.49",
+		"osName": "Mac OS",
+		"osVersion": "10.10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 20.0 (OS X 10.7 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:20.0) Gecko/20100101 Firefox/20.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "20",
+		"browserVersion": "20.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "20.0",
+		"osName": "Mac OS",
+		"osVersion": "10.7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 21.0 (OS X 10.8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "21",
+		"browserVersion": "21.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "21.0",
+		"osName": "Mac OS",
+		"osVersion": "10.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 25.0 (OS X 10.6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:25.0) Gecko/20100101 Firefox/25.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "25",
+		"browserVersion": "25.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "25.0",
+		"osName": "Mac OS",
+		"osVersion": "10.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 35.0 (OS X 10.9 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:35.0) Gecko/20100101 Firefox/35.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "35",
+		"browserVersion": "35.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "35.0",
+		"osName": "Mac OS",
+		"osVersion": "10.9",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 40.0 (OS X 10.10 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "40",
+		"browserVersion": "40.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "40.0",
+		"osName": "Mac OS",
+		"osVersion": "10.10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 47.0 (OS X 10.9 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:47.0) Gecko/20100101 Firefox/47.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "47",
+		"browserVersion": "47.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "47.0",
+		"osName": "Mac OS",
+		"osVersion": "10.9",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 49.0 (OS X 10.12 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "49",
+		"browserVersion": "49.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "49.0",
+		"osName": "Mac OS",
+		"osVersion": "10.12",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Firefox 55.0 (OS X 10.13 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:55.0) Gecko/20100101 Firefox/55.0",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "55",
+		"browserVersion": "55.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "55.0",
+		"osName": "Mac OS",
+		"osVersion": "10.13",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "iTunes 4.2 (OS X 10.2 PPC)",
+		"userAgent": "iTunes/4.2 (Macintosh; U; PPC Mac OS X 10.2)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Mac OS",
+		"osVersion": "10.2",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "iTunes 9.0.3 (OS X 10_6_2)",
+		"userAgent": "iTunes/9.0.3 (Macintosh; U; Intel Mac OS X 10_6_2; en-ca)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Mac OS",
+		"osVersion": "10.6.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Maxthon 4.5.2 (AppleWebKit 600.8) (OS X Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/600.8.9 (KHTML, like Gecko) Maxthon/4.5.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Maxthon",
+		"browserMajor": "4",
+		"browserVersion": "4.5.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "600.8.9",
+		"osName": "Mac OS",
+		"osVersion": "10.10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Omniweb 622.8 (OS X Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US) AppleWebKit/528.16 (KHTML, like Gecko, Safari/528.16) OmniWeb/v622.8.0.112941",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "OmniWeb",
+		"browserMajor": "622",
+		"browserVersion": "622.8.0.112941",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.16",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Omniweb 622.8 (OS X 10_5_6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_6; en-US) AppleWebKit/528.16 (KHTML, like Gecko, Safari/528.16) OmniWeb/v622.8.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "OmniWeb",
+		"browserMajor": "622",
+		"browserVersion": "622.8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.16",
+		"osName": "Mac OS",
+		"osVersion": "10.5.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Opera 11.52 (id as 9.8) (OS X Intel)",
+		"userAgent": "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "11",
+		"browserVersion": "11.52",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.9.168",
+		"osName": "Mac OS",
+		"osVersion": "10.6.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Opera 28.0 (Blink) (OS X 10_10_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36 OPR/28.0.1750.51",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1750.51",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2272.118",
+		"osName": "Mac OS",
+		"osVersion": "10.10.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Opera 29.0 (Blink) (OS X 10_10_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.82 Safari/537.36 OPR/29.0.1795.41",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "29",
+		"browserVersion": "29.0.1795.41",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "42.0.2311.82",
+		"osName": "Mac OS",
+		"osVersion": "10.10.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 531.21 (OS X 10_6_2 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_2; en-us) AppleWebKit/531.21.8 (KHTML, like Gecko) Version/4.0.4 Safari/531.21.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "531.21.8",
+		"osName": "Mac OS",
+		"osVersion": "10.6.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 533.19 (OS X 10_6_5 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_5; de-de) AppleWebKit/534.15  (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.15",
+		"osName": "Mac OS",
+		"osVersion": "10.6.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 533.20 (OS X 10_6_6 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.4 Safari/533.20.27",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.20.25",
+		"osName": "Mac OS",
+		"osVersion": "10.6.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 534.20 (OS X 10_7 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_7; en-us) AppleWebKit/534.20.8 (KHTML, like Gecko) Version/5.1 Safari/534.20.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.20.8",
+		"osName": "Mac OS",
+		"osVersion": "10.7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 534.55 (OS X 10_7_3 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.1.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.55.3",
+		"osName": "Mac OS",
+		"osVersion": "10.7.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 534.57 (5.1.7) (OS X 10_6_8 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.1.7",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.13",
+		"osName": "Mac OS",
+		"osVersion": "10.6.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 536.26 (6) (OS X 10_7_5 Intel)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/536.26.17 (KHTML like Gecko) Version/6.0.2 Safari/536.26.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.26.17",
+		"osName": "Mac OS",
+		"osVersion": "10.7.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 7 537.78 (OS X 10_9_5)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.78.1 (KHTML like Gecko) Version/7.0.6 Safari/537.78.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0.6",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.78.1",
+		"osName": "Mac OS",
+		"osVersion": "10.9.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 7.0 537.75 (OS X 10_9_3)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.75.14",
+		"osName": "Mac OS",
+		"osVersion": "10.9.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 8.0 600.8 (OS X 10_10_5)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/600.8.9 (KHTML, like Gecko) Version/8.0.8 Safari/600.8.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "8",
+		"browserVersion": "8.0.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "600.8.9",
+		"osName": "Mac OS",
+		"osVersion": "10.10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 9.0 601.1.56 (OS X 10_11)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11) AppleWebKit/601.1.56 (KHTML, like Gecko) Version/9.0 Safari/601.1.56",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (Macintosh; Intel Mac OS X 10_11) AppleWebKit/601.1.56 (KHTML, like Gecko) Version/9.0 Safari/601.1.56",
+		"platform": "MacIntel",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "601.1.56",
+		"osName": "Mac OS",
+		"osVersion": "10.11",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 10.1 601.7 (OS X 10_11_6)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.8 (KHTML, like Gecko) Version/10.1 Safari/603.1.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "10",
+		"browserVersion": "10.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "601.7.8",
+		"osName": "Mac OS",
+		"osVersion": "10.11.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Safari 10.0 602.1 (OS X 10_10_5)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Safari/602.1.50",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "602.1.50",
+		"osName": "Mac OS",
+		"osVersion": "10.10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "SeaMonkey 2.7.1 (OS X 10.5 - Mozilla)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.5; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.7.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Mac OS",
+		"osVersion": "10.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Silk 1.0.13 (AppleWebKit 533.16) 2.9 (Mac OS X 10_6_3)",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_3; en-us; Silk/1.0.13.81_10003810) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16 Silk-Accelerated=true",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Silk",
+		"browserMajor": "1",
+		"browserVersion": "1.0.13.81_10003810",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.16",
+		"osName": "Mac OS",
+		"osVersion": "10.6.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Mac",
+		"description": "Vivaldi 1.0.162 (Chrome 41) (Mac OS X 10_10_3)",
+		"userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.105 Safari/537.36 Vivaldi/1.0.162.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Vivaldi",
+		"browserMajor": "1",
+		"browserVersion": "1.0.162.9",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2272.105",
+		"osName": "Mac OS",
+		"osVersion": "10.10.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "Elinks 0.4pre5",
+		"userAgent": "ELinks (0.4pre5; Linux 2.6.10-ac7 i686; 80x33)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Links",
+		"browserMajor": "0",
+		"browserVersion": "0.4pre5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "0.4pre5",
+		"osName": "Linux",
+		"osVersion": "2.6.10",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "ELinks 0.9.3 (Kanotix)",
+		"userAgent": "ELinks/0.9.3 (textmode; Linux 2.6.9-kanotix-8 i686; 127x41)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "0.9.3",
+		"osName": "Linux",
+		"osVersion": "2.6.9",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "ELinks 0.12~pre5-4",
+		"userAgent": "ELinks/0.12~pre5-4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "0.12",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "Links 0.9.1",
+		"userAgent": "Links/0.9.1 (Linux 2.4.24; i386;)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "0.9.1",
+		"osName": "Linux",
+		"osVersion": "2.4.24",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "Links 2.1",
+		"userAgent": "Links (2.1pre15; Linux 2.4.26 i686; 158x61)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Links",
+		"browserMajor": "2",
+		"browserVersion": "2.1pre15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "2.1pre15",
+		"osName": "Linux",
+		"osVersion": "2.4.26",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "Links 2.3pre1",
+		"userAgent": "Links (2.3pre1; Linux 2.6.38-8-generic x86_64; 170x48)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Links",
+		"browserMajor": "2",
+		"browserVersion": "2.3pre1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "2.3pre1",
+		"osName": "Linux",
+		"osVersion": "2.6.38",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "Lynx 2.8.5rel.1",
+		"userAgent": "Lynx/2.8.5rel.1 libwww-FM/2.14 SSL-MM/1.4.1 GNUTLS/0.8.12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Lynx",
+		"browserMajor": "2",
+		"browserVersion": "2.8.5rel.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Lynx",
+		"engineVersion": "2.8.5rel.1",
+		"osName": "GNU",
+		"osVersion": "TLS",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Console Browsers",
+		"description": "w3m 0.5.1",
+		"userAgent": "w3m/0.5.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "w3m",
+		"browserMajor": "0",
+		"browserVersion": "0.5.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "w3m",
+		"engineVersion": "0.5.1",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 4.0 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/532.4 (KHTML, like Gecko) Chrome/4.0.237.0 Safari/532.4 Debian",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "4",
+		"browserVersion": "4.0.237.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.4",
+		"osName": "Debian",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 4.0",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/532.8 (KHTML, like Gecko) Chrome/4.0.277.0 Safari/532.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "4",
+		"browserVersion": "4.0.277.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.8",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 5.0",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/532.9 (KHTML, like Gecko) Chrome/5.0.309.0 Safari/532.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "5",
+		"browserVersion": "5.0.309.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.9",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 7.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.514.0 Safari/534.7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "7",
+		"browserVersion": "7.0.514.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.7",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 9.1 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/540.0 (KHTML, like Gecko) Ubuntu/10.10 Chrome/9.1.0.0 Safari/540.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "9",
+		"browserVersion": "9.1.0.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "540.0",
+		"osName": "Ubuntu",
+		"osVersion": "10.10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 10.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/534.15 (KHTML, like Gecko) Chrome/10.0.613.0 Safari/534.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "10",
+		"browserVersion": "10.0.613.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.15",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 10.0 (Ubuntu 32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.15 (KHTML, like Gecko) Ubuntu/10.10 Chromium/10.0.613.0 Chrome/10.0.613.0 Safari/534.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "10",
+		"browserVersion": "10.0.613.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.15",
+		"osName": "Ubuntu",
+		"osVersion": "10.10",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 12.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.24 (KHTML, like Gecko) Ubuntu/10.10 Chromium/12.0.703.0 Chrome/12.0.703.0 Safari/534.24",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "12",
+		"browserVersion": "12.0.703.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.24",
+		"osName": "Ubuntu",
+		"osVersion": "10.10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 13.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.20 Safari/535.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "13",
+		"browserVersion": "13.0.782.20",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.1",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 13.0 (Slackware 13.37 64 bit)",
+		"userAgent": "Mozilla/5.0 Slackware/13.37 (X11; U; Linux x86_64; en-US) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.41",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "13",
+		"browserVersion": "13.0.782.41",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.1",
+		"osName": "Slackware",
+		"osVersion": "13.37",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 14.0 (Ubuntu 11.04)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.1 (KHTML, like Gecko) Ubuntu/11.04 Chromium/14.0.825.0 Chrome/14.0.825.0 Safari/535.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "14",
+		"browserVersion": "14.0.825.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.1",
+		"osName": "Ubuntu",
+		"osVersion": "11.04",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 15.0 (Ubuntu 11.10)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.2 (KHTML, like Gecko) Ubuntu/11.10 Chromium/15.0.874.120 Chrome/15.0.874.120 Safari/535.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "15",
+		"browserVersion": "15.0.874.120",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.2",
+		"osName": "Ubuntu",
+		"osVersion": "11.10",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Chrome 19.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.9 Safari/536.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1084.9",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.5",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Epiphany 1.2 - Gecko",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux; i686; en-US; rv:1.6) Gecko Epiphany/1.2.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Epiphany",
+		"browserMajor": "1",
+		"browserVersion": "1.2.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.6",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Epiphany 1.4 - Gecko (Ubuntu)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i586; en-US; rv:1.7.3) Gecko/20040924 Epiphany/1.4.4 (Ubuntu)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Epiphany",
+		"browserMajor": "1",
+		"browserVersion": "1.4.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.7.3",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 0.8",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.6) Gecko/20040614 Firefox/0.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "0",
+		"browserVersion": "0.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.6",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 2.0.0.12 (Ubuntu 7.10)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; sv-SE; rv:1.8.1.12) Gecko/20080207 Ubuntu/7.10 (gutsy) Firefox/2.0.0.12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "2",
+		"browserVersion": "2.0.0.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.12",
+		"osName": "Ubuntu",
+		"osVersion": "7.10",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.0.12 - (Ubuntu karmic 9.10)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.11) Gecko/2009060309 Ubuntu/9.10 (karmic) Firefox/3.0.11",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.0.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.11",
+		"osName": "Ubuntu",
+		"osVersion": "9.10",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.5.2 - Shiretoko (Ubuntu 9.04)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.2) Gecko/20090803 Ubuntu/9.04 (jaunty) Shiretoko/3.5.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.2",
+		"osName": "Ubuntu",
+		"osVersion": "9.04",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.5.5",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.5) Gecko/20091107 Firefox/3.5.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.5.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.5",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.5.3 (Mint 8)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.3) Gecko/20091020 Linux Mint/8 (Helena) Firefox/3.5.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.5.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.3",
+		"osName": "Mint",
+		"osVersion": "8",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.6.9 (Gentoo 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.9) Gecko/20100915 Gentoo Firefox/3.6.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.6.9",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.9",
+		"osName": "Gentoo",
+		"osVersion": "Firefox",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 3.8 (Ubuntu/9.25)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; pl-PL; rv:1.9.0.2) Gecko/20121223 Ubuntu/9.25 (jaunty) Firefox/3.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.2",
+		"osName": "Ubuntu",
+		"osVersion": "9.25",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 4.0b6pre (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:2.0b6pre) Gecko/20100907 Firefox/4.0b6pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0b6pre",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0b6pre",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 4.0.1 (32 on 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686 on x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 4.0.1 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 4.0.1 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 4.2a1pre (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:2.2a1pre) Gecko/20100101 Firefox/4.2a1pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.2a1pre",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.2a1pre",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 5.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:5.0) Gecko/20100101 Firefox/5.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "5.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 6.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:6.0) Gecko/20100101 Firefox/6.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "6.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 7.0a1 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:7.0a1) Gecko/20110623 Firefox/7.0a1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "7",
+		"browserVersion": "7.0a1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "7.0a1",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 8.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:8.0) Gecko/20100101 Firefox/8.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "8.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 10.0.1 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:10.0.1) Gecko/20100101 Firefox/10.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "10",
+		"browserVersion": "10.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 11.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.16) Gecko/20120421 Gecko Firefox/11.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.16",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 12.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:12.0) Gecko/20100101 Firefox/12.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "12",
+		"browserVersion": "12.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "12.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Firefox 14.0.1 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:14.0) Gecko/20100101 Firefox/14.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "14",
+		"browserVersion": "14.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "14.0",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Galeon 1.3",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux; i686; en-US; rv:1.6) Gecko Galeon/1.3.14",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.6",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceape (SeaMonkey) 1.1.9 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux ppc; en-US; rv:1.8.1.13) Gecko/20080313 Iceape/1.1.9 (Debian-1.1.9-5)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.13",
+		"osName": "Debian",
+		"osVersion": "1.1.9-5",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceweasel (Firefox) 3.6.3 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; pt-PT; rv:1.9.2.3) Gecko/20100402 Iceweasel/3.6.3 (like Firefox/3.6.3) GTB7.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "3",
+		"browserVersion": "3.6.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.3",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceweasel (Firefox) 5.0 (Debian 64)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0 Iceweasel/5.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "5.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceweasel (Firefox) 6.0a2 (Debian 32)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:6.0a2) Gecko/20110615 Firefox/6.0a2 Iceweasel/6.0a2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "6",
+		"browserVersion": "6.0a2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "6.0a2",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceweasel (Firefox) 14.0.1",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:14.0) Gecko/20100101 Firefox/14.0.1 Iceweasel/14.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "14",
+		"browserVersion": "14.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "14.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Iceweasel (Firefox) 15.02 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:15.0) Gecko/20120724 Debian Iceweasel/15.02",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "15",
+		"browserVersion": "15.02",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "15.0",
+		"osName": "Debian",
+		"osVersion": "Iceweasel",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Konqueror 3 rc4 - khtml",
+		"userAgent": "Konqueror/3.0-rc4; (Konqueror/3.0-rc4; i686 Linux;;datecode)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Konqueror 3.3 - khtml (Gentoo)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/3.3; Linux 2.6.8-gentoo-r3; X11;",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "gentoo",
+		"osVersion": "r3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Konqueror 3.5 - khtml (Debian)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/3.5; Linux 2.6.30-7.dmz.1-liquorix-686; X11) KHTML/3.5.10 (like Gecko) (Debian package 4:3.5.10.dfsg.1-1 b1)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "3.5.10",
+		"osName": "Debian",
+		"osVersion": "package",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Konqueror 3.5.6 - khtml (Kubuntu)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/3.5; Linux; en_US) KHTML/3.5.6 (like Gecko) (Kubuntu)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "3.5.6",
+		"osName": "Kubuntu",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Minefield (Firefox Nightly) 4.0b2pre",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; en-US; rv:2.0b2pre) Gecko/20100712 Minefield/4.0b2pre",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0b2pre",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Mozilla 1.6 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux; i686; en-US; rv:1.6) Gecko Debian/1.6-7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.6",
+		"osName": "Debian",
+		"osVersion": "1.6-7",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Opera 7.23",
+		"userAgent": "MSIE (MSIE 6.0; X11; Linux; i686) Opera 7.23",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "7",
+		"browserVersion": "7.23",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Opera 9.64 (Linux Mint)",
+		"userAgent": "Opera/9.64 (X11; Linux i686; U; Linux Mint; nb) Presto/2.1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.64",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.1.1",
+		"osName": "Mint",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Opera 10.10 (id as 9.8)",
+		"userAgent": "Opera/9.80 (X11; Linux i686; U; en) Presto/2.2.15 Version/10.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "10",
+		"browserVersion": "10.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.2.15",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Opera 11.00 (id as 9.8)",
+		"userAgent": "Opera/9.80 (X11; Linux x86_64; U; pl) Presto/2.7.62 Version/11.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "11",
+		"browserVersion": "11.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.7.62",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "QupZilla 1.2 (Webkit 534.34)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.34 (KHTML, like Gecko) QupZilla/1.2.0 Safari/534.34",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "QupZilla",
+		"browserMajor": "1",
+		"browserVersion": "1.2.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.34",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "SeaMonkey 2.0.12 (Mozilla)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.17) Gecko/20110123 SeaMonkey/2.0.12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.0.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.17",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux/Legacy Browsers",
+		"description": "Swiftfox 2.0",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1) Gecko/20061024 Firefox/2.0 (Swiftfox)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Swiftfox",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Arora 0.11 - WebKit",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux; en-US) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.10.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Arora",
+		"browserMajor": "0",
+		"browserVersion": "0.10.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "527",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 20.0 (CrOS)",
+		"userAgent": "Mozilla/5.0 (X11; CrOS i686 2268.111.0) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1132.57",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.11",
+		"osName": "Chromium OS",
+		"osVersion": "2268.111.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 22.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.4 (KHTML like Gecko) Chrome/22.0.1229.56 Safari/537.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "22",
+		"browserVersion": "22.0.1229.56",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.4",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 28.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1478.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "28",
+		"browserVersion": "28.0.1478.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "28.0.1478.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 36.0 (CrOS)",
+		"userAgent": "Mozilla/5.0 (X11; CrOS x86_64 5841.83.0) AppleWebKit/537.36 (KHTML like Gecko) Chrome/36.0.1985.138 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1985.138",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1985.138",
+		"osName": "Chromium OS",
+		"osVersion": "5841.83.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 36.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/36.0.1985.125 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1985.125",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1985.125",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 39.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2166.2 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "39",
+		"browserVersion": "39.0.2166.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "39.0.2166.2",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 41.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "41",
+		"browserVersion": "41.0.2227.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "41.0.2227.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 43.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.93 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "43",
+		"browserVersion": "43.0.2357.93",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "43.0.2357.93",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 44.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686 (x86_64)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.130 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "44",
+		"browserVersion": "44.0.2403.130",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "44.0.2403.130",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 52.0 (Fedora 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.116",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.116",
+		"osName": "Fedora",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 55.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2876.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "55",
+		"browserVersion": "55.0.2876.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "55.0.2876.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 62.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686 (x86_64)) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3187.0 Safari/537.366",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "62",
+		"browserVersion": "62.0.3187.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "62.0.3187.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chrome 62.0 (Fedora s64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3178.0 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "62",
+		"browserVersion": "62.0.3178.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "62.0.3178.0",
+		"osName": "Fedora",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chromium 25.0 (Ubuntu 32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.22 (KHTML like Gecko) Ubuntu Chromium/25.0.1364.160 Chrome/25.0.1364.160 Safari/537.22",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "25",
+		"browserVersion": "25.0.1364.160",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.22",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chromium 33.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/33.0.1750.152 Chrome/33.0.1750.152 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "33",
+		"browserVersion": "33.0.1750.152",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "33.0.1750.152",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chromium 51.0 (Ubuntu 32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/51.0.2704.79 Chrome/51.0.2704.79 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "51",
+		"browserVersion": "51.0.2704.79",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "51.0.2704.79",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Chromium 60.0 (Ubuntu 32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/60.0.3112.78 Chrome/60.0.3112.78 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.78",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.78",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Dillo 3.0",
+		"userAgent": "Mozilla/4.0 (compatible; Dillo 3.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Dillo",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Epiphany - WebKit (528.5)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-us) AppleWebKit/528.5  (KHTML, like Gecko, Safari/528.5 ) lt-GtkLauncher",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Epiphany 3.8.2 - WebKit (537.32)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.32 (KHTML, like Gecko) Chromium/25.0.1349.2 Chrome/25.0.1349.2 Safari/537.32 Epiphany/3.8.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "25",
+		"browserVersion": "25.0.1349.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.32",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Epiphany 3.24 (Ubuntu - Webkit 604.1)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/604.1 (KHTML, like Gecko) Version/11.0 Safari/604.1 Ubuntu/17.04 (3.24.1-0ubuntu1) Epiphany/3.24.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Epiphany",
+		"browserMajor": "3",
+		"browserVersion": "3.24.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "604.1",
+		"osName": "Ubuntu",
+		"osVersion": "17.04",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 16.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:16.0) Gecko/20100101 Firefox/16.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "16",
+		"browserVersion": "16.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "16.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 19.0 (Slackware 13 32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; rv:19.0) Gecko/20100101 Slackware/13 Firefox/19.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "19",
+		"browserVersion": "19.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "19.0",
+		"osName": "Slackware",
+		"osVersion": "13",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 20.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:20.0) Gecko/20100101 Firefox/20.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "20",
+		"browserVersion": "20.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "20.0",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 20.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:20.0) Gecko/20100101 Firefox/20.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "20",
+		"browserVersion": "20.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "20.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 25.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:25.0) Gecko/20100101 Firefox/25.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "25",
+		"browserVersion": "25.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "25.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 28.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:28.0) Gecko/20100101 Firefox/28.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "28",
+		"browserVersion": "28.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "28.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 32.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:32.0) Gecko/20100101 Firefox/32.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "32",
+		"browserVersion": "32.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "32.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 35.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "35",
+		"browserVersion": "35.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "35.0",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 36.0 (CentOS 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; CentOS; Linux x86_64; rv:36.0) Gecko/20100101 Firefox/36.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "36",
+		"browserVersion": "36.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "36.0",
+		"osName": "CentOS",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 38.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "38",
+		"browserVersion": "38.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "38.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 40.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:40.0) Gecko/20100101 Firefox/40.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "40",
+		"browserVersion": "40.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "40.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 43.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:43.0) Gecko/20100101 Firefox/43.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "43",
+		"browserVersion": "43.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "43.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 46.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:46.0) Gecko/20100101 Firefox/46.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "46",
+		"browserVersion": "46.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "46.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 49.0 (32 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:49.0) Gecko/20100101 Firefox/49.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "49",
+		"browserVersion": "49.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "49.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 49.0 (Fedora 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "49",
+		"browserVersion": "49.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "49.0",
+		"osName": "Fedora",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 49.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "49",
+		"browserVersion": "49.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "49.0",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 55.0 (64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "55",
+		"browserVersion": "55.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "55.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Firefox 55.0 (Ubuntu 64 bit)",
+		"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "55",
+		"browserVersion": "55.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "55.0",
+		"osName": "Ubuntu",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Galeon 2.0.6 (Ubuntu)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko Galeon/2.0.6 (Ubuntu 2.0.6-2)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.8",
+		"osName": "Ubuntu",
+		"osVersion": "2.0.6-2",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Galeon 2.0.6 (Gentoo)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.16) Gecko/20080716 (Gentoo) Galeon/2.0.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.16",
+		"osName": "Gentoo",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Iceape (SeaMonkey) 2.0.8 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.13) Gecko/20100916 Iceape/2.0.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceape",
+		"browserMajor": "2",
+		"browserVersion": "2.0.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.13",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Iceweasel (Firefox) 19.0 (Debian 64)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:19.0) Gecko/20100101 Firefox/19.0 Iceweasel/19.0.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "19",
+		"browserVersion": "19.0.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "19.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Iceweasel (Firefox) 38.0 (Debian 64)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0 Iceweasel/38.2.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Iceweasel",
+		"browserMajor": "38",
+		"browserVersion": "38.2.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "38.0",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.3 - khtml (Slackware 13)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.2; Linux) KHTML/4.2.4 (like Gecko) Slackware/13.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.2.4",
+		"osName": "Slackware",
+		"osVersion": "13.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.3 - khtml (Fedora 11)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.3; Linux) KHTML/4.3.1 (like Gecko) Fedora/4.3.1-3.fc11",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.3.1",
+		"osName": "Fedora",
+		"osVersion": "4.3.1-3.fc11",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.4 - khtml (Fedora 12)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.4; Linux) KHTML/4.4.1 (like Gecko) Fedora/4.4.1-1.fc12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.4.1",
+		"osName": "Fedora",
+		"osVersion": "4.4.1-1.fc12",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.4 - khtml (Kubuntu)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.4; Linux 2.6.32-22-generic; X11; en_US) KHTML/4.4.3 (like Gecko) Kubuntu",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.4.3",
+		"osName": "Kubuntu",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.4 - khtml (Kubuntu)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.4; Linux 2.6.32-22-generic; X11; en_US) KHTML/4.4.3 (like Gecko) Kubuntu",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.4.3",
+		"osName": "Kubuntu",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.8 - khtml (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; Linux 3.8-6.dmz.1-liquorix-686) KHTML/4.8.4 (like Gecko) Konqueror/4.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.8.4",
+		"osName": "Linux",
+		"osVersion": "3.8",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.9 - khtml",
+		"userAgent": "Mozilla/5.0 (X11; Linux) KHTML/4.9.1 (like Gecko) Konqueror/4.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.9",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.9.1",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Konqueror 4.14 - khtml",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.21 (KHTML, like Gecko) konqueror/4.14.10 Safari/537.21",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.14.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.21",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Midori 0.1.10 (Webkit 531)",
+		"userAgent": "Midori/0.1.10 (X11; Linux i686; U; en-us) WebKit/(531).(2)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Midori",
+		"browserMajor": "0",
+		"browserVersion": "0.1.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Mozilla 1.9.0 (Debian)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.0.3) Gecko/2008092814 (Debian-3.0.1-1)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.0.3",
+		"osName": "Debian",
+		"osVersion": "3.0.1-1",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Mozilla 1.9a3pre",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9a3pre) Gecko/20070330",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9a3pre",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Opera 12.16 (id as 9.8, last presto)",
+		"userAgent": "Opera/9.80 (X11; Linux i686) Presto/2.12.388 Version/12.16",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "12",
+		"browserVersion": "12.16",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.388",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Opera 20.0 (Chrome 33)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.166 Safari/537.36 OPR/20.0.1396.73172",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1396.73172",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "33.0.1750.166",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Opera 20.0 (Chrome 33)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.166 Safari/537.36 OPR/20.0.1396.73172",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "20",
+		"browserVersion": "20.0.1396.73172",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "33.0.1750.166",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Opera 32.0 (Chrome 45)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36 OPR/32.0.1948.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "32",
+		"browserVersion": "32.0.1948.25",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.85",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Opera 40.0 (Chrome 53)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.101 Safari/537.36 OPR/40.0.2308.62",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "40",
+		"browserVersion": "40.0.2308.62",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.101",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Puffin 4.8 (Chrome 30)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-us) AppleWebKit/537.36 (KHTML, like Gecko)  Chrome/30.0.1599.114 Safari/537.36 Puffin/4.8.0.2965AT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "4",
+		"browserVersion": "4.8.0.2965AT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.114",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "QupZilla 1.8 (Webkit 538.2)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/538.1 (KHTML, like Gecko) QupZilla/1.8.6 Safari/538.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "QupZilla",
+		"browserMajor": "1",
+		"browserVersion": "1.8.6",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "538.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "QupZilla 1.9 (Webkit 538.1)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) QupZilla/1.9.0 Safari/538.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "QupZilla",
+		"browserMajor": "1",
+		"browserVersion": "1.9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "538.1",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "SeaMonkey 2.7 (Firefox 10)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 SeaMonkey/2.7.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.7.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "SeaMonkey 2.9 (Firefox 12)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:12.0) Gecko/20120502 Firefox/12.0 SeaMonkey/2.9.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.9.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "12.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "SeaMonkey 2.35 (Firefox 38)",
+		"userAgent": "Mozilla/5.0 (Windows NT 5.1; rv:38.0) Gecko/20100101 Firefox/38.0 SeaMonkey/2.35",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.35",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "38.0",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "SeaMonkey 2.46 (Firefox 49)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686; rv:49.0) Gecko/20100101 Firefox/49.0 SeaMonkey/2.46",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.46",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "49.0",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Shadowfox 7.0 (Firefox 7)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; us; rv:1.9.1.19) Gecko/20110430 shadowfox/7.0 (like Firefox/7.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1.19",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Swiftfox 3.6.3",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9.2.3) Gecko/20100406 Firefox/3.6.3 (Swiftfox)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Swiftfox",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.3",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Uzbl (Webkit 1.3)",
+		"userAgent": "Uzbl (Webkit 1.3) (Linux i686 [i686])",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Linux",
+		"description": "Vivaldi 1.0.344 (Chrome 47)",
+		"userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.80 Safari/537.36 Vivaldi/1.0.344.37",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Vivaldi",
+		"browserMajor": "1",
+		"browserVersion": "1.0.344.37",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "47.0.2526.80",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix/Console Browsers",
+		"description": "ELinks 0.4.3 (NetBSD)",
+		"userAgent": "ELinks (0.4.3; NetBSD 3.0.2PATCH sparc64; 141x19)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Links",
+		"browserMajor": "0",
+		"browserVersion": "0.4.3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "0.4.3",
+		"osName": "NetBSD",
+		"osVersion": "3.0.2PATCH",
+		"cpuArchitecture": "sparc64"
+	},
+	{
+		"folder": "/Browsers - Unix/Console Browsers",
+		"description": "Links 2.1 (FreeBSD)",
+		"userAgent": "Links (2.1pre15; FreeBSD 5.3-RELEASE i386; 196x84)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Links",
+		"browserMajor": "2",
+		"browserVersion": "2.1pre15",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Links",
+		"engineVersion": "2.1pre15",
+		"osName": "FreeBSD",
+		"osVersion": "5.3",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Console Browsers",
+		"description": "Links 2.8.7",
+		"userAgent": "Lynx/2.8.7dev.4 libwww-FM/2.14 SSL-MM/1.4.1 OpenSSL/0.9.8d",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Lynx",
+		"browserMajor": "2",
+		"browserVersion": "2.8.7dev.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Lynx",
+		"engineVersion": "2.8.7dev.4",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix/Console Browsers",
+		"description": "w3m 0.5.1",
+		"userAgent": "w3m/0.5.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "w3m",
+		"browserMajor": "0",
+		"browserVersion": "0.5.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "w3m",
+		"engineVersion": "0.5.1",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Chrome 4.0 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; FreeBSD i386; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/4.0.207.0 Safari/532.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "4",
+		"browserVersion": "4.0.207.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "532.0",
+		"osName": "FreeBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Chrome 5.0 (OpenBSD 32)",
+		"userAgent": "Mozilla/5.0 (X11; U; OpenBSD i386; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Chrome/5.0.359.0 Safari/533.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "5",
+		"browserVersion": "5.0.359.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.3",
+		"osName": "OpenBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Chrome 10.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; U; FreeBSD x86_64; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "10",
+		"browserVersion": "10.0.648.204",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.16",
+		"osName": "FreeBSD",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Firebird 0.6 (SunOs)",
+		"userAgent": "Mozilla/5.0 (X11; U; SunOS sun4m; en-US; rv:1.4b) Gecko/20030517 Mozilla Firebird/0.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firebird",
+		"browserMajor": "0",
+		"browserVersion": "0.6",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.4b",
+		"osName": "Solaris",
+		"osVersion": "sun4m",
+		"cpuArchitecture": "sparc"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Firefox 3.1b3 (SunOs)",
+		"userAgent": "Mozilla/5.0 (X11; U; SunOS i86pc; en-US; rv:1.9.1b3) Gecko/20090429 Firefox/3.1b3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.1b3",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1b3",
+		"osName": "Solaris",
+		"osVersion": "i86pc",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Firefox 3.5 (OpenBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; OpenBSD i386; en-US; rv:1.9.1) Gecko/20090702 Firefox/3.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1",
+		"osName": "OpenBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Firefox 3.6.8 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; FreeBSD i386; de-CH; rv:1.9.2.8) Gecko/20100729 Firefox/3.6.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "3",
+		"browserVersion": "3.6.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.8",
+		"osName": "FreeBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Firefox 5.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64; rv:5.0) Gecko/20100101 Firefox/5.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "5.0",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Galeon 1.3.15 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; FreeBSD i386; en-US; rv:1.6) Gecko/20040406 Galeon/1.3.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.6",
+		"osName": "FreeBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Konqueror 3.5 - khtml (NetBSD 4.0)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/3.5; NetBSD 4.0_RC3; X11) KHTML/3.5.7 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "3.5.7",
+		"osName": "NetBSD",
+		"osVersion": "4.0_RC3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Konqueror 3.5.1 - khtml (SunOS)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/3.5; SunOS) KHTML/3.5.1 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "3",
+		"browserVersion": "3.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "3.5.1",
+		"osName": "Solaris",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Mozilla 1.7 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; FreeBSD; i386; en-US; rv:1.7) Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.7",
+		"osName": "FreeBSD",
+		"osVersion": "",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Netscape 4.77 (Irix)",
+		"userAgent": "Mozilla/4.77 [en] (X11; I; IRIX;64 6.5 IP30)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": "irix"
+	},
+	{
+		"folder": "/Browsers - Unix/Legacy Browsers",
+		"description": "Netscape 4.8 (SunOS)",
+		"userAgent": "Mozilla/4.8 [en] (X11; U; SunOS; 5.7 sun4u)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Solaris",
+		"osVersion": "",
+		"cpuArchitecture": "sparc"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Arora 0.10.2 (BSD/Haiku)",
+		"userAgent": "Mozilla/5.0 (Unknown; U; UNIX BSD/SYSV system; C -) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.10.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Arora",
+		"browserMajor": "0",
+		"browserVersion": "0.10.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "527",
+		"osName": "BSD",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Chrome 19.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64) AppleWebKit/536.5 (KHTML like Gecko) Chrome/19.0.1084.56 Safari/536.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1084.56",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.5",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Chrome 22.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64) AppleWebKit/537.4 (KHTML like Gecko) Chrome/22.0.1229.79 Safari/537.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "22",
+		"browserVersion": "22.0.1229.79",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.4",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Chrome 27.0 (NetBSD)",
+		"userAgent": "Mozilla/5.0 (X11; NetBSD) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "27",
+		"browserVersion": "27.0.1453.116",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "537.36",
+		"osName": "NetBSD",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Chrome 36.0 (OpenBSD)",
+		"userAgent": "Mozilla/5.0 (X11; OpenBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1985.125",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1985.125",
+		"osName": "OpenBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Chromium 20.0 (NetBSD)",
+		"userAgent": "Mozilla/5.0 (X11; NetBSD x86; en-us) AppleWebKit/666.6+ (KHTML, like Gecko) Chromium/20.0.0000.00 Chrome/20.0.0000.00 Safari/666.6+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "20",
+		"browserVersion": "20.0.0000.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "666.6",
+		"osName": "NetBSD",
+		"osVersion": "x86",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Epiphany 2.30.0 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64) AppleWebKit/535.22+ (KHTML, like Gecko) Chromium/17.0.963.56 Chrome/17.0.963.56 Safari/535.22+ Epiphany/2.30.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "17",
+		"browserVersion": "17.0.963.56",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "535.22",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Epiphany 2.30.0 (OpenBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; OpenBSD arm; en-us) AppleWebKit/531.2  (KHTML, like Gecko) Safari/531.2  Epiphany/2.30.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Epiphany",
+		"browserMajor": "2",
+		"browserVersion": "2.30.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "531.2",
+		"osName": "OpenBSD",
+		"osVersion": "arm",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 16.0 (NetBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; NetBSD amd64; rv:16.0) Gecko/20121102 Firefox/16.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "16",
+		"browserVersion": "16.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "16.0",
+		"osName": "NetBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 28.0 (OpenBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; OpenBSD amd64; rv:28.0) Gecko/20100101 Firefox/28.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "28",
+		"browserVersion": "28.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "28.0",
+		"osName": "OpenBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 30.0 (NetBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; NetBSD amd64; rv:30.0) Gecko/20100101 Firefox/30.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "30",
+		"browserVersion": "30.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "30.0",
+		"osName": "NetBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 30.0 (OpenBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; OpenBSD amd64; rv:30.0) Gecko/20100101 Firefox/30.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "30",
+		"browserVersion": "30.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "30.0",
+		"osName": "OpenBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 35.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "35",
+		"browserVersion": "35.0.1916.153",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "35.0.1916.153",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Firefox 54.0 (FreeBSD 64)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD amd64; rv:54.0) Gecko/20100101 Firefox/54.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "54",
+		"browserVersion": "54.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "54.0",
+		"osName": "FreeBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Konqueror 4.1 - khtml (DragonFly)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.1; DragonFly) KHTML/4.1.4 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.1.4",
+		"osName": "DragonFly",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Konqueror 4.1 - khtml (OpenBSD)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.1; OpenBSD) KHTML/4.1.4 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.1.4",
+		"osName": "OpenBSD",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Konqueror 4.5.4 - khtml (NetBSD 5.0.2)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.5; NetBSD 5.0.2; X11; amd64; en_US) KHTML/4.5.4 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.5.4",
+		"osName": "NetBSD",
+		"osVersion": "5.0.2",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Konqueror 4.5.4 - khtml (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (compatible; Konqueror/4.5; FreeBSD) KHTML/4.5.4 (like Gecko)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Konqueror",
+		"browserMajor": "4",
+		"browserVersion": "4.5",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "KHTML",
+		"engineVersion": "4.5.4",
+		"osName": "FreeBSD",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Namoroka 3.6.15 (Firefox) (NetBSD)",
+		"userAgent": "Mozilla/5.0 (X11; U; NetBSD amd64; en-US; rv:1.9.2.15) Gecko/20110308 Namoroka/3.6.15",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.2.15",
+		"osName": "NetBSD",
+		"osVersion": "amd64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "NetSurf 1.2 (NetBSD)",
+		"userAgent": "NetSurf/1.2 (NetBSD; amd64)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetSurf",
+		"browserMajor": "1",
+		"browserVersion": "1.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "NetSurf",
+		"engineVersion": "1.2",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Opera 12.10 (FreeBSD)",
+		"userAgent": "Opera/9.80 (X11; FreeBSD 8.1-RELEASE i386; Edition Next) Presto/2.12.388 Version/12.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "12",
+		"browserVersion": "12.10",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.388",
+		"osName": "FreeBSD",
+		"osVersion": "8.1",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "QupZilla 1.7.0 (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (Unknown; UNIX BSD/SYSV system) AppleWebKit/538.1 (KHTML, like Gecko) QupZilla/1.7.0 Safari/538.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "QupZilla",
+		"browserMajor": "1",
+		"browserVersion": "1.7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "538.1",
+		"osName": "BSD",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Seamonkey 1.1.8 (Mozilla) (SunOS 32bit)",
+		"userAgent": "Mozilla/5.0 (X11; U; SunOS i86pc; en-US; rv:1.8.1.12) Gecko/20080303 SeaMonkey/1.1.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "1",
+		"browserVersion": "1.1.8",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.12",
+		"osName": "Solaris",
+		"osVersion": "i86pc",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Browsers - Unix",
+		"description": "Seamonkey 2.25 (Firefox/28.0) (FreeBSD)",
+		"userAgent": "Mozilla/5.0 (X11; FreeBSD i386; rv:28.0) Gecko/20100101 Firefox/28.0 SeaMonkey/2.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.25",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "28.0",
+		"osName": "FreeBSD",
+		"osVersion": "i386",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Bolt 2.8 (webkit 534.6) (Sony Ericsson K800i)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; BOLT/2.800) AppleWebKit/534.6 (KHTML, like Gecko) Version/5.0 Safari/534.6.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "BOLT",
+		"browserMajor": "2",
+		"browserVersion": "2.800",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.6",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Chrome 35.0 (Samsung SM-T537A) - Android 4.4.2 -",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; SAMSUNG-SM-T537A Build/KOT49H) AppleWebKit/537.36 (KHTML like Gecko) Chrome/35.0.1916.141 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "35",
+		"browserVersion": "35.0.1916.141",
+		"deviceModel": "SM-T537A",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "35.0.1916.141",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Chrome 60.0 - Pixel XL OPR6 - Android 8.0.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel XL Build/OPR6.170623.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "Pixel XL",
+		"deviceType": "mobile",
+		"deviceVendor": "Google",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "8.0.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Edge 12.0 (webkit 537.36) Windows Phone OS 10.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; DEVICE INFO) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "12",
+		"browserVersion": "12.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "12.0",
+		"osName": "Windows Phone",
+		"osVersion": "10.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox 35.0 - Android",
+		"userAgent": "Mozilla/5.0 (Android; Mobile; rv:35.0) Gecko/35.0 Firefox/35.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "35",
+		"browserVersion": "35.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "35.0",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "IEMobile 6.12 (Win CE) (with zune id)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 6.12; Microsoft ZuneHD 4.3)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "6",
+		"browserVersion": "6.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "EMobile 7.11 (MSIE 6 - Win CE)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "IEMobile 7.0 (MSIE 7.0) - WinPhone OS 7.0 - Asus Galaxy",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows Phone OS 7.0; Trident/3.1; IEMobile/7.0) Asus;Galaxy6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "Asus",
+		"engineName": "Trident",
+		"engineVersion": "3.1",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "IEMobile 7.5 (MSIE 9 - WP7.5)",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "IEMobile 9.0 - WinPhone OS 7.5",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "IEMobile 10.0 - WinPhone OS 8.0 - ARM",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "EudoraWeb 2.1 (PalmOS)",
+		"userAgent": "Mozilla/1.22 (compatible; MSIE 5.01; PalmOS 3.0) EudoraWeb 2.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "5",
+		"browserVersion": "5.01",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox 4.0.1 (Win CE)",
+		"userAgent": "Mozilla/5.0 (WindowsCE 6.0; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "4",
+		"browserVersion": "4.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Windows",
+		"osVersion": "CE 6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox Fennec 1.0.a1 (Linux arm)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux armv61; en-US; rv:1.9.1b2pre) Gecko/20081015 Fennec/1.0a1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "1",
+		"browserVersion": "1.0a1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9.1b2pr",
+		"osName": "Linux",
+		"osVersion": "armv61",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox Fennec 2.0.1 (Maemo arm)",
+		"userAgent": "Mozilla/5.0 (Maemo; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "2",
+		"browserVersion": "2.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "armv7l",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox Fennec 10.0.1 (Maemo arm)",
+		"userAgent": "Mozilla/5.0 (Maemo; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "10",
+		"browserVersion": "10.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Linux",
+		"osVersion": "armv7l",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Firefox 48.0 - Android 6.0.1 (Samsung SM-G935F)",
+		"userAgent": "Mozilla/5.0 (Android 6.0.1; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (Android 6.0.1)",
+		"platform": "Linux armv81",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "48",
+		"browserVersion": "48.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "48.0",
+		"osName": "Android",
+		"osVersion": "6.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Minimo 0.016 (Win CE)",
+		"userAgent": "Mozilla/5.0 (Windows; U; Windows CE 5.1; rv:1.8.1a3) Gecko/20060610 Minimo/0.016",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Minimo",
+		"browserMajor": "0",
+		"browserVersion": "0.016",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1a3",
+		"osName": "Windows",
+		"osVersion": "CE 5.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Minimo 0.020 (Linux)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux armv6l; rv 1.8.1.5pre) Gecko/20070619 Minimo/0.020",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Minimo",
+		"browserMajor": "0",
+		"browserVersion": "0.020",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Linux",
+		"osVersion": "armv6l",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Minimo 0.025 (Linux arm)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux arm7tdmi; rv:1.8.1.11) Gecko/20071130 Minimo/0.025",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Minimo",
+		"browserMajor": "0",
+		"browserVersion": "0.025",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.1.11",
+		"osName": "Linux",
+		"osVersion": "arm7tdmi",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "NetFront 3.0 (PalmOS)",
+		"userAgent": "Mozilla/4.0 (PDA; PalmOS/sony/model prmr/Revision:1.1.54 (en)) NetFront/3.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "NetFront",
+		"engineVersion": "3.0",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 9.51 beta (Windows)",
+		"userAgent": "Opera/9.51 Beta (Microsoft Windows; PPC; Opera Mobi/1718; U; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.51",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 9.60 Mini 4.1 beta (Windows)",
+		"userAgent": "Opera/9.60 (J2ME/MIDP; Opera Mini/4.1.11320/608; U; en) Presto/2.2.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "4",
+		"browserVersion": "4.1.11320",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.2.0",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 9.60 Mini 4.2 J2ME/MIDP",
+		"userAgent": "Opera/9.60 (J2ME/MIDP; Opera Mini/4.2.14320/554; U; cs) Presto/2.2.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "4",
+		"browserVersion": "4.2.14320",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.2.0",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 10.00 Mobi - SymbOS",
+		"userAgent": "Opera/9.80 (S60; SymbOS; Opera Mobi/499; U; ru) Presto/2.4.18 Version/10.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mobi",
+		"browserMajor": "10",
+		"browserVersion": "10.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.4.18",
+		"osName": "Symbian",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 10.61 Mini 5.1 (J2ME/MIDP)",
+		"userAgent": "Opera/10.61 (J2ME/MIDP; Opera Mini/5.1.21219/19.999; en-US; rv:1.9.3a5) WebKit/534.5 Presto/2.6.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "5",
+		"browserVersion": "5.1.21219",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.6.30",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 11.1010 Mini 7.5 (Android)",
+		"userAgent": "Opera/9.80 (Android; Opera Mini/7.5.33361/31.1543; U; en) Presto/2.8.119 Version/11.1010",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "7",
+		"browserVersion": "7.5.33361",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.8.119",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 12.16 Mini 8.0 (J2ME/MIDP)",
+		"userAgent": "Opera/9.80 (J2ME/MIDP; Opera Mini/8.0.35626/37.8918; U; en) Presto/2.12.423 Version/12.16",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "8",
+		"browserVersion": "8.0.35626",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.423",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera 30.0 (Android)",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 7 Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.78 Safari/537.36 OPR/30.0.1856.93524",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1856.93524",
+		"deviceModel": "Nexus 7",
+		"deviceType": "tablet",
+		"deviceVendor": "Asus",
+		"engineName": "Blink",
+		"engineVersion": "43.0.2357.78",
+		"osName": "Android",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera Mini 9.0 (Android)",
+		"userAgent": "Opera/9.80 (Android; Opera Mini/9.0.1829/66.318; U; en) Presto/2.12.423 Version/12.16",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "9",
+		"browserVersion": "9.0.1829",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.12.423",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Opera Mobi 1040 (Linux i686)",
+		"userAgent": "Opera/9.80 (Linux i686; Opera Mobi/1040; U; en) Presto/2.5.24 Version/10.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mobi",
+		"browserMajor": "10",
+		"browserVersion": "10.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.5.24",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Polaris 6.01",
+		"userAgent": "POLARIS/6.01 (BREW 3.1.5; U; en-us; LG; LX265; POLARIS/6.01/WAP) MMP/2.0 profile/MIDP-2.1 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "POLARIS",
+		"browserMajor": "6",
+		"browserVersion": "6.01",
+		"deviceModel": "LX265",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 2.9174AP - Android - (AP=Android Phone)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-gb) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/2.9174AP",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "2",
+		"browserVersion": "2.9174AP",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 2.9174AT - Android - (AT=Android Tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-us) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/2.9174AT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "2",
+		"browserVersion": "2.9174AT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 3.9174IP - iOS 6_1 - (IP=iphone)",
+		"userAgent": "Mozilla/5.0 (iPod; U; CPU iPhone OS 6_1 like Mac OS X; en-HK) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/3.9174IP Mobile",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "3",
+		"browserVersion": "3.9174IP",
+		"deviceModel": "iPod",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "iOS",
+		"osVersion": "6.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 3.9174IT - (says Linux) - (IT=iOS tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-AU) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/3.9174IT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "3",
+		"browserVersion": "3.9174IT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 2.0.5603M - Linux - (M=mobile)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-gb) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/2.0.5603M",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "2",
+		"browserVersion": "2.0.5603M",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Puffin 4.5.0IT - (says Linux) - (IT=iOS tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36 Puffin/4.5.0IT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "4",
+		"browserVersion": "4.5.0IT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.114",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Mobile Safari 530.17 (Android)",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.0; en-us; Droid Build/ESD20) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Droid",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Safari 533 - iPad - iOS 4_2_1)",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Safari 533.17 - iPhone - iOS 4_2_1",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; da-dk) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "Safari 6 (8536.25) - Apple iPad 2 - iOS 6_0",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "536.26",
+		"osName": "iOS",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "UCBrowser 2.9.0 - Trident/MSIE 9.0 - WindowsPhone 7",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; XBLWP7; ZuneWP7) UCBrowser/2.9.0.263",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows",
+		"osVersion": "7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Browsers",
+		"description": "UCBrowser 8.6.1 - Webkit 533 - Android 2.3.3",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.3.3; en-us ; LS670 Build/GRI40) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1/UCBrowser/8.6.1.262/145/355",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "UCBrowser",
+		"browserMajor": "8",
+		"browserVersion": "8.6.1.262",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.3.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Acer Iconia - Android - 3.0.1 - AppleWebKit 534.13",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0.1; fr-fr; A500 Build/HRI66) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Android 3.0.1",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "Android",
+		"osVersion": "3.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "(device unknown) - Android 4.1 - AppleWebKit 534.30",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.1; en-us; sdk Build/MR1) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.1 Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.1",
+		"deviceModel": "Android 4.1",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "(device unknown) - Android 4.2 - Safari 535.19",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.2; en-us; sdk Build/MR1) AppleWebKit/535.19 (KHTML, like Gecko) Version/4.2 Safari/535.19",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.2",
+		"deviceModel": "Android 4.2",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "WebKit",
+		"engineVersion": "535.19",
+		"osName": "Android",
+		"osVersion": "4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "(device unknown) - Android - Puffin 2.9174AT (AT=android tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-us) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/2.9174AT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "2",
+		"browserVersion": "2.9174AT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS - Puffin/3.9174IT (IT=ios tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-AU) AppleWebKit/534.35 (KHTML, like Gecko) Chrome/11.0.696.65 Safari/534.35 Puffin/3.9174IT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "3",
+		"browserVersion": "3.9174IT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.35",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad 1 - iOS 3.2 - Safari 531",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.4",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "531.21.10",
+		"osName": "iOS",
+		"osVersion": "3.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad 1 - iOS 4_2_1 - Safari 533",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad 2 - iOS 4_3 - Safari 533",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8F190 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 5_1 - Safari 5.1 (7534.48.3)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko ) Version/5.1 Mobile/9B176 Safari/7534.48.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.1",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "534.46",
+		"osName": "iOS",
+		"osVersion": "5.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad 2 - iOS 6_0 - Safari 6 (8536.25)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "536.26",
+		"osName": "iOS",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 8_0_2 - Safari 7 (9537.53)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 8_0_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML like Gecko) Mobile/12A405 Version/7.0 Safari/9537.53",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.0.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 8_4 - Safari 8 (600.1)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.4.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 9_3 - Safari 9 (601.1)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "601.1.46",
+		"osName": "iOS",
+		"osVersion": "9.3.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 10_0 - CriOS 49.0",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 10_0 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/49.0.2623.109 Mobile/14A5335b Safari/601.1.46",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "49",
+		"browserVersion": "49.0.2623.109",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "601.1",
+		"osName": "iOS",
+		"osVersion": "10.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - iOS 11_0 - Safari 11.0",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5362a Safari/604.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "604.1.38",
+		"osName": "iOS",
+		"osVersion": "11.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Apple iPad - Puffin 4.5.0IT - (says Linux) - (IT=iOS tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36 Puffin/4.5.0IT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "4",
+		"browserVersion": "4.5.0IT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.114",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Barnes & Noble Nook Color - (Masked: IDs as: OS_X 10_5_7) - Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_7;en-us) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Mac OS",
+		"osVersion": "10.5.7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "HP Touchpad 1.0 - WebOS 3.0.2 - wOSBrowser 234.40",
+		"userAgent": "Mozilla/5.0 (hp-tablet; Linux; hpwOS/3.0.2; U; de-DE) AppleWebKit/534.6 (KHTML, like Gecko) wOSBrowser/234.40.1 Safari/534.6 TouchPad/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "TouchPad",
+		"deviceType": "tablet",
+		"deviceVendor": "hp",
+		"engineName": "WebKit",
+		"engineVersion": "534.6",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Kindle Fire - Android 4.0.3 - Silk 2.1 (AppleWebKit 535.19)",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; en-us; KFTT Build/IML74K) AppleWebKit/535.19 (KHTML, like Gecko) Silk/2.1 Mobile Safari/535.19 Silk-Accelerated=true",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Silk",
+		"browserMajor": "2",
+		"browserVersion": "2.1",
+		"deviceModel": "KFTT",
+		"deviceType": "tablet",
+		"deviceVendor": "Amazon",
+		"engineName": "WebKit",
+		"engineVersion": "535.19",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "LG V410 Tablet - Android 4.4 - Chrome 30",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; LG-V410 Build/KOT49I.V41010d) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.103 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1599.103",
+		"deviceModel": "V410",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.103",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Motorola Xoom - Android 3.0.1 - Mobile Safari 523.12",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.0.4",
+		"deviceModel": "Xoom",
+		"deviceType": "tablet",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "525.10",
+		"osName": "Android",
+		"osVersion": "3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Nook Tablet - Android 4.0.4 - Chrome 42/Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.0.4; BNTV400 Build/IMM76L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.111 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "42",
+		"browserVersion": "42.0.2311.111",
+		"deviceModel": "V400",
+		"deviceType": "tablet",
+		"deviceVendor": "Barnes & Noble",
+		"engineName": "Blink",
+		"engineVersion": "42.0.2311.111",
+		"osName": "Android",
+		"osVersion": "4.0.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "RIM (Blackberry) Playbook - OS 2.1.0 - Safari 536.2+",
+		"userAgent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.2.1.0",
+		"deviceModel": "PlayBook",
+		"deviceType": "tablet",
+		"deviceVendor": "RIM",
+		"engineName": "WebKit",
+		"engineVersion": "536.2",
+		"osName": "RIM Tablet OS",
+		"osVersion": "2.1.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Samsung Galaxy - Android 1.5 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; de-de; Galaxy Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Samsung Galaxy - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-ca; GT-P1000M Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P1000",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Samsung Galaxy (Verizon) - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; SCH-I800 Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "SCH-I800",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Galaxy GT-P5210 tablet - Android 4.4.2 - AppleWebKit 534.30",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; GT-P5210 Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P5210",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Samsung GT-P7100 - Android 3.0.1 - AppleWebKit 534.13",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0.1; en-us; GT-P7100 Build/HRI83) AppleWebkit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P7100",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Webkit",
+		"engineVersion": "534.13",
+		"osName": "Android",
+		"osVersion": "3.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Tablets",
+		"description": "Samsung SM-T530NU - Android 5.0.2 - Chrome 38.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-T530NU Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Samsung Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.2",
+		"deviceModel": "SM-T530NU",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "38.0.2125.102",
+		"osName": "Android",
+		"osVersion": "5.0.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Acer",
+		"description": "Iconia Tablet - Android - 3.0.1 - AppleWebKit 534.13",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0.1; fr-fr; A500 Build/HRI66) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Android 3.0.1",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "Android",
+		"osVersion": "3.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Amazon (Kindle)",
+		"description": "Kindle 2.0 - Linux",
+		"userAgent": "Mozilla/4.0 (compatible; Linux 2.6.22) NetFront/3.4 Kindle/2.0 (screen 600x800)",
+		"appCodename": "Mozilla",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Kindle",
+		"browserMajor": "2",
+		"browserVersion": "2.0",
+		"deviceModel": "2.0",
+		"deviceType": "tablet",
+		"deviceVendor": "Kindle",
+		"engineName": "NetFront",
+		"engineVersion": "3.4",
+		"osName": "Linux",
+		"osVersion": "2.6.22",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Amazon (Kindle)",
+		"description": "Kindle 3.0 - AppleWebKit 528.5 - Linux",
+		"userAgent": "Mozilla/5.0 (Linux U; en-US)  AppleWebKit/528.5  (KHTML, like Gecko, Safari/528.5 ) Version/4.0 Kindle/3.0 (screen 600x800; rotate)",
+		"appCodename": "Mozilla",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Kindle",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "3.0",
+		"deviceType": "tablet",
+		"deviceVendor": "Kindle",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Linux",
+		"osVersion": "U",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Amazon (Kindle)",
+		"description": "Kindle 3.0+ - Safari 5.0 (AppleWebKit 531.2) - Android",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux armv7l like Android; en-us) AppleWebKit/531.2+ (KHTML, like Gecko) Version/5.0 Safari/533.2+ Kindle/3.0+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Kindle",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "3.0",
+		"deviceType": "tablet",
+		"deviceVendor": "Kindle",
+		"engineName": "WebKit",
+		"engineVersion": "531.2",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Amazon (Kindle)",
+		"description": "Kindle Fire - Silk/2.1 (AppleWebKit 535.19) - Android",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; en-us; KFTT Build/IML74K) AppleWebKit/535.19 (KHTML, like Gecko) Silk/2.1 Mobile Safari/535.19 Silk-Accelerated=true",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Silk",
+		"browserMajor": "2",
+		"browserVersion": "2.1",
+		"deviceModel": "KFTT",
+		"deviceType": "tablet",
+		"deviceVendor": "Amazon",
+		"engineName": "WebKit",
+		"engineVersion": "535.19",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad 1 - iOS 3.2 - Safari 531",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.4",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "531.21.10",
+		"osName": "iOS",
+		"osVersion": "3.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad 1 - iOS 4_2 - Safari 533",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad 2 - iOS 4_3 - Safari 533",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8F190 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad 2 - iOS 5_0 - Safari 7.2",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU iPad OS 5_0_1 like Mac OS X; en-us) AppleWebKit/535.1+ (KHTML like Gecko) Version/7.2.0.0 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.2.0.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "535.1",
+		"osName": "iOS",
+		"osVersion": "5.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 6_0 - Safari 6.0",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "536.26",
+		"osName": "iOS",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 7_0 - Safari 6 (8536.25)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) CriOS/30.0.1599.12 Mobile/11A465 Safari/8536.25 (3B92C18B-D9DE-4CB7-A02A-22FD2AF17C8F)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1599.12",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "537.51.1",
+		"osName": "iOS",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 7_1 - Safari 7 (9537.53)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "537.51.2",
+		"osName": "iOS",
+		"osVersion": "7.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 8_0 - Safari 7 (9537.53)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 8_0_2 like Mac OS X) AppleWebKit/600.1.4 (KHTML like Gecko) Mobile/12A405 Version/7.0 Safari/9537.53",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.0.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 8_4 - Safari 8 (600.1)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12H321 Safari/600.1.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.4.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - iOS 9_3 - Safari 9 (601.1)",
+		"userAgent": "Mozilla/5.0 (iPad; CPU OS 9_3_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13F69 Safari/601.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "601.1.46",
+		"osName": "iOS",
+		"osVersion": "9.3.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPad - Puffin 4.5.0IT - (says Linux) - (IT=iOS tablet)",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36 Puffin/4.5.0IT",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Puffin",
+		"browserMajor": "4",
+		"browserVersion": "4.5.0IT",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.114",
+		"osName": "Linux",
+		"osVersion": "x86_64",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 1.0 - Safari 3.0",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420  (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "420",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 2.0 - Safari 3.1",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; en-us) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5A347 Safari/525.200",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.1.1",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "525.18.1",
+		"osName": "iOS",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 3.0 - Safari 4.0",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16",
+		"platform": "iPhone",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "528.18",
+		"osName": "iOS",
+		"osVersion": "3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 4_0 - Safari 4.0",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/531.22.7",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.5",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "532.9",
+		"osName": "iOS",
+		"osVersion": "4.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 4_2_1 - Safari 533.17",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; da-dk) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 5_1_1 - Chrome (crios) 19.0",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; da-dk) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1084.60",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "534.46.0",
+		"osName": "iOS",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 6_0 - Safari 6.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "536.26",
+		"osName": "iOS",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 6 - UCWEB 8.8",
+		"userAgent": "UCWEB/8.8 (iPhone; CPU OS_6; en-US)AppleWebKit/534.1 U3/3.0.0 Mobile",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "534",
+		"browserVersion": "534.1",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "534.1",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 7_1_2 - Safari 7",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "537.51.2",
+		"osName": "iOS",
+		"osVersion": "7.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 8_3 - Safari 8.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "8",
+		"browserVersion": "8.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 8_4 - Safari 8.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 8_4_1 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) GSA/8.0.57838 Mobile/12H321 Safari/600.1.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "GSA",
+		"browserMajor": "8",
+		"browserVersion": "8.0.57838",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.4.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 9_2 - Safari 9.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13C75 Safari/601.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "601.1.46",
+		"osName": "iOS",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 10_0 - Safari 10.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) Version/10.0 Mobile/14A346 Safari/602.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "602.1.50",
+		"osName": "iOS",
+		"osVersion": "10.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 10_0 - GSA 18.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) GSA/18.0.130791545 Mobile/14A5345a Safari/600.1.4",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "GSA",
+		"browserMajor": "18",
+		"browserVersion": "18.0.130791545",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "10.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 10_3 - Safari 9",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_3 like Mac OS X) AppleWebKit/603.3.8 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "603.3.8",
+		"osName": "iOS",
+		"osVersion": "10.3.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPhone - iOS 11_0 - Safari 11",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5362a Safari/604.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "604.1.38",
+		"osName": "iOS",
+		"osVersion": "11.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPod Touch - iOS 2.2.1 - Safari 3.1",
+		"userAgent": "Mozilla/5.0 (iPod; U; CPU iPhone OS 2_2_1 like Mac OS X; en-us) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5H11a Safari/525.20",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.1.1",
+		"deviceModel": "iPod",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "525.18.1",
+		"osName": "iOS",
+		"osVersion": "2.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPod Touch - iOS 3_1_1 - Safari 528.16",
+		"userAgent": "Mozilla/5.0 (iPod; U; CPU iPhone OS 3_1_1 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Mobile/7C145",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16",
+		"platform": "iPhone",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "528",
+		"browserVersion": "528.18",
+		"deviceModel": "iPod",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "528.18",
+		"osName": "iOS",
+		"osVersion": "3.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPod Touch - iOS 7_1 - Safari 7.0/537.51",
+		"userAgent": "Mozilla/5.0 (iPod touch; CPU iPhone OS 7_1 like Mac OS X) AppleWebKit/537.51.2 (KHTML like Gecko) Version/7.0 Mobile/11D167 Safari/123E71C",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "6",
+		"platform": "iPhone",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "iPod touch",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "537.51.2",
+		"osName": "iOS",
+		"osVersion": "7.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Apple (iPhone etc)",
+		"description": "iPod Touch - iOS 8_4 - Safari 600.1",
+		"userAgent": "Mozilla/5.0 (iPod; CPU iPhone OS 8_4 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) CriOS/44.0.2403.67 Mobile/12H143 Safari/600.1.4",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "6",
+		"platform": "iPhone",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "44",
+		"browserVersion": "44.0.2403.67",
+		"deviceModel": "iPod",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "600.1.4",
+		"osName": "iOS",
+		"osVersion": "8.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Barnes and Noble",
+		"description": "Nook 2 (limited data)",
+		"userAgent": "nook browser/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Barnes and Noble",
+		"description": "Nook Color - Android - IDs as: OS_X 10_5_7 - Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_5_7;en-us) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Mac OS",
+		"osVersion": "10.5.7",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Barnes and Noble",
+		"description": "Nook Tablet - Android 2.3.4 - Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.3.4; en-us; BNTV250 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "V250",
+		"deviceType": "tablet",
+		"deviceVendor": "Barnes & Noble",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.3.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Barnes and Noble",
+		"description": "Nook Tablet - Android 4.0.4 - Chrome 42/Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.0.4; BNTV400 Build/IMM76L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.111 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "42",
+		"browserVersion": "42.0.2311.111",
+		"deviceModel": "V400",
+		"deviceType": "tablet",
+		"deviceVendor": "Barnes & Noble",
+		"engineName": "Blink",
+		"engineVersion": "42.0.2311.111",
+		"osName": "Android",
+		"osVersion": "4.0.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "7100",
+		"userAgent": "BlackBerry7100i/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/103",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "7100i",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.1.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "8300 Bold",
+		"userAgent": "BlackBerry8300/4.2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/107 UP.Link/6.2.3.15.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "8300",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "8320 Curve",
+		"userAgent": "BlackBerry8320/4.2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/100",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "8320",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "8330",
+		"userAgent": "BlackBerry8330/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/105",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "8330",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "9000",
+		"userAgent": "BlackBerry9000/4.6.0.167 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/102",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "9000",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.6.0.167",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "9530 Storm",
+		"userAgent": "BlackBerry9530/4.7.0.167 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/102 UP.Link/6.3.1.20.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "9530",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.7.0.167",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "9700",
+		"userAgent": "BlackBerry9700/5.0.0.351 Profile/MIDP-2.1 Configuration/CLDC-1.1 VendorID/123",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "9700",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "5.0.0.351",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "9800 Torch - Safari 534.1",
+		"userAgent": "Mozilla/5.0 (BlackBerry; U; BlackBerry 9800; en) AppleWebKit/534.1  (KHTML, Like Gecko) Version/6.0.0.141 Mobile Safari/534.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "6",
+		"browserVersion": "6.0.0.141",
+		"deviceModel": "9800",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "WebKit",
+		"engineVersion": "534.1",
+		"osName": "BlackBerry",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "9930 - Safari 534.11",
+		"userAgent": "Mozilla/5.0 (BlackBerry; U; BlackBerry 9930; en-US) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.1.0.267 Mobile Safari/534.11+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.1.0.267",
+		"deviceModel": "9930",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "WebKit",
+		"engineVersion": "534.11",
+		"osName": "BlackBerry",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "Keyone BBB100-1 - Safari 537.36",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.1.1; BBB100-1 Build/NMF26F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "59",
+		"browserVersion": "59.0.3071.125",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "59.0.3071.125",
+		"osName": "Android",
+		"osVersion": "7.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "Playbook (tablet) - OS 2.1.0 - Safari 536.2+",
+		"userAgent": "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML like Gecko) Version/7.2.1.0 Safari/536.2+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "7",
+		"browserVersion": "7.2.1.0",
+		"deviceModel": "PlayBook",
+		"deviceType": "tablet",
+		"deviceVendor": "RIM",
+		"engineName": "WebKit",
+		"engineVersion": "536.2",
+		"osName": "RIM Tablet OS",
+		"osVersion": "2.1.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Blackberry (RIM)",
+		"description": "Z10 - BB10 OS - Mobile Safari 537.10+",
+		"userAgent": "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.10+ (KHTML, like Gecko) Version/10.1.0.2342 Mobile Safari/537.10+",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "10",
+		"browserVersion": "10.1.0.2342",
+		"deviceModel": "Touch",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "WebKit",
+		"engineVersion": "537.10",
+		"osName": "BlackBerry",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Coolpad",
+		"description": "3622A Build/LMY47V - Android 5.1.1 - Chrome 58",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.1.1; Coolpad 3622A Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "58",
+		"browserVersion": "58.0.3029.83",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "58.0.3029.83",
+		"osName": "Android",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Coolpad",
+		"description": "3632A Build/NMF26F - Android 7.1.1 - Chrome 59",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.1.1; Coolpad 3632A Build/NMF26F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "59",
+		"browserVersion": "59.0.3071.125",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "59.0.3071.125",
+		"osName": "Android",
+		"osVersion": "7.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Android SDK - Android 1.5 - Mobile Safari 525.20",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; en-us; sdk Build/CUPCAKE) AppleWebkit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Webkit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus One - Android 2.1 - Mobile Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus One - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 5 - Android 4.4 - AppleWebKit/536.23",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/BuildID) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Nexus 5",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "30.0.0.0",
+		"osName": "Android",
+		"osVersion": "4.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 5X - Android 6.0 - Chome 53.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5X Build/MDB08L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.124",
+		"deviceModel": "Nexus 5",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.124",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 6P - Android 7.1.2 - Chrome 53.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.1.2; Nexus 6P Build/N2G48C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "Nexus 6P",
+		"deviceType": "mobile",
+		"deviceVendor": "Huawei",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "7.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 7 - Android 4.4.4 - AppleWebKit/537.36",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.4; Nexus 7 Build/KTU84P) AppleWebKit/537.36 (KHTML like Gecko) Chrome/36.0.1985.135 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "36",
+		"browserVersion": "36.0.1985.135",
+		"deviceModel": "Nexus 7",
+		"deviceType": "tablet",
+		"deviceVendor": "Asus",
+		"engineName": "Blink",
+		"engineVersion": "36.0.1985.135",
+		"osName": "Android",
+		"osVersion": "4.4.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 7 - Android 5.1.1 - Opera 30.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 7 Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.78 Safari/537.36 OPR/30.0.1856.93524",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1856.93524",
+		"deviceModel": "Nexus 7",
+		"deviceType": "tablet",
+		"deviceVendor": "Asus",
+		"engineName": "Blink",
+		"engineVersion": "43.0.2357.78",
+		"osName": "Android",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Nexus 9 - Android 7.0 - Chrome 53.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; Nexus 9 Build/NRD90R) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.124",
+		"deviceModel": "Nexus 9",
+		"deviceType": "tablet",
+		"deviceVendor": "HTC",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.124",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Pixel NHG47N - Android 7.1.2 - Chrome 58.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.1.2; Pixel Build/NHG47N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "58",
+		"browserVersion": "58.0.3029.83",
+		"deviceModel": "Pixel",
+		"deviceType": "mobile",
+		"deviceVendor": "Google",
+		"engineName": "Blink",
+		"engineVersion": "58.0.3029.83",
+		"osName": "Android",
+		"osVersion": "7.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Google (Nexus etc.)",
+		"description": "Pixel XL OPR6 - Android 8.0.0 - Chrome 60.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel XL Build/OPR6.170623.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "Pixel XL",
+		"deviceType": "mobile",
+		"deviceVendor": "Google",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "8.0.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HP",
+		"description": "Touchpad 1.0 - WebOS 3.0.2 - wOSBrowser 234.40.1",
+		"userAgent": "Mozilla/5.0 (hp-tablet; Linux; hpwOS/3.0.2; U; de-DE) AppleWebKit/534.6 (KHTML, like Gecko) wOSBrowser/234.40.1 Safari/534.6 TouchPad/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "TouchPad",
+		"deviceType": "tablet",
+		"deviceVendor": "hp",
+		"engineName": "WebKit",
+		"engineVersion": "534.6",
+		"osName": "Linux",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HP",
+		"description": "Pre3 - webOS 2.2.4 - wOSBrowser 221.56",
+		"userAgent": "Mozilla/5.0 (Linux; webOS/2.2.4; U; en-US) AppleWebKit/534.6 (KHTML, like Gecko) webOSBrowser/221.56 Safari/534.6 Pre/3.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.6",
+		"osName": "webOS",
+		"osVersion": "2.2.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "6800 - WinCE - IEMobile 7.11 (MSIE 6.0) - Sprint",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11) Sprint:PPC6800",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "6800 - WinCE - IEMobile 7.11 (MSIE 6.0) - Verizon",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11) XV6800",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Bahamas - Android 1.5 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; en-us; htc_bahamas Build/CRB17) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "bahamas",
+		"deviceType": "mobile",
+		"deviceVendor": "htc",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Desire - Android 2.1 - Mobile Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.1-update1; de-de; HTC Desire 1.19.161.5 Build/ERE27) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Desire",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Dream - Android 1.5 - Mobile Safari 525",
+		"userAgent": "HTC_Dream Mozilla/5.0 (Linux; U; Android 1.5; en-ca; Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "Dream",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Evo - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; Sprint APA9292KT Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "APA9292KT",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Hero - Android 1.5 - Mobile Safari 525.20",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; de-ch; HTC Hero Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (Linux; U; Android 1.5; de-ch; HTC Hero Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"platform": "",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "Hero",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Incredible - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; ADR6300 Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Legend - Android 2.1 - Mobile Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.1; en-us; HTC Legend Build/cupcake) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Legend",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Magic - Android 1.5 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; de-de; HTC Magic Build/PLAT-RC33) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1 FirePHP/0.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "Magic",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "One M9 - Android 6.0 - Chrome 52.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; HTC One M9 Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.98",
+		"deviceModel": "One M9",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.98",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Sensation - Android 4.0.3 - Mobile Safari 534.30",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; de-ch; HTC Sensation Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Sensation",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "ST7377 - Win XP - Opera 9.5",
+		"userAgent": "HTC-ST7377/1.59.502.3 (67150) Opera/9.50 (Windows NT 5.1; U; en) UP.Link/6.3.1.17.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.50",
+		"deviceModel": "ST7377",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "XP",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/HTC",
+		"description": "Tattoo - Android 1.6 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.6; en-us; HTC_TATTOO_A3288 Build/DRC79) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "TATTOO A3288",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Huawei",
+		"description": "ALE-L21 - Android 6.0 - Chrome 50",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; ALE-L21 Build/HuaweiALE-L21) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.89 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "50",
+		"browserVersion": "50.0.2661.89",
+		"deviceModel": "ALE-L21",
+		"deviceType": "mobile",
+		"deviceVendor": "Huawei",
+		"engineName": "Blink",
+		"engineVersion": "50.0.2661.89",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Kyocera",
+		"description": "Hydro Wave C6740N - Android 5.1 - Chrome 42",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.1; C6740N Build/LMY47O) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.111 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "42",
+		"browserVersion": "42.0.2311.111",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "42.0.2311.111",
+		"osName": "Android",
+		"osVersion": "5.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "Escape P870 - Android 4.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.1.2; en-us; LG-P870/P87020d Build/JZO54K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "P870",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "Fusic LX550",
+		"userAgent": "LG-LX550 AU-MIC-LX550/2.0 MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "LX550",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "LG-D850 - Android 6.0 - Chome 53.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; LG-D850 Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.97 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.97",
+		"deviceModel": "D850",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.97",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "LG-H918 - Android 7.0 - Chome 56.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; LG-H918 Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "56",
+		"browserVersion": "56.0.2924.87",
+		"deviceModel": "H918",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "56.0.2924.87",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "LG-L84VL - Android 7.0 - Chome 59.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; LGL84VL Build/NRD90U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "59",
+		"browserVersion": "59.0.3071.125",
+		"deviceModel": "L84VL",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "59.0.3071.125",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "LGUS997 - Android 7.0 - Chrome 59",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; LGUS997 Build/NRD90U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "59",
+		"browserVersion": "59.0.3071.125",
+		"deviceModel": "US997",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "59.0.3071.125",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "Optimus LGMS323 - Android 4.4 - Chrome 30",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; LGMS323 Build/KOT49I.MS32310b) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.103 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1599.103",
+		"deviceModel": "MS323",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.103",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "Rumor2 LX265 - Polaris",
+		"userAgent": "POLARIS/6.01(BREW 3.1.5;U;en-us;LG;LX265;POLARIS/6.01/WAP;)MMP/2.0 profile/MIDP-201 Configuration /CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "POLARIS",
+		"browserMajor": "6",
+		"browserVersion": "6.01",
+		"deviceModel": "LX265",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "Viewty",
+		"userAgent": "LG-GC900/V10a Obigo/WAP2.0 Profile/MIDP-2.1 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "GC900",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/LG",
+		"description": "V410 Tablet - Android 4.4 - Chrome 30",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; LG-V410 Build/KOT49I.V41010d) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.103 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1599.103",
+		"deviceModel": "V410",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.103",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/MDA - T-Mobile",
+		"description": "MDA Pro - Win CE",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC; MDA Pro/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "4",
+		"browserVersion": "4.01",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/MDA - T-Mobile",
+		"description": "T-Mobile G1 - Android 1.0 - Mobile Safari 523.12.2",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.0; en-us; dream) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.0.4",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "525.10",
+		"osName": "Android",
+		"osVersion": "1.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/MDA - T-Mobile",
+		"description": "T-Mobile G1 - Android 1.5 -  Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; en-us; T-Mobile G1 Build/CRB43) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari 525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/MDA - T-Mobile",
+		"description": "T-Mobile G2 - Android 1.5 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; en-gb; T-Mobile_G2_Touch Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Droid - Android 2.0 - Mobile Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.0; en-us; Droid Build/ESD20) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Droid",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Droid V2.2 - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; Droid Build/FRG22D) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Droid",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "L7",
+		"userAgent": "MOT-L7v/08.B7.5DR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "L7v",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Milestone - Android 2.0 - Mobile Safari 4.0",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.0; en-us; Milestone Build/ SHOLS_U2_01.03.1) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (Linux; U; Android 2.0; en-us; Milestone Build/ SHOLS_U2_01.03.1) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"platform": "Linux armv7l",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Milestone",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Milestone  Android 2.0.1 - Mobile Safari 4.0",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.0.1; de-de; Milestone Build/SHOLS_U2_01.14.0) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Milestone",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Moto G (5) Android 7.0 - Chrome 60",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; Moto G (5) Plus Build/NPNS25.137-35-5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "o",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Moto Z2XT1710-02 - Android 7.1.1 - Chrome 59",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.1.1; XT1710-02 Build/NDS26.74-36) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "59",
+		"browserVersion": "59.0.3071.125",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "59.0.3071.125",
+		"osName": "Android",
+		"osVersion": "7.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Razr V9",
+		"userAgent": "MOT-V9mm/00.62 UP.Browser/6.2.3.4.c.1.123 (GUI) MMP/2.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "V9mm",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "RIZR - Symbian OS - Opera 8.65",
+		"userAgent": "MOTORIZR-Z8/46.00.00 Mozilla/4.0 (compatible; MSIE 6.0; Symbian OS; 356) Opera 8.65 [it] UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "8",
+		"browserVersion": "8.65",
+		"deviceModel": "ORIZR",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "V177",
+		"userAgent": "MOT-V177/0.1.75 UP.Browser/6.2.3.9.c.12 (GUI) MMP/2.0 UP.Link/6.3.1.13.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "V177",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "Xoom - Android 3.0.1 - Mobile Safari 523.12",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.0.4",
+		"deviceModel": "Xoom",
+		"deviceType": "tablet",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "525.10",
+		"osName": "Android",
+		"osVersion": "3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Motorola",
+		"description": "XT1032 - Android 4.4.4 - Chrome 45/Mobile Safari 537.36",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.4; XT1032 Build/KXB21.14-L1.61) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.94 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.94",
+		"deviceModel": "XT1032",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.94",
+		"osName": "Android",
+		"osVersion": "4.4.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nec",
+		"description": "NEC n410i i-Mode",
+		"userAgent": "portalmmm/2.0 N410i(c20;TB)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "3230 - SymbianOS 7.0s",
+		"userAgent": "Nokia3230/2.0 (5.0614.0) SymbianOS/7.0s Series60/2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "3230",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "7.0s",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "5700 - SymbianOS 9.2 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 Nokia5700/3.27; Profile/MIDP-2.0 Configuration/CLDC-1.1) AppleWebKit/413 (KHTML, like Gecko) Safari/413",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "5700",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "6120 Classic - SymbianOS 9.2 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 Nokia6120c/3.70; Profile/MIDP-2.0 Configuration/CLDC-1.1) AppleWebKit/413 (KHTML, like Gecko) Safari/413",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6120c",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "6230",
+		"userAgent": "Nokia6230/2.0 (04.44) Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6230",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "6230i",
+		"userAgent": "Nokia6230i/2.0 (03.80) Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6230i",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "6600 Smartphone - Symbian OS - Opera 6.20",
+		"userAgent": "Mozilla/4.1 (compatible; MSIE 5.0; Symbian OS; Nokia 6600;452) Opera 6.20 [en-US]",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "6",
+		"browserVersion": "6.20",
+		"deviceModel": "6600",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "6630 - SymbianOS 8.0",
+		"userAgent": "Nokia6630/1.0 (2.39.15) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6630",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "7250",
+		"userAgent": "Nokia7250/1.0 (3.14) Profile/MIDP-1.0 Configuration/CLDC-1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "7250",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "9500",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 5.0; Series80/2.0 Nokia9500/4.51 Profile/MIDP-2.0 Configuration/CLDC-1.1)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "9500",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "C6-01 - Symbian 3 - Safari 525",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaC6-01/011.010; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 BrowserNG/7.2.7.2 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "C6-01",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "C7 - Symbian 3 - Safari 525",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaC7-00/012.003; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 BrowserNG/7.2.7.3 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "C7-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E50 - SymbianOS 9.1 - Safari 413 es50",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es50",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E6-00 - SymbianOS 3 - Safari 533.4",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaE6-00/021.002; Profile/MIDP-2.1 Configuration/CLDC-1.1) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.1.16 Mobile Safari/533.4 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NokiaBrowser",
+		"browserMajor": "7",
+		"browserVersion": "7.3.1.16",
+		"deviceModel": "E6-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "533.4",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E63 - SymbianOS 9.2 - UCWEB 8.8 (webkit)",
+		"userAgent": "UCWEB/8.8 (SymbianOS/9.2; U; en-US; NokiaE63) AppleWebKit/534.1 UCBrowser/8.8.0.245 Mobile",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "UCBrowser",
+		"browserMajor": "8",
+		"browserVersion": "8.8.0.245",
+		"deviceModel": "E63",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "534.1",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E65 - SymbianOS 9.1 - Safari 413 es65",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es65",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E7 - Symbian 3 - Safari 525",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaE7-00/010.016; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 BrowserNG/7.2.7.3 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "E7-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E70 - SymbianOS 9.1 - Safari 413 es70",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es70",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "E90 - SymbianOS 9.2 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaE90-1/07.24.0.3; Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413 (KHTML, like Gecko) Safari/413 UP.Link/6.2.3.18.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "E90-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 530 ARM - Windows Phone 8.1 - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 530) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 530",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 620 ARM - Windows Phone OS 8.0 - IEMobile 10.0",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 630 ARM - Windows Phone 8.1 - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 630) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 630",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 635 ARM - Windows NT 6.2 - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; ARM; Trident/7.0; Touch; rv:11.0; WPDesktop; NOKIA; Lumia 635) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 635",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "RT",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 920 ARM - Windows NT 6.2 - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; ARM; Trident/7.0; Touch; rv:11.0; WPDesktop; NOKIA; Lumia 920) like Geckoo",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "RT",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "Lumia 920 ARM - Windows Phone 8.1 - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N70",
+		"userAgent": "NokiaN70-1/5.0609.2.0.1 Series60/2.8 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.1.13.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "N70-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N73 - SymbianOS 9.1 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N73 (Service)",
+		"userAgent": "NokiaN73-1/3.0649.0.0.1 Series60/3.0 Profile/MIDP2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "N73-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N8 - Symbian 3 - Safari 525",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaN8-00/014.002; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 BrowserNG/7.2.6.4 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "N8-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N80 - SymbianOS 9.1 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N9 - MeeGo - Safari 534.13",
+		"userAgent": "Mozilla/5.0 (MeeGo; NokiaN9) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NokiaBrowser",
+		"browserMajor": "8",
+		"browserVersion": "8.5.0",
+		"deviceModel": "N9",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "MeeGo",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N93 - SymbianOS 9.1 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.1; U; de) AppleWebKit/413 (KHTML, like Gecko) Safari/413",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N95 - SymbianOS 9.2 - Safari 413",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN95/10.0.018; Profile/MIDP-2.0 Configuration/CLDC-1.1) AppleWebKit/413 (KHTML, like Gecko) Safari/413 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "N95",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N950 - MeeGo - Safari 534.13",
+		"userAgent": "Mozilla/5.0 (MeeGo; NokiaN950-00/00) AppleWebKit/534.13 (KHTML, like Gecko) NokiaBrowser/8.5.0 Mobile Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NokiaBrowser",
+		"browserMajor": "8",
+		"browserVersion": "8.5.0",
+		"deviceModel": "N950-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "MeeGo",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "N97 - SymbianOS 9.4 - WicKed 7.1.12344",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.4; Series60/5.0 NokiaN97-1/10.0.012; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) WicKed/7.1.12344",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "N97-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "Symbian",
+		"osVersion": "9.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Nokia",
+		"description": "X7 - Symbian 3 - Safari 533.4",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaX7-00/021.004; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.1.21 Mobile Safari/533.4 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NokiaBrowser",
+		"browserMajor": "7",
+		"browserVersion": "7.3.1.21",
+		"deviceModel": "X7-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "533.4",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Palm",
+		"description": "Safari 525 - WebOS - Safari 525.27.1",
+		"userAgent": "Mozilla/5.0 (webOS/1.3; U; en-US) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/1.0 Safari/525.27.1 Desktop/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "1",
+		"browserVersion": "1.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "525.27.1",
+		"osName": "webOS",
+		"osVersion": "1.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Palm",
+		"description": "Treo 650 - PalmSource",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; PalmSource/hspr-H102; Blazer/4.0) 16;320x320",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Blazer",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "98",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "e900 - Opera/Netfront",
+		"userAgent": "SEC-SGHE900/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1 Opera/8.01 (J2ME/MIDP; Opera Mini/2.0.4509/1378; nl; U; ssr)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "2",
+		"browserVersion": "2.0.4509",
+		"deviceModel": "SGHE900",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "NetFront",
+		"engineVersion": "3.2",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy - Android 1.5 - Mobile Safari 525.20",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; de-de; Galaxy Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-ca; GT-P1000M Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P1000",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy (Verizon) - Android 2.2 - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; SCH-I800 Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "SCH-I800",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy S II - Android 4.0.3 - Mobile Safari 534.30",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; de-de; Galaxy S II Build/GRJ22) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy S 3 (SPH-L710) - Android 4.3 - Chrome 32.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.3; SPH-L710 Build/JSS15J) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.99 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "32",
+		"browserVersion": "32.0.1700.99",
+		"deviceModel": "SPH-L710",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "32.0.1700.99",
+		"osName": "Android",
+		"osVersion": "4.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy S 4 (SCH-R970) - Android 5.0 - Chrome 45.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.0.1; SCH-R970 Build/LRX22C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.84 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.84",
+		"deviceModel": "SCH-R970",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.84",
+		"osName": "Android",
+		"osVersion": "5.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy S 5 (SM-G900A) - Android 4.4 - Chrome 45.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; SAMSUNG-SM-G900A Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.94 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.94",
+		"deviceModel": "SM-G900A",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.94",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Galaxy GT-P5210 tablet - Android 4.4.2 - AppleWebKit 534.30",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.4.2; en-us; GT-P5210 Build/KOT49H) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P5210",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "GT-P7100 tablet - Android 3.0.1 - AppleWebKit 534.13",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0.1; en-us; GT-P7100 Build/HRI83) AppleWebkit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P7100",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Webkit",
+		"engineVersion": "534.13",
+		"osName": "Android",
+		"osVersion": "3.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Jet",
+		"userAgent": "SAMSUNG-S8000/S8000XXIF3 SHP/VPP/R5 Jasmine/1.0 Nextreaming SMM-MMS/1.2.0 profile/MIDP-2.1 configuration/CLDC-1.1 FirePHP/0.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Jasmine",
+		"browserMajor": "1",
+		"browserVersion": "1.0",
+		"deviceModel": "S8000",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Moment - Android 1.5 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; en-us; SPH-M900 Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "SPH-M900",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "SGH-A867 - Netfront",
+		"userAgent": "SAMSUNG-SGH-A867/A867UCHJ3 SHP/VPP/R5 NetFront/35 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "35",
+		"browserVersion": "35",
+		"deviceModel": "SGH-A867",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "NetFront",
+		"engineVersion": "35",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "SGH X210 (WML)",
+		"userAgent": "SEC-SGHX210/1.0 UP.Link/6.3.1.13.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "SGHX210",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "SM-G900H - Android 6.0.1 - Chrome 52.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; SM-G900H Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.98",
+		"deviceModel": "SM-G900H",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.98",
+		"osName": "Android",
+		"osVersion": "6.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "SM-G925R6 - Android 7.0 - Chrome 51.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; SAMSUNG SM-G925R6 Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/5.4 Chrome/51.0.2704.106 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Samsung Browser",
+		"browserMajor": "5",
+		"browserVersion": "5.4",
+		"deviceModel": "SM-G925R6",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "51.0.2704.106",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "SM-T537A - Android 4.4.2 - Chrome 35.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; SAMSUNG-SM-T537A Build/KOT49H) AppleWebKit/537.36 (KHTML like Gecko) Chrome/35.0.1916.141 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "35",
+		"browserVersion": "35.0.1916.141",
+		"deviceModel": "SM-T537A",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "35.0.1916.141",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "Spica - Android 1.5 - Mobile Safari 525.20",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.5; fr-fr; GT-I5700 Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "GT-I5700",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Samsung",
+		"description": "X820",
+		"userAgent": "SEC-SGHX820/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.2",
+		"deviceModel": "SGHX820",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "NetFront",
+		"engineVersion": "3.2",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K310iv",
+		"userAgent": "SonyEricssonK310iv/R4DA Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.1.13.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "K310iv",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K550i",
+		"userAgent": "SonyEricssonK550i/R1JD Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "K550i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K610i",
+		"userAgent": "SonyEricssonK610i/R1CB Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "K610i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K750i",
+		"userAgent": "SonyEricssonK750i/R1CA Browser/SEMC-Browser/4.2 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "K750i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K800 - Opera 9.8",
+		"userAgent": "Opera/9.80 (J2ME/MIDP; Opera Mini/5.0.16823/1428; U; en) Presto/2.2.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "5",
+		"browserVersion": "5.0.16823",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.2.0",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K800i",
+		"userAgent": "SonyEricssonK800i/R1CB Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "K800i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "K810i",
+		"userAgent": "SonyEricssonK810i/R1KG Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "K810i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "P900 - Opera 8.0 Mini",
+		"userAgent": "Opera/8.01 (J2ME/MIDP; Opera Mini/1.0.1479/HiFi; SonyEricsson P900; no; U; ssr)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "1",
+		"browserVersion": "1.0.1479",
+		"deviceModel": "P900",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "S500i",
+		"userAgent": "SonyEricssonS500i/R6BC Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "S500i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "Satio - Safari 525",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.4; U; Series60/5.0 SonyEricssonP100/01; Profile/MIDP-2.1 Configuration/CLDC-1.1) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 Safari/525",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "P100",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "Symbian",
+		"osVersion": "9.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "T68 (WML)",
+		"userAgent": "SonyEricssonT68/R201A",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "T68",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "T100 (WML)",
+		"userAgent": "SonyEricssonT100/R101",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "T100",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "T610",
+		"userAgent": "SonyEricssonT610/R201 Profile/MIDP-1.0 Configuration/CLDC-1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "T610",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "T650i",
+		"userAgent": "SonyEricssonT650i/R7AA Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "T650i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W580i",
+		"userAgent": "SonyEricssonW580i/R6BC Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "W580i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W660i",
+		"userAgent": "SonyEricssonW660i/R6AD Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "W660i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W810i",
+		"userAgent": "SonyEricssonW810i/R4EA Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "W810i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W850i",
+		"userAgent": "SonyEricssonW850i/R1ED Browser/NetFront/3.3 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NetFront",
+		"browserMajor": "3",
+		"browserVersion": "3.3",
+		"deviceModel": "W850i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "NetFront",
+		"engineVersion": "3.3",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W950i - Opera 8.60 - Symbian OS",
+		"userAgent": "SonyEricssonW950i/R100 Mozilla/4.0 (compatible; MSIE 6.0; Symbian OS; 323) Opera 8.60 [en-US]",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "8",
+		"browserVersion": "8.60",
+		"deviceModel": "W950i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "W995",
+		"userAgent": "SonyEricssonW995/R1EA Profile/MIDP-2.1 Configuration/CLDC-1.1 UNTRUSTED/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "W995",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "X10 - Android 1.6 - Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.6; es-es; SonyEricssonX10i Build/R1FA016) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "X10i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "X10i - Android 1.6 - Mobile Safari 525.20.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.6; en-us; SonyEricssonX10i Build/R1AA056) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "X10i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.6",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "Xperia X1 - Opera Mobi 9.5",
+		"userAgent": "Opera/9.5 (Microsoft Windows; PPC; Opera Mobi; U) SonyEricssonX1i/R2AA Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.5",
+		"deviceModel": "X1i",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Mobile Devices/Devices/SonyEricson",
+		"description": "Z800i",
+		"userAgent": "SonyEricssonZ800/R1Y Browser/SEMC-Browser/4.1 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "Z800",
+		"deviceType": "mobile",
+		"deviceVendor": "SonyEricsson",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Devices/Zune (Microsoft)",
+		"description": "ZuneHD 4.3 - IEMobile 6.12 - CE",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 6.12; Microsoft ZuneHD 4.3)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "6",
+		"browserVersion": "6.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - Opera Mini 7.5 (11.1010)",
+		"userAgent": "Opera/9.80 (Android; Opera Mini/7.5.33361/31.1543; U; en) Presto/2.8.119 Version/11.1010",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mini",
+		"browserMajor": "7",
+		"browserVersion": "7.5.33361",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.8.119",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - Firefox 35.0",
+		"userAgent": "Mozilla/5.0 (Android; Mobile; rv:35.0) Gecko/35.0 Firefox/35.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "35",
+		"browserVersion": "35.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "35.0",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 6.0.1 - Firefox 48.0 - (Samsung SM-G935F)",
+		"userAgent": "Mozilla/5.0 (Android 6.0.1; Mobile; rv:48.0) Gecko/48.0 Firefox/48.0",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (Android 6.0.1)",
+		"platform": "Linux armv81",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "48",
+		"browserVersion": "48.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "48.0",
+		"osName": "Android",
+		"osVersion": "6.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 0.5 - Safari 419",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 0.5; en-us) AppleWebKit/522  (KHTML, like Gecko) Safari/419.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "2",
+		"browserVersion": "2.0.4",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "522",
+		"osName": "Android",
+		"osVersion": "0.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 1.1 - Mobile Safari 523",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 1.1; en-gb; dream) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.0.4",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "525.10",
+		"osName": "Android",
+		"osVersion": "1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 1.5 - HTC Dream - Mobile Safari 525",
+		"userAgent": "HTC_Dream Mozilla/5.0 (Linux; U; Android 1.5; en-ca; Build/CUPCAKE) AppleWebKit/528.5  (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.1.2",
+		"deviceModel": "Dream",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "528.5",
+		"osName": "Android",
+		"osVersion": "1.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 2.0 - Motorola Droid - Mobile Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.0; en-us; Droid Build/ESD20) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Droid",
+		"deviceType": "mobile",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 2.1 - Nexus One - Safari 530.17",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.1; en-us; Nexus One Build/ERD62) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "530.17",
+		"osName": "Android",
+		"osVersion": "2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 2.2 - HTC Evo - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; Sprint APA9292KT Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "APA9292KT",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 2.2 - HTC Incredible - Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-us; ADR6300 Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 2.2 - Samsung Galaxy - Mobile Safari 533.1",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 2.2; en-ca; GT-P1000M Build/FROYO) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "GT-P1000",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "WebKit",
+		"engineVersion": "533.1",
+		"osName": "Android",
+		"osVersion": "2.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - Fennec 2.0.1 (arm)",
+		"userAgent": "Mozilla/5.0 (Android; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "2",
+		"browserVersion": "2.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - 3.0.1 - Safari 534.13 - Acer Iconia",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0.1; fr-fr; A500 Build/HRI66) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Android 3.0.1",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "WebKit",
+		"engineVersion": "534.13",
+		"osName": "Android",
+		"osVersion": "3.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - 3.0.1 - Mobile Safari 523.12 - Motorola Xoom",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.0.4",
+		"deviceModel": "Xoom",
+		"deviceType": "tablet",
+		"deviceVendor": "Motorola",
+		"engineName": "WebKit",
+		"engineVersion": "525.10",
+		"osName": "Android",
+		"osVersion": "3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.0.3 - Mobile Safari 534.30 - HTC Sensation",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; de-ch; HTC Sensation Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Sensation",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.0.3 - Mobile Safari 534.30 - Samsung Galaxy S II",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.0.3; de-de; Galaxy S II Build/GRJ22) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "534.30",
+		"osName": "Android",
+		"osVersion": "4.0.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.0.4 - Opera 12.00",
+		"userAgent": "Opera/9.80 (Android 4.0.4; Linux; Opera Mobi/ADR-1205181138; U; pl) Presto/2.10.254 Version/12.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mobi",
+		"browserMajor": "12",
+		"browserVersion": "12.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.10.254",
+		"osName": "Android",
+		"osVersion": "4.0.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android - Fennec 10.0.1",
+		"userAgent": "Mozilla/5.0 (Android; Linux armv7l; rv:10.0.1) Gecko/20100101 Firefox/10.0.1 Fennec/10.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "10",
+		"browserVersion": "10.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.1",
+		"osName": "Android",
+		"osVersion": "",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.1.2 - Chrome 30.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.1.2; SHV-E250S Build/JZO54K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.82 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1599.82",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "Blink",
+		"engineVersion": "30.0.1599.82",
+		"osName": "Android",
+		"osVersion": "4.1.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.2 - Firefox 19.0",
+		"userAgent": "Mozilla/5.0 (Android 4.2; rv:19.0) Gecko/20121129 Firefox/19.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "19",
+		"browserVersion": "19.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "19.0",
+		"osName": "Android",
+		"osVersion": "4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.3 - AppleWebKit/536.23",
+		"userAgent": "Mozilla/5.0 (Linux; U; Android 4.3; en-us; sdk Build/MR1) AppleWebKit/536.23 (KHTML, like Gecko) Version/4.3 Mobile Safari/536.23",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.3",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "536.23",
+		"osName": "Android",
+		"osVersion": "4.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.4 - (Nexus 5) - AppleWebKit/536.23",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/BuildID) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Android Browser",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "Nexus 5",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "30.0.0.0",
+		"osName": "Android",
+		"osVersion": "4.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.4.2 - Chrome 35.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; SAMSUNG-SM-T537A Build/KOT49H) AppleWebKit/537.36 (KHTML like Gecko) Chrome/35.0.1916.141 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "35",
+		"browserVersion": "35.0.1916.141",
+		"deviceModel": "SM-T537A",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "35.0.1916.141",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 4.4.2 - Chrome 51.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 4.4.2; SM-T230NU Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.81 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "51",
+		"browserVersion": "51.0.2704.81",
+		"deviceModel": "SM-T230NU",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "51.0.2704.81",
+		"osName": "Android",
+		"osVersion": "4.4.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 5.0 - Chrome 45.0 - Galaxy S 4 (SCH-R970)",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.0.1; SCH-R970 Build/LRX22C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.84 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "45",
+		"browserVersion": "45.0.2454.84",
+		"deviceModel": "SCH-R970",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "45.0.2454.84",
+		"osName": "Android",
+		"osVersion": "5.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 5.0.2 - Chrome 38.0 - Samsung SM-T530NU",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-T530NU Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.2 Chrome/38.0.2125.102 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Samsung Browser",
+		"browserMajor": "3",
+		"browserVersion": "3.2",
+		"deviceModel": "SM-T530NU",
+		"deviceType": "tablet",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "38.0.2125.102",
+		"osName": "Android",
+		"osVersion": "5.0.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 5.1.1 - Nexus 7 - Opera 30.0",
+		"userAgent": "Mozilla/5.0 (Linux; Android 5.1.1; Nexus 7 Build/LMY47V) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.78 Safari/537.36 OPR/30.0.1856.93524",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "30",
+		"browserVersion": "30.0.1856.93524",
+		"deviceModel": "Nexus 7",
+		"deviceType": "tablet",
+		"deviceVendor": "Asus",
+		"engineName": "Blink",
+		"engineVersion": "43.0.2357.78",
+		"osName": "Android",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 6.0 - Chrome 52.0 - HTC One M9",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; HTC One M9 Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.98",
+		"deviceModel": "One M9",
+		"deviceType": "mobile",
+		"deviceVendor": "HTC",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.98",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 6.0 - Chome 53.0 - LG-D850",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; LG-D850 Build/MRA58K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.97 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.97",
+		"deviceModel": "D850",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.97",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 6.0 - Chome 53.0 - Nexus 5X",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5X Build/MDB08L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.124",
+		"deviceModel": "Nexus 5",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.124",
+		"osName": "Android",
+		"osVersion": "6.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 6.0.1 - Chrome 52.0 - Samsung SM-G900H",
+		"userAgent": "Mozilla/5.0 (Linux; Android 6.0.1; SM-G900H Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "52",
+		"browserVersion": "52.0.2743.98",
+		"deviceModel": "SM-G900H",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "Blink",
+		"engineVersion": "52.0.2743.98",
+		"osName": "Android",
+		"osVersion": "6.0.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 7.0 - Chrome 53.0 - Nexus 9",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; Nexus 9 Build/NRD90R) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.124 Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "53",
+		"browserVersion": "53.0.2785.124",
+		"deviceModel": "Nexus 9",
+		"deviceType": "tablet",
+		"deviceVendor": "HTC",
+		"engineName": "Blink",
+		"engineVersion": "53.0.2785.124",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 7.0 - Chome 56.0 - LG-H918",
+		"userAgent": "Mozilla/5.0 (Linux; Android 7.0; LG-H918 Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "56",
+		"browserVersion": "56.0.2924.87",
+		"deviceModel": "H918",
+		"deviceType": "mobile",
+		"deviceVendor": "LG",
+		"engineName": "Blink",
+		"engineVersion": "56.0.2924.87",
+		"osName": "Android",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 8.0.0 - Chrome 60.0 - Pixel XL OPR6",
+		"userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel XL Build/OPR6.170623.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "Pixel XL",
+		"deviceType": "mobile",
+		"deviceVendor": "Google",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "8.0.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Android",
+		"description": "Android 8.0.0 - Chrome 60.0 - Pixel XL OPR6",
+		"userAgent": "Mozilla/5.0 (Linux; Android 8.0.0; Pixel XL Build/OPR6.170623.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "60",
+		"browserVersion": "60.0.3112.107",
+		"deviceModel": "Pixel XL",
+		"deviceType": "mobile",
+		"deviceVendor": "Google",
+		"engineName": "Blink",
+		"engineVersion": "60.0.3112.107",
+		"osName": "Android",
+		"osVersion": "8.0.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 1.0 - iPhone - Safari 419.3",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420  (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "420",
+		"osName": "Mac OS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 2.0 - iPhone - Safari 525.200",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; en-us) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5A347 Safari/525.200",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.1.1",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "525.18.1",
+		"osName": "iOS",
+		"osVersion": "2.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 2.2.1 - iPod - Safari 525.20",
+		"userAgent": "Mozilla/5.0 (iPod; U; CPU iPhone OS 2_2_1 like Mac OS X; en-us) AppleWebKit/525.18.1 (KHTML, like Gecko) Version/3.1.1 Mobile/5H11a Safari/525.20",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.1.1",
+		"deviceModel": "iPod",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "525.18.1",
+		"osName": "iOS",
+		"osVersion": "2.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 3.0 - iPhone - Safari 528.16",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16",
+		"appCodename": "Mozilla",
+		"appName": "Netscape",
+		"appVersion": "5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16",
+		"platform": "iPhone",
+		"vendor": "Apple Computer, Inc.",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "528.18",
+		"osName": "iOS",
+		"osVersion": "3.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 3.2 - iPad - Safari 531",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "4",
+		"browserVersion": "4.0.4",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "531.21.10",
+		"osName": "iOS",
+		"osVersion": "3.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 4_2_1 - iPad - Safari 533",
+		"userAgent": "Mozilla/5.0 (iPad; U; CPU OS 4_2_1 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPad",
+		"deviceType": "tablet",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 4_2_1 - iPhone - Safari 533.17.9",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; da-dk) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "5",
+		"browserVersion": "5.0.2",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.2.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 4_3 - iPhone - Safari 533.17.9",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3 like Mac OS X; de-de) AppleWebKit/533.17.9 (KHTML, like Gecko) Mobile/8F190",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "533",
+		"browserVersion": "533.17.9",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "533.17.9",
+		"osName": "iOS",
+		"osVersion": "4.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "CFNetwork - iPhone - MobileSafari 600.1.4",
+		"userAgent": "MobileSafari/600.1.4 CFNetwork/711.1.12 Darwin/14.0.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "iOS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 5_1_1 - iPhone - Chrome (crios) 19.0.1084.60",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS 5_1_1 like Mac OS X; da-dk) AppleWebKit/534.46.0 (KHTML, like Gecko) CriOS/19.0.1084.60 Mobile/9B206 Safari/7534.48.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chrome",
+		"browserMajor": "19",
+		"browserVersion": "19.0.1084.60",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "534.46.0",
+		"osName": "iOS",
+		"osVersion": "5.1.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 9_2 - iPhone - Safari 9.0",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 9_2 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13C75 Safari/601.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "601.1.46",
+		"osName": "iOS",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/iOS",
+		"description": "iOS 11_0 - iPhone -  Safari 11",
+		"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A5362a Safari/604.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mobile Safari",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "WebKit",
+		"engineVersion": "604.1.38",
+		"osName": "iOS",
+		"osVersion": "11.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Linux",
+		"description": "Linux - Fennec 2.0.1 (686 on x86_64)",
+		"userAgent": "Mozilla/5.0 (X11; Linux i686 on x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "2",
+		"browserVersion": "2.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "amd64"
+	},
+	{
+		"folder": "/Mobile Devices/OS/Maemo",
+		"description": "Maemo - Fennec 2.0.1 (arm)",
+		"userAgent": "Mozilla/5.0 (Maemo; Linux armv7l; rv:2.0.1) Gecko/20100101 Firefox/4.0.1 Fennec/2.0.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Fennec",
+		"browserMajor": "2",
+		"browserVersion": "2.0.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "2.0.1",
+		"osName": "Linux",
+		"osVersion": "armv7l",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Mobile Devices/OS/Palm",
+		"description": "Palm WebOS 1.3 - Safari 525",
+		"userAgent": "Mozilla/5.0 (webOS/1.3; U; en-US) AppleWebKit/525.27.1 (KHTML, like Gecko) Version/1.0 Safari/525.27.1 Desktop/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "1",
+		"browserVersion": "1.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "525.27.1",
+		"osName": "webOS",
+		"osVersion": "1.3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Palm",
+		"description": "PalmSource hspr-H102 - Palm Treo 650",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; PalmSource/hspr-H102; Blazer/4.0) 16;320x320",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Blazer",
+		"browserMajor": "4",
+		"browserVersion": "4.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "98",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Symbian",
+		"description": "Symbian 3 - N8 - Safari 525",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaN8-00/014.002; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) Version/3.0 BrowserNG/7.2.6.4 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "N8-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Symbian",
+		"description": "Symbian 3 - Nokia X7 - Safari 533.4",
+		"userAgent": "Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaX7-00/021.004; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.1.21 Mobile Safari/533.4 3gpp-gba",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "NokiaBrowser",
+		"browserMajor": "7",
+		"browserVersion": "7.3.1.21",
+		"deviceModel": "X7-00",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "533.4",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Symbian",
+		"description": "SymbianOS 9.2 - Nokia E90 - Safari",
+		"userAgent": "Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaE90-1/07.24.0.3; Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413 (KHTML, like Gecko) Safari/413 UP.Link/6.2.3.18.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "E90-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "413",
+		"osName": "Symbian",
+		"osVersion": "9.2",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Symbian",
+		"description": "SymbianOS 9.4 - Nokia N97 - WicKed 7.1.12344",
+		"userAgent": "Mozilla/5.0 (SymbianOS 9.4; Series60/5.0 NokiaN97-1/10.0.012; Profile/MIDP-2.1 Configuration/CLDC-1.1; en-us) AppleWebKit/525 (KHTML, like Gecko) WicKed/7.1.12344",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "WebKit",
+		"browserMajor": "525",
+		"browserVersion": "525",
+		"deviceModel": "N97-1",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "WebKit",
+		"engineVersion": "525",
+		"osName": "Symbian",
+		"osVersion": "9.4",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Symbian",
+		"description": "SymbOS - Opera 10.00 Mobi",
+		"userAgent": "Opera/9.80 (S60; SymbOS; Opera Mobi/499; U; ru) Presto/2.4.18 Version/10.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera Mobi",
+		"browserMajor": "10",
+		"browserVersion": "10.00",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Presto",
+		"engineVersion": "2.4.18",
+		"osName": "Symbian",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "Windows CE - ZuneHD 4.3 - IEMobile 6.12",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 6.12; Microsoft ZuneHD 4.3)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "6",
+		"browserVersion": "6.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "Windows CE - MSIE 6 - IEMobile 7.11",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "Windows CE 5.2 - Sprint (HTC Titan) - IEMobile 7.11 (MSIE 6.0)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 7.11) Sprint:PPC6800",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.11",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "Windows CE - MSIE 6 - IEMobile 8.12",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; Windows CE; IEMobile 8.12; MSIEMobile6.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "8",
+		"browserVersion": "8.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": "CE",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 7.0 - Asus Galaxy - IEMobile 7.0 (MSIE 7.0)",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows Phone OS 7.0; Trident/3.1; IEMobile/7.0) Asus;Galaxy6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "Asus",
+		"engineName": "Trident",
+		"engineVersion": "3.1",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 7 - MSIE 7 - IEMobile 7.0",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 7.0; Windows Phone OS 7.0; Trident/3.1; IEMobile/7.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "7",
+		"browserVersion": "7.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "3.1",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 7.5 - IEMobile 9.0",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "9",
+		"browserVersion": "9.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "5.0",
+		"osName": "Windows Phone OS",
+		"osVersion": "7.5",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.0 - ARM - IEMobile 10.0",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.0 - Nokia Lumia 620 ARM - IEMobile 10.0",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.1 - Lumia 530 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 530) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 530",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.0 - Lumia 620 ARM - IEMobile 10.0",
+		"userAgent": "Mozilla/5.0 (compatible; MSIE 10.0; Windows Phone 8.0; Trident/6.0; IEMobile/10.0; ARM; Touch; NOKIA; Lumia 920)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "10",
+		"browserVersion": "10.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "6.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.1 - Lumia 630 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 630) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 630",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "NT 6.2 (odd id) - Lumia 635 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; ARM; Trident/7.0; Touch; rv:11.0; WPDesktop; NOKIA; Lumia 635) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 635",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "RT",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "NT 6.2 (odd id) - Lumia 920 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows NT 6.2; ARM; Trident/7.0; Touch; rv:11.0; WPDesktop; NOKIA; Lumia 920) like Geckoo",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows",
+		"osVersion": "RT",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.1 - Lumia 920 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 8.1; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 920) like Gecko",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 920",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 8.1 - Lumia 929 ARM - IEMobile 11.0",
+		"userAgent": "Mozilla/5.0 (Mobile; Windows Phone 8.1; Android 4.0; ARM; Trident/7.0; Touch; rv:11.0; IEMobile/11.0; NOKIA; Lumia 929) like iPhone OS 7_0_3 Mac OS X AppleWebKit/537 (KHTML, like Gecko) Mobile Safari/537",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IEMobile",
+		"browserMajor": "11",
+		"browserVersion": "11.0",
+		"deviceModel": "Lumia 929",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "Trident",
+		"engineVersion": "7.0",
+		"osName": "Windows Phone",
+		"osVersion": "8.1",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 10.0 - webkit 537.36 - Edge 12.0",
+		"userAgent": "Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; DEVICE INFO) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Mobile Safari/537.36 Edge/12.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "12",
+		"browserVersion": "12.0",
+		"deviceModel": "",
+		"deviceType": "mobile",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "12.0",
+		"osName": "Windows Phone",
+		"osVersion": "10.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/OS/Windows",
+		"description": "WP 10.0 - webkit 537.36 - Edge 14.14",
+		"userAgent": "Mozilla/5.0 (Windows NT 10.0; ARM; Lumia 950 Dual SIM) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Edge",
+		"browserMajor": "14",
+		"browserVersion": "14.14393",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "EdgeHTML",
+		"engineVersion": "14.14393",
+		"osName": "Windows",
+		"osVersion": "10",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Services",
+		"description": "DoCoMo 2.0",
+		"userAgent": "DoCoMo/2.0 SH901iC(c100;TB;W24H12)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Services",
+		"description": "Novarra-Vision 6.9",
+		"userAgent": "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.0.7) Gecko/20060909 Firefox/1.5.0.7 MG(Novarra-Vision/6.9)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Mozilla",
+		"browserMajor": "5",
+		"browserVersion": "5.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.8.0.7",
+		"osName": "Linux",
+		"osVersion": "i686",
+		"cpuArchitecture": "ia32"
+	},
+	{
+		"folder": "/Mobile Devices/Services",
+		"description": "ReqwirelessWeb 3.5",
+		"userAgent": "Mozilla/4.0 (compatible; MSIE 6.0; j2me) ReqwirelessWeb/3.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "6",
+		"browserVersion": "6.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/Services",
+		"description": "Vodafone 1.0",
+		"userAgent": "Vodafone/1.0/V802SE/SEJ001 Browser/SEMC-Browser/4.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/WAP Phones",
+		"description": "BlackBerry (Google WAP)",
+		"userAgent": "BlackBerry7520/4.0.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/5.0.3.3 UP.Link/5.1.2.12 (Google WAP Proxy/1.0)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "7520",
+		"deviceType": "mobile",
+		"deviceVendor": "BlackBerry",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BlackBerry",
+		"osVersion": "4.0.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/WAP Phones",
+		"description": "Nokia (6100) WAP",
+		"userAgent": "Nokia6100/1.0 (04.01) Profile/MIDP-1.0 Configuration/CLDC-1.0",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "Nokia6100",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6100",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Mobile Devices/WAP Phones",
+		"description": "Nokia 6630",
+		"userAgent": "Nokia6630/1.0 (2.3.129) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1",
+		"appName": "Nokia",
+		"appVersion": "1.0",
+		"platform": "Nokia",
+		"vendor": "Nokia",
+		"vendorSub": "Nokia",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "6630",
+		"deviceType": "mobile",
+		"deviceVendor": "Nokia",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Symbian",
+		"osVersion": "8.0",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Ask Jeeves/Teoma",
+		"userAgent": "Mozilla/2.0 (compatible; Ask Jeeves/Teoma)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Baiduspider",
+		"userAgent": "Baiduspider ( http://www.baidu.com/search/spider.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "BingBot 2.0 (renamed Msnbot)",
+		"userAgent": "Mozilla/5.0 (compatible; bingbot/2.0  http://www.bing.com/bingbot.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Exabot 3.0",
+		"userAgent": "Mozilla/5.0 (compatible; Exabot/3.0;  http://www.exabot.com/go/robot)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "FAST-WebCrawler 3.8",
+		"userAgent": "FAST-WebCrawler/3.8 (crawler at trd dot overture dot com; http://www.alltheweb.com/help/webmaster/crawler)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Google AdsBot 1.0",
+		"userAgent": "AdsBot-Google ( http://www.google.com/adsbot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot 2.1 (New version)",
+		"userAgent": "Mozilla/5.0 (compatible; Googlebot/2.1;  http://www.google.com/bot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot 2.1 (Older Version)",
+		"userAgent": "Googlebot/2.1 ( http://www.googlebot.com/bot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-Image 1.0",
+		"userAgent": "Googlebot-Image/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot MediaPartners",
+		"userAgent": "Mediapartners-Google",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-Mobile 2.1 (ID: DoCoMo/2.0)",
+		"userAgent": "DoCoMo/2.0 N905i(c100;TB;W24H16) (compatible; Googlebot-Mobile/2.1;  http://www.google.com/bot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-Mobile 2.1 (ID: iPhone)",
+		"userAgent": "Mozilla/5.0 (iPhone; U; CPU iPhone OS) (compatible; Googlebot-Mobile/2.1;  http://www.google.com/bot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "iPhone",
+		"deviceType": "mobile",
+		"deviceVendor": "Apple",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-Mobile 2.1 (ID: SAMSUNG-SGH-E250)",
+		"userAgent": "SAMSUNG-SGH-E250/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0 (compatible; Googlebot-Mobile/2.1;  http://www.google.com/bot.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "SGH-E250",
+		"deviceType": "mobile",
+		"deviceVendor": "Samsung",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-News",
+		"userAgent": "Googlebot-News",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Googlebot-Video",
+		"userAgent": "Googlebot-Video/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Google Toolbar 4.0 (XP - MSIE 6)",
+		"userAgent": "Mozilla/4.0 (compatible; GoogleToolbar 4.0.1019.5266-big; Windows XP 5.1; MSIE 6.0.2900.2180)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "IE",
+		"browserMajor": "6",
+		"browserVersion": "6.0.2900.2180",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": " X",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Google Web Preview",
+		"userAgent": "Mozilla/5.0 (en-us) AppleWebKit/525.13 (KHTML, like Gecko; Google Web Preview) Version/3.1 Safari/525.13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Safari",
+		"browserMajor": "3",
+		"browserVersion": "3.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "525.13",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Msnbot 1.0 (current version)",
+		"userAgent": "msnbot/1.0 ( http://search.msn.com/msnbot.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Msnbot 1.1",
+		"userAgent": "msnbot/1.1 ( http://search.msn.com/msnbot.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Msnbot 0.11 (beta version)",
+		"userAgent": "msnbot/0.11 ( http://search.msn.com/msnbot.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Msnbot-Media 1.1",
+		"userAgent": "msnbot-media/1.1 ( http://search.msn.com/msnbot.htm)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Yahoo Slurp",
+		"userAgent": "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Yahoo Slurp China",
+		"userAgent": "Mozilla/5.0 (compatible; Yahoo! Slurp China; http://misc.yahoo.com.cn/help.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "Yandex 3.0",
+		"userAgent": "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Spiders - Search",
+		"description": "YandexNews 4.0",
+		"userAgent": "Mozilla/5.0 (compatible; YandexNews/4.0; +http://yandex.com/bots)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Archive.org",
+		"userAgent": "Mozilla/5.0 (compatible; archive.org_bot +http://www.archive.org/details/archive.org_bot)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Archive.org Wayback Machine Live",
+		"userAgent": "Mozilla/5.0 (compatible; archive.org_bot; Wayback Machine Live Record; +http://archive.org/details/archive.org_bot)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Alexa site audit",
+		"userAgent": "Mozilla/5.0 (compatible; alexa site audit/1.0; +http://www.alexa.com/help/webmasters; )",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Email Wolf",
+		"userAgent": "EmailWolf 1.00",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Facebookexternalhit 1.1 (short version)",
+		"userAgent": "facebookexternalhit/1.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Facebookexternalhit 1.1",
+		"userAgent": "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Facebot",
+		"userAgent": "Facebot",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Gaisbot 3.0",
+		"userAgent": "Gaisbot/3.0 (robot@gais.cs.ccu.edu.tw; http://gais.cs.ccu.edu.tw/robot.php)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Grub-Client",
+		"userAgent": "grub-client-1.5.3; (grub-client-1.5.3; Crawl your own stuff with http://grub.org)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "gulperbot",
+		"userAgent": "Gulper Web Bot 0.2.4 (www.ecsl.cs.sunysb.edu/~maxim/cgi-bin/Link/GulperBot)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Screaming Frog SEO Spider 8.1",
+		"userAgent": "Screaming Frog SEO Spider/8.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "TurnitinBot",
+		"userAgent": "TurnitinBot (https://turnitin.com/robot/crawlerinfo.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Twitterbot 1.0",
+		"userAgent": "Twitterbot/1.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Bots - Spiders",
+		"description": "Xenu Link Sleuth 1.3.8",
+		"userAgent": "Xenu Link Sleuth/1.3.8",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - Beos",
+		"description": "Net Positive 2.1",
+		"userAgent": "Mozilla/3.0 (compatible; NetPositive/2.1.1; BeOS)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "BeOS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - Beos",
+		"description": "SeaMonkey 1.5a",
+		"userAgent": "Mozilla/5.0 (BeOS; U; BeOS BePC; en-US; rv:1.9a1) Gecko/20060702 SeaMonkey/1.5a",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "1",
+		"browserVersion": "1.5a",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "1.9a1",
+		"osName": "BeOS",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Arora 0.11.0",
+		"userAgent": "Mozilla/5.0 (OS/2; U; OS/2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) Arora/0.11.0 Safari/533.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Arora",
+		"browserMajor": "0",
+		"browserVersion": "0.11.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.3",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Firefox 10.0.12 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:10.0.12) Gecko/20100101 Firefox/10.0.12",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "10",
+		"browserVersion": "10.0.12",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.12",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Firefox 24.0 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:24.0) Gecko/20100101 Firefox/24.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "24",
+		"browserVersion": "24.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "24.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Firefox 31.0 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:31.0) Gecko/20100101 Firefox/31.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "31",
+		"browserVersion": "31.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "31.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Firefox 38.0 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:38.0) Gecko/20100101 Firefox/38.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "38",
+		"browserVersion": "38.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "38.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "Firefox 45.0 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:45.0) Gecko/20100101 Firefox/45.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Firefox",
+		"browserMajor": "45",
+		"browserVersion": "45.0",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "45.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "QupZilla 1.3.1",
+		"userAgent": "Mozilla/5.0 (OS/2; U; OS/2; en-US) AppleWebKit/533.3 (KHTML, like Gecko) QupZilla/1.3.1 Safari/533.3",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "QupZilla",
+		"browserMajor": "1",
+		"browserVersion": "1.3.1",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "WebKit",
+		"engineVersion": "533.3",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "SeaMonkey 2.7.2  - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:10.0.12) Gecko/20130108 Firefox/10.0.12 SeaMonkey/2.7.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.7.2",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "10.0.12",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "SeaMonkey 2.21 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:24.0) Gecko/20100101 Firefox/24.0 SeaMonkey/2.21",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.21",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "24.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "SeaMonkey 2.28 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:31.0) Gecko/20100101 Firefox/31.0 SeaMonkey/2.28",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.28",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "31.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "SeaMonkey 2.35 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:38.0) Gecko/20100101 Firefox/38.0 SeaMonkey/2.35",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.35",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "38.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Browsers - OS/2",
+		"description": "SeaMonkey 2.42 - OS/2 Warp 4.5",
+		"userAgent": "Mozilla/5.0 (OS/2; Warp 4.5; rv:45.0) Gecko/20100101 Firefox/45.0 SeaMonkey/2.42.9esr",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "SeaMonkey",
+		"browserMajor": "2",
+		"browserVersion": "2.42.9esr",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "Gecko",
+		"engineVersion": "45.0",
+		"osName": "OS/2",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Adobe Application Manager 2.0",
+		"userAgent": "Adobe Application Manager 2.0",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Android (5.1) Download Manager",
+		"userAgent": "AndroidDownloadManager/5.1 (Linux; U; Android 5.1; Z820 Build/LMY47D)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "Android 5.1",
+		"deviceType": "",
+		"deviceVendor": "Generic",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Android",
+		"osVersion": "DownloadManager",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Download Demon",
+		"userAgent": "Download Demon/3.5.0.11",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Offline Explorer 2.5",
+		"userAgent": "Offline Explorer/2.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "SuperBot 4.4.0 (Win XP)",
+		"userAgent": "SuperBot/4.4.0.60 (Windows XP)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Windows",
+		"osVersion": " X",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "WebCopier v4.6",
+		"userAgent": "WebCopier v4.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Web Downloader 6.9",
+		"userAgent": "Web Downloader/6.9",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "WebZIP 3.5",
+		"userAgent": "WebZIP/3.5 (http://www.spidersoft.com)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Wget 1.9 (Redhat)",
+		"userAgent": "Wget/1.9 cvs-stable (Red Hat modified)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Wget 1.9.1",
+		"userAgent": "Wget/1.9.1",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Downloaders",
+		"description": "Wget 1.12 (FreeBSD)",
+		"userAgent": "Wget/1.12 (freebsd8.1)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Feed Readers",
+		"description": "Bloglines 3.1",
+		"userAgent": "Bloglines/3.1 (http://www.bloglines.com)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Feed Readers",
+		"description": "everyfeed spider 2.0",
+		"userAgent": "everyfeed-spider/2.0 (http://www.everyfeed.com)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Feed Readers",
+		"description": "Google Feed Fetcher",
+		"userAgent": "FeedFetcher-Google; ( http://www.google.com/feedfetcher.html)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Feed Readers",
+		"description": "Gregarius 0.5.2",
+		"userAgent": "Gregarius/0.5.2 ( http://devlog.gregarius.net/docs/ua)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Game Consoles",
+		"description": "Playstation 3 (2.00)",
+		"userAgent": "Mozilla/5.0 (PLAYSTATION 3; 2.00)",
+		"appCodename": "Mozilla",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "PLAYSTATION 3",
+		"deviceType": "console",
+		"deviceVendor": "Sony",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "PLAYSTATION",
+		"osVersion": "3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Game Consoles",
+		"description": "Playstation 3 (1.10)",
+		"userAgent": "Mozilla/5.0 (PLAYSTATION 3; 1.10)",
+		"appCodename": "Mozilla",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "PLAYSTATION 3",
+		"deviceType": "console",
+		"deviceVendor": "Sony",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "PLAYSTATION",
+		"osVersion": "3",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Game Consoles",
+		"description": "PSP (2.00)",
+		"userAgent": "Mozilla/4.0 (PSP (PlayStation Portable); 2.00)",
+		"appCodename": "Mozilla",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "PlayStation Portable",
+		"deviceType": "console",
+		"deviceVendor": "Sony",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "PlayStation",
+		"osVersion": "Portable",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Game Consoles",
+		"description": "Wii 2.0.4.7-7",
+		"userAgent": "Opera/9.30 (Nintendo Wii; U; ; 2047-7; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Opera",
+		"browserMajor": "9",
+		"browserVersion": "9.30",
+		"deviceModel": "Wii",
+		"deviceType": "console",
+		"deviceVendor": "Nintendo",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Nintendo",
+		"osVersion": "Wii",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Game Consoles",
+		"description": "Wii libnup (1.00)",
+		"userAgent": "wii libnup/1.0",
+		"appCodename": "wii",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Libraries",
+		"description": "Java 1.6.0_13",
+		"userAgent": "Java/1.6.0_13",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Libraries",
+		"description": "libwww-perl 5.820",
+		"userAgent": "libwww-perl/5.820",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Libraries",
+		"description": "Peach 1.01",
+		"userAgent": "Peach/1.01 (Ubuntu 8.04 LTS; U; en)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Ubuntu",
+		"osVersion": "8.04",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Libraries",
+		"description": "Python-urllib 2.5",
+		"userAgent": "Python-urllib/2.5",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "HTMLParser (1.60)",
+		"userAgent": "HTMLParser/1.6",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "W3C CSS Validator",
+		"userAgent": "Jigsaw/2.2.5 W3C_CSS_Validator_JFouffa/2.0",
+		"appCodename": "Jigsaw",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "W3C (X)HTML Validator (1.654)",
+		"userAgent": "W3C_Validator/1.654",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "W3C (X)HTML Validator (1.305.2.12)",
+		"userAgent": "W3C_Validator/1.305.2.12 libwww-perl/5.64",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "W3C P3P Validator",
+		"userAgent": "P3P Validator",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "WDG CSS Validator (1.2.2)",
+		"userAgent": "CSSCheck/1.2.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Validators",
+		"description": "WDG (X)HTML Validator (1.6.2)",
+		"userAgent": "WDG_Validator/1.6.2",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "Facebook Scraper 1.0",
+		"userAgent": "facebookscraper/1.0( http://www.facebook.com/sharescraper_help.php)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "Grub-Client",
+		"userAgent": "grub-client-1.5.3; (grub-client-1.5.3; Crawl your own stuff with http://grub.org)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "iTunes 4.2 (OS X 10.2 PPC)",
+		"userAgent": "iTunes/4.2 (Macintosh; U; PPC Mac OS X 10.2)",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "Mac OS",
+		"osVersion": "10.2",
+		"cpuArchitecture": "ppc"
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "MS URL Control",
+		"userAgent": "Microsoft URL Control - 6.00.8862",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "Roku DVP-4.1",
+		"userAgent": "Roku/DVP-4.1 (024.01E01250A)",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "Smart TV - Chrome 25 - Linux armv71",
+		"userAgent": "Mozilla/5.0 (SMART-TV; X11; Linux armv7l) AppleWebkit/537.42 (KHTML, like Gecko) Chromium/25.0.1349.2 Chrome/25.0.1349.2 Safari/537.42",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "Chromium",
+		"browserMajor": "25",
+		"browserVersion": "25.0.1349.2",
+		"deviceModel": "",
+		"deviceType": "smarttv",
+		"deviceVendor": "",
+		"engineName": "Webkit",
+		"engineVersion": "537.42",
+		"osName": "Linux",
+		"osVersion": "armv7l",
+		"cpuArchitecture": "arm"
+	},
+	{
+		"folder": "/Miscellaneous/Miscellaneous",
+		"description": "winHTTP",
+		"userAgent": "SearchExpress",
+		"appCodename": "",
+		"appName": "",
+		"appVersion": "",
+		"platform": "",
+		"vendor": "",
+		"vendorSub": "",
+		"browserName": "",
+		"browserMajor": "",
+		"browserVersion": "",
+		"deviceModel": "",
+		"deviceType": "",
+		"deviceVendor": "",
+		"engineName": "",
+		"engineVersion": "",
+		"osName": "",
+		"osVersion": "",
+		"cpuArchitecture": ""
+	}
+]
+},{}],60:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Madara = exports.getExportVersion = void 0;
-const types_1 = require("@paperback/types");
+/* eslint-disable no-useless-escape */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const paperback_extensions_common_1 = require("paperback-extensions-common");
 const MadaraParser_1 = require("./MadaraParser");
 const MadaraHelper_1 = require("./MadaraHelper");
-const BASE_VERSION = '3.0.5';
+const MadaraSettings_1 = require("./MadaraSettings");
+const BASE_VERSION = '2.2.6';
 const getExportVersion = (EXTENSION_VERSION) => {
     return BASE_VERSION.split('.').map((x, index) => Number(x) + Number(EXTENSION_VERSION.split('.')[index])).join('.');
 };
 exports.getExportVersion = getExportVersion;
-class Madara {
-    constructor(cheerio) {
-        this.cheerio = cheerio;
-        /**
-         *  Request manager override
-         */
-        this.requestsPerSecond = 5;
-        this.requestTimeout = 20000;
-        this.requestManager = App.createRequestManager({
-            requestsPerSecond: this.requestsPerSecond,
-            requestTimeout: this.requestTimeout,
+let globalUA;
+class Madara extends paperback_extensions_common_1.Source {
+    constructor() {
+        super(...arguments);
+        this.requestManager = createRequestManager({
+            requestsPerSecond: 3,
+            requestTimeout: 15000,
             interceptor: {
                 interceptRequest: async (request) => {
                     request.headers = {
                         ...(request.headers ?? {}),
                         ...{
-                            'user-agent': await this.requestManager.getDefaultUserAgent(),
+                            ...(globalUA && { 'user-agent': await this.getUserAgent() }),
                             'referer': `${this.baseUrl}/`,
-                            'origin': `${this.baseUrl}/`,
-                            ...(request.url.includes('wordpress.com') && { 'Accept': 'image/avif,image/webp,*/*' }) // Used for images hosted on Wordpress blogs
+                            ...(request.url.includes('wordpress.com') && { 'Accept': 'image/avif,image/webp,*/*' })
                         }
                     };
                     request.cookies = [
-                        App.createCookie({ name: 'wpmanga-adault', value: '1', domain: this.baseUrl }),
-                        App.createCookie({ name: 'toonily-mature', value: '1', domain: this.baseUrl })
+                        createCookie({ name: 'wpmanga-adault', value: '1', domain: this.baseUrl }),
+                        createCookie({ name: 'toonily-mature', value: '1', domain: this.baseUrl })
                     ];
                     return request;
                 },
@@ -1477,36 +19410,13 @@ class Madara {
                 }
             }
         });
-        this.stateManager = App.createSourceStateManager();
-        this.sourceSettings = (stateManager) => {
-            return App.createDUINavigationButton({
-                id: 'madara_settings',
-                label: 'Source Settings',
-                form: App.createDUIForm({
-                    sections: async () => [
-                        App.createDUISection({
-                            id: 'hq_thumb',
-                            isHidden: false,
-                            footer: 'Enabling HQ thumbnails will use more bandwidth and will load thumbnails slightly slower.',
-                            rows: async () => [
-                                App.createDUISwitch({
-                                    id: 'HQthumb',
-                                    label: 'HQ Thumbnails',
-                                    value: App.createDUIBinding({
-                                        get: async () => await stateManager.retrieve('HQthumb') ?? false,
-                                        set: async (newValue) => await stateManager.store('HQthumb', newValue)
-                                    })
-                                })
-                            ]
-                        })
-                    ]
-                })
-            });
-        };
+        this.stateManager = createSourceStateManager({});
         /**
-         * The language code the source's content is served in in string form.
+         * The path that precedes a manga page not including the Madara URL.
+         * Eg. for https://www.webtoon.xyz/read/limit-breaker/ it would be 'read'.
+         * Used in all functions.
          */
-        this.language = '🇬🇧';
+        this.sourceTraversalPathName = 'manga';
         /**
          * Different Madara sources might have a slightly different selector which is required to parse out
          * each manga object while on a search result page. This is the selector
@@ -1528,186 +19438,193 @@ class Madara {
          */
         this.alternativeChapterAjaxEndpoint = false;
         /**
+         * Different Madara sources might require a extra param in order for the images to be parsed.
+         * Eg. for https://arangscans.com/manga/tesla-note/chapter-3/?style=list "?style=list" would be the param
+         * added to the end of the URL. This will set the page in list style and is needed in order for the
+         * images to be parsed. Params can be addded if required.
+         */
+        this.chapterDetailsParam = '';
+        /**
          * Different Madara sources might have a slightly different selector which is required to parse out
          * each page while on a chapter page. This is the selector
          * which is looped over. This may be overridden if required.
          */
         this.chapterDetailsSelector = 'div.page-break > img';
         /**
-         * Some websites have the Cloudflare defense check enabled on specific parts of the website, these need to be loaded when using the Cloudflare bypass within the app
-         */
-        this.bypassPage = '';
-        /**
-         * If it's not possible to use postIds for certain reasons, you can disable this here.
-         */
-        this.usePostIds = true;
-        /**
-         * When not using postIds, you need to set the directory path
-         */
-        this.directoryPath = 'manga';
+        * Set custom User-Agent
+        */
+        this.userAgent = true;
         this.parser = new MadaraParser_1.Parser();
     }
+    async getUserAgent() {
+        const stateUA = await this.stateManager.retrieve('userAgent');
+        if (!this.userAgent) {
+            globalUA = null;
+        }
+        else if (typeof this.userAgent == 'string') {
+            globalUA = this.userAgent;
+        }
+        else if (stateUA) {
+            globalUA = stateUA;
+        }
+        else {
+            globalUA = null;
+        }
+        return globalUA;
+    }
     async getSourceMenu() {
-        return App.createDUISection({
-            id: 'sourceMenu',
-            header: 'Source Menu',
-            isHidden: false,
+        const section = createSection({
+            id: 'main',
+            header: 'Source Settings',
+            footer: 'Change User Agent & Enable HQ Thumbnails',
             rows: async () => [
-                this.sourceSettings(this.stateManager)
+                MadaraSettings_1.sourceSettings(this.stateManager, this.requestManager, this)
             ]
         });
+        await this.getUserAgent();
+        return section;
     }
     getMangaShareUrl(mangaId) {
-        return this.usePostIds ? `${this.baseUrl}/?p=${mangaId}/` : `${this.baseUrl}/${this.directoryPath}/${mangaId}/`;
+        return `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`;
     }
     async getMangaDetails(mangaId) {
-        const request = App.createRequest({
-            url: this.usePostIds ? `${this.baseUrl}/?p=${mangaId}/` : `${this.baseUrl}/${this.directoryPath}/${mangaId}/`,
+        if (!isNaN(Number(mangaId))) {
+            throw new Error('Migrate your source to the same source but make sure to select include migrated manga. Then while it is migrating, press "Mark All" and Replace.');
+        }
+        const request = createRequestObject({
+            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
             method: 'GET'
         });
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
         return this.parser.parseMangaDetails($, mangaId, this);
     }
     async getChapters(mangaId) {
-        let endpoint;
-        if (this.alternativeChapterAjaxEndpoint) {
-            if (this.usePostIds) {
-                const slugData = await this.convertPostIdToSlug(Number(mangaId));
-                endpoint = `${this.baseUrl}/${slugData.path}/${slugData.slug}/ajax/chapters`;
-            }
-            else {
-                endpoint = `${this.baseUrl}/${this.directoryPath}/${mangaId}/ajax/chapters`;
-            }
+        if (!isNaN(Number(mangaId))) {
+            throw new Error('Migrate your source to the same source but make sure to select include migrated manga. Then while it is migrating, press "Mark All" and Replace.');
         }
-        else {
-            endpoint = `${this.baseUrl}/wp-admin/admin-ajax.php`;
-        }
-        const request = App.createRequest({
-            url: endpoint,
+        const request = createRequestObject({
+            url: !this.alternativeChapterAjaxEndpoint ? `${this.baseUrl}/wp-admin/admin-ajax.php` : `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/ajax/chapters`,
             method: 'POST',
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             data: {
                 'action': 'manga_get_chapters',
-                'manga': this.usePostIds ? mangaId : await this.convertSlugToPostId(mangaId, this.directoryPath)
+                'manga': await this.getNumericId(mangaId)
             }
         });
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
         return this.parser.parseChapterList($, mangaId, this);
     }
     async getChapterDetails(mangaId, chapterId) {
-        let url;
-        if (this.usePostIds) {
-            const slugData = await this.convertPostIdToSlug(Number(mangaId));
-            url = `${this.baseUrl}/${slugData.path}/${slugData.slug}/${chapterId}/?style=list`;
-        }
-        else {
-            url = `${this.baseUrl}/${this.directoryPath}/${mangaId}/${chapterId}/?style=list`;
-        }
-        const request = App.createRequest({
-            url: url,
-            method: 'GET'
+        const request = createRequestObject({
+            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${chapterId}/?style=list`,
+            method: 'GET',
+            param: this.chapterDetailsParam
         });
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
-        return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector, this);
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
+        return this.parser.parseChapterDetails($, mangaId, chapterId, this.chapterDetailsSelector);
     }
-    async getSearchTags() {
+    async getTags() {
         let request;
         if (this.hasAdvancedSearchPage) {
-            request = App.createRequest({
+            request = createRequestObject({
                 url: `${this.baseUrl}/?s=&post_type=wp-manga`,
                 method: 'GET'
             });
         }
         else {
-            request = App.createRequest({
+            request = createRequestObject({
                 url: `${this.baseUrl}/`,
                 method: 'GET'
             });
         }
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
         return this.parser.parseTags($, this.hasAdvancedSearchPage);
     }
     async getSearchResults(query, metadata) {
         // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
         const page = metadata?.page ?? 1;
         const request = this.constructSearchRequest(page, query);
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
-        const results = await this.parser.parseSearchResults($, this);
-        const manga = [];
-        for (const result of results) {
-            if (this.usePostIds) {
-                const postId = await this.slugToPostId(result.slug, result.path);
-                manga.push(App.createPartialSourceManga({
-                    mangaId: String(postId),
-                    image: result.image,
-                    title: result.title,
-                    subtitle: result.subtitle
-                }));
-            }
-            else {
-                manga.push(App.createPartialSourceManga({
-                    mangaId: result.slug,
-                    image: result.image,
-                    title: result.title,
-                    subtitle: result.subtitle
-                }));
-            }
-        }
-        return App.createPagedResults({
-            results: manga,
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
+        const manga = this.parser.parseSearchResults($, this);
+        return createPagedResults({
+            results: await manga,
             metadata: { page: (page + 1) }
         });
     }
+    async filterUpdatedManga(mangaUpdatesFoundCallback, time, ids) {
+        // If we're supplied a page that we should be on, set our internal reference to that page. Otherwise, we start from page 0.
+        let page = 0;
+        let loadNextPage = true;
+        while (loadNextPage) {
+            const request = this.constructAjaxHomepageRequest(page, 50, '_latest_update');
+            const data = await this.requestManager.schedule(request, 1);
+            this.CloudFlareError(data.status);
+            const $ = this.cheerio.load(data.data);
+            const updatedManga = this.parser.filterUpdatedManga($, time, ids, this);
+            loadNextPage = updatedManga.loadNextPage;
+            if (loadNextPage) {
+                page++;
+            }
+            if (updatedManga.updates.length > 0) {
+                mangaUpdatesFoundCallback(createMangaUpdates({
+                    ids: updatedManga.updates
+                }));
+            }
+        }
+        mangaUpdatesFoundCallback(createMangaUpdates({ ids: [] }));
+    }
+    /**
+     * It's hard to capture a default logic for homepages. So for Madara sources,
+     * instead we've provided a homesection reader for the base_url/source_traversal_path/ endpoint.
+     * This supports having paged views in almost all cases.
+     * @param sectionCallback
+     */
     async getHomePageSections(sectionCallback) {
         const sections = [
             {
                 request: this.constructAjaxHomepageRequest(0, 10, '_latest_update'),
-                section: App.createHomeSection({
+                section: createHomeSection({
                     id: '0',
                     title: 'Recently Updated',
-                    type: types_1.HomeSectionType.singleRowNormal,
-                    containsMoreItems: true
-                })
+                    view_more: true,
+                }),
             },
             {
                 request: this.constructAjaxHomepageRequest(0, 10, '_wp_manga_week_views_value'),
-                section: App.createHomeSection({
+                section: createHomeSection({
                     id: '1',
                     title: 'Currently Trending',
-                    type: types_1.HomeSectionType.singleRowNormal,
-                    containsMoreItems: true
+                    view_more: true,
                 })
             },
             {
                 request: this.constructAjaxHomepageRequest(0, 10, '_wp_manga_views'),
-                section: App.createHomeSection({
+                section: createHomeSection({
                     id: '2',
                     title: 'Most Popular',
-                    type: types_1.HomeSectionType.singleRowNormal,
-                    containsMoreItems: true
+                    view_more: true,
                 })
             },
             {
                 request: this.constructAjaxHomepageRequest(0, 10, '_wp_manga_status', 'end'),
-                section: App.createHomeSection({
+                section: createHomeSection({
                     id: '3',
                     title: 'Completed',
-                    type: types_1.HomeSectionType.singleRowNormal,
-                    containsMoreItems: true
+                    view_more: true,
                 })
-            }
+            },
         ];
         const promises = [];
         for (const section of sections) {
@@ -1715,7 +19632,7 @@ class Madara {
             sectionCallback(section.section);
             // Get the section data
             promises.push(this.requestManager.schedule(section.request, 1).then(async (response) => {
-                this.checkResponseError(response);
+                this.CloudFlareError(response.status);
                 const $ = this.cheerio.load(response.data);
                 section.section.items = await this.parser.parseHomeSection($, this);
                 sectionCallback(section.section);
@@ -1725,7 +19642,8 @@ class Madara {
         await Promise.all(promises);
     }
     async getViewMoreItems(homepageSectionId, metadata) {
-        const page = metadata?.page ?? 0;
+        // We only have one homepage section ID, so we don't need to worry about handling that any
+        const page = metadata?.page ?? 0; // Default to page 0
         let sortBy = [];
         switch (homepageSectionId) {
             case '0': {
@@ -1746,22 +19664,36 @@ class Madara {
             }
         }
         const request = this.constructAjaxHomepageRequest(page, 50, sortBy[0], sortBy[1]);
-        const response = await this.requestManager.schedule(request, 1);
-        this.checkResponseError(response);
-        const $ = this.cheerio.load(response.data);
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
         const items = await this.parser.parseHomeSection($, this);
+        // Set up to go to the next page. If we are on the last page, remove the logic.
         let mData = { page: (page + 1) };
         if (items.length < 50) {
             mData = undefined;
         }
-        return App.createPagedResults({
+        return createPagedResults({
             results: items,
             metadata: mData
         });
     }
-    // Utility
+    async getNumericId(mangaId) {
+        const request = createRequestObject({
+            url: `${this.baseUrl}/${this.sourceTraversalPathName}/${mangaId}/`,
+            method: 'GET'
+        });
+        const data = await this.requestManager.schedule(request, 1);
+        this.CloudFlareError(data.status);
+        const $ = this.cheerio.load(data.data);
+        const numericId = this.parser.parsePostId($);
+        return numericId;
+    }
+    /**
+     * Constructs requests to be sent to the search page.
+     */
     constructSearchRequest(page, query) {
-        return App.createRequest({
+        return createRequestObject({
             url: new MadaraHelper_1.URLBuilder(this.baseUrl)
                 .addPathComponent(this.searchPagePathName)
                 .addPathComponent(page.toString())
@@ -1772,8 +19704,11 @@ class Madara {
             method: 'GET'
         });
     }
+    /**
+     * Constructs requests to be sent to the Madara /admin-ajax.php endpoint.
+     */
     constructAjaxHomepageRequest(page, postsPerPage, meta_key, meta_value) {
-        return App.createRequest({
+        return createRequestObject({
             url: `${this.baseUrl}/wp-admin/admin-ajax.php`,
             method: 'POST',
             headers: {
@@ -1794,114 +19729,28 @@ class Madara {
             }
         });
     }
-    async slugToPostId(slug, path) {
-        if (await this.stateManager.retrieve(slug) == null) {
-            const postId = await this.convertSlugToPostId(slug, path);
-            const existingMappedSlug = await this.stateManager.retrieve(postId);
-            if (existingMappedSlug != null) {
-                await this.stateManager.store(slug, undefined);
-            }
-            await this.stateManager.store(postId, slug);
-            await this.stateManager.store(slug, postId);
-        }
-        const postId = await this.stateManager.retrieve(slug);
-        if (!postId)
-            throw new Error(`Unable to fetch postId for slug:${slug}`);
-        return postId;
-    }
-    async convertPostIdToSlug(postId) {
-        const request = App.createRequest({
-            url: `${this.baseUrl}/?p=${postId}`,
-            method: 'GET'
-        });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        let parseSlug;
-        // Step 1: Try to get slug from og-url
-        parseSlug = String($('meta[property="og:url"]').attr('content'));
-        // Step 2: Try to get slug from canonical
-        if (!parseSlug.includes(this.baseUrl)) {
-            parseSlug = String($('link[rel="canonical"]').attr('href'));
-        }
-        if (!parseSlug || !parseSlug.includes(this.baseUrl)) {
-            throw new Error('Unable to parse slug!');
-        }
-        parseSlug = parseSlug
-            .replace(/\/$/, '')
-            .split('/');
-        const slug = parseSlug.slice(-1).pop();
-        const path = parseSlug.slice(-2).shift();
-        return { path, slug };
-    }
-    async convertSlugToPostId(slug, path) {
-        const headRequest = App.createRequest({
-            url: `${this.baseUrl}/${path}/${slug}`,
-            method: 'HEAD'
-        });
-        const headResponse = await this.requestManager.schedule(headRequest, 1);
-        let postId;
-        const postIdRegex = headResponse?.headers['Link']?.match(/\?p=(\d+)/);
-        if (postIdRegex && postIdRegex[1])
-            postId = postIdRegex[1];
-        if (postId || !isNaN(Number(postId))) {
-            return postId?.toString();
-        }
-        else {
-            postId = '';
-        }
-        const request = App.createRequest({
-            url: `${this.baseUrl}/${path}/${slug}`,
-            method: 'GET'
-        });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
-        // Step 1: Try to get postId from shortlink
-        postId = Number($('link[rel="shortlink"]')?.attr('href')?.split('/?p=')[1]);
-        // Step 2: If no number has been found, try to parse from data-post
-        if (isNaN(postId)) {
-            postId = Number($('a.wp-manga-action-button').attr('data-post'));
-        }
-        // Step 3: If no number has been found, try to parse from manga script
-        if (isNaN(postId)) {
-            const page = $.root().html();
-            const match = page?.match(/manga_id.*\D(\d+)/);
-            if (match && match[1]) {
-                postId = Number(match[1]?.trim());
-            }
-        }
-        if (!postId || isNaN(postId)) {
-            throw new Error(`Unable to fetch numeric postId for this item! (path:${path} slug:${slug})`);
-        }
-        return postId.toString();
-    }
-    async getCloudflareBypassRequestAsync() {
-        return App.createRequest({
-            url: this.bypassPage || this.baseUrl,
+    getCloudflareBypassRequest() {
+        return createRequestObject({
+            url: `${this.baseUrl}`,
             method: 'GET',
             headers: {
-                'referer': `${this.baseUrl}/`,
-                'origin': `${this.baseUrl}/`,
-                'user-agent': await this.requestManager.getDefaultUserAgent()
+                ...(globalUA && { 'user-agent': globalUA }),
             }
         });
     }
-    checkResponseError(response) {
-        const status = response.status;
-        switch (status) {
-            case 403:
-            case 503:
-                throw new Error(`CLOUDFLARE BYPASS ERROR:\nPlease go to the homepage of <${this.baseUrl}> and press the cloud icon.`);
-            case 404:
-                throw new Error(`The requested page ${response.request.url} was not found!`);
+    CloudFlareError(status) {
+        if (status == 503) {
+            throw new Error('CLOUDFLARE BYPASS ERROR:\nPlease go to Settings > Sources > <The name of this source> and press Cloudflare Bypass');
         }
     }
 }
 exports.Madara = Madara;
 
-},{"./MadaraHelper":71,"./MadaraParser":72,"@paperback/types":61}],71:[function(require,module,exports){
+},{"./MadaraHelper":61,"./MadaraParser":62,"./MadaraSettings":63,"paperback-extensions-common":14}],61:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.URLBuilder = void 0;
+/* eslint-disable @typescript-eslint/no-explicit-any */
 class URLBuilder {
     constructor(baseUrl) {
         this.parameters = {};
@@ -1941,11 +19790,15 @@ class URLBuilder {
 }
 exports.URLBuilder = URLBuilder;
 
-},{}],72:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parser = void 0;
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const paperback_extensions_common_1 = require("paperback-extensions-common");
 const entities = require("entities");
+const MadaraSettings_1 = require("./MadaraSettings");
 class Parser {
     constructor() {
         this.parseDate = (date) => {
@@ -1986,41 +19839,36 @@ class Parser {
         };
     }
     async parseMangaDetails($, mangaId, source) {
+        const numericId = this.parsePostId($);
         const title = this.decodeHTMLEntity($('div.post-title h1, div#manga-title h1').children().remove().end().text().trim());
-        const author = this.decodeHTMLEntity($('div.author-content').first().text().replace('\\n', '').trim()).replace('Updating', '');
-        const artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace('\\n', '').trim()).replace('Updating', '');
-        const description = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim();
+        const author = this.decodeHTMLEntity($('div.author-content').first().text().replace('\\n', '').trim()).replace('Updating', 'Unknown');
+        const artist = this.decodeHTMLEntity($('div.artist-content').first().text().replace('\\n', '').trim()).replace('Updating', 'Unknown');
+        const summary = this.decodeHTMLEntity($('div.description-summary').first().text()).replace('Show more', '').trim();
         const image = encodeURI(await this.getImageSrc($('div.summary_image img').first(), source));
-        const parsedStatus = $('div.summary-content', $('div.post-content_item').last()).text().trim();
-        let status;
-        switch (parsedStatus.toUpperCase()) {
-            case 'COMPLETED':
-                status = 'Completed';
-                break;
-            default:
-                status = 'Ongoing';
-                break;
-        }
+        const isOngoing = $('div.summary-content', $('div.post-content_item').last()).text().toLowerCase().trim() == 'ongoing';
         const genres = [];
+        // Grab genres and check for smut tag
         for (const obj of $('div.genres-content a').toArray()) {
             const label = $(obj).text();
             const id = $(obj).attr('href')?.split('/')[4] ?? label;
             if (!label || !id)
                 continue;
-            genres.push(App.createTag({ label: label, id: id }));
+            genres.push(createTag({ label: label, id: id }));
         }
-        const tagSections = [App.createTagSection({ id: '0', label: 'genres', tags: genres })];
-        return App.createSourceManga({
+        const tagSections = [createTagSection({ id: '0', label: 'genres', tags: genres })];
+        // If we cannot parse out the data-id for this title, we cannot complete subsequent requests
+        if (!numericId) {
+            throw new Error(`Could not parse out the data-id for ${mangaId} - This method might need overridden in the implementing source`);
+        }
+        return createManga({
             id: mangaId,
-            mangaInfo: App.createMangaInfo({
-                titles: [title],
-                image: image,
-                author: author,
-                artist: artist,
-                tags: tagSections,
-                desc: description,
-                status: status
-            })
+            titles: [title],
+            image: image ? image : 'https://i.imgur.com/GYUxEX8.png',
+            author: author,
+            artist: artist,
+            tags: tagSections,
+            desc: summary,
+            status: isOngoing ? paperback_extensions_common_1.MangaStatus.ONGOING : paperback_extensions_common_1.MangaStatus.COMPLETED
         });
     }
     parseChapterList($, mangaId, source) {
@@ -2028,61 +19876,57 @@ class Parser {
         let sortingIndex = 0;
         // For each available chapter..
         for (const obj of $('li.wp-manga-chapter  ').toArray()) {
-            const id = this.idCleaner($('a', obj).first().attr('href') ?? '');
+            const id = ($('a', obj).first().attr('href') || '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             const chapName = $('a', obj).first().text().trim() ?? '';
-            const chapNumRegex = id.match(/(?:chapter|ch.*?)(\d+\.?\d?(?:[-_]\d+)?)|(\d+\.?\d?(?:[-_]\d+)?)$/);
-            let chapNum = chapNumRegex && chapNumRegex[1] ? chapNumRegex[1].replace(/[-_]/gm, '.') : chapNumRegex?.[2] ?? '0';
-            // make sure the chapter number is a number and not NaN
-            chapNum = parseFloat(chapNum) ?? 0;
+            const chapNum = Number(decodeURIComponent(id).match(/\D*(\d*\-?\d*)\D*$/)?.pop()?.replace(/-/g, '.'));
             let mangaTime;
             const timeSelector = $('span.chapter-release-date > a, span.chapter-release-date > span.c-new-tag > a', obj).attr('title');
             if (typeof timeSelector !== 'undefined') {
-                // Firstly check if there is a NEW tag, if so parse the time from this
+                //Firstly check if there is a NEW tag, if so parse the time from this
                 mangaTime = this.parseDate(timeSelector ?? '');
             }
             else {
-                // Else get the date from the info box
+                //Else get the date from the info box
                 mangaTime = this.parseDate($('span.chapter-release-date > i', obj).text().trim());
             }
-            // Check if the date is a valid date, else return the current date
+            //Check if the date is a valid date, else return the current date
             if (!mangaTime.getTime())
                 mangaTime = new Date();
-            if (!id || typeof id === 'undefined') {
-                throw new Error(`Could not parse out ID when getting chapters for postId:${mangaId}`);
+            if (typeof id === 'undefined') {
+                throw new Error(`Could not parse out ID when getting chapters for ${mangaId}`);
             }
             chapters.push({
                 id: id,
-                langCode: source.language,
-                chapNum: chapNum,
-                name: chapName ? this.decodeHTMLEntity(chapName) : '',
+                mangaId: mangaId,
+                langCode: source.languageCode ?? paperback_extensions_common_1.LanguageCode.UNKNOWN,
+                chapNum: isNaN(chapNum) ? 0 : chapNum,
+                name: chapName ? this.decodeHTMLEntity(chapName) : undefined,
                 time: mangaTime,
-                sortingIndex,
-                volume: 0,
-                group: ''
+                // @ts-ignore
+                sortingIndex
             });
             sortingIndex--;
         }
-        if (chapters.length == 0) {
-            throw new Error(`Couldn't find any chapters for mangaId: ${mangaId}!`);
-        }
         return chapters.map(chapter => {
+            // @ts-ignore
             chapter.sortingIndex += chapters.length;
-            return App.createChapter(chapter);
+            return createChapter(chapter);
         });
     }
-    async parseChapterDetails($, mangaId, chapterId, selector, source) {
+    async parseChapterDetails($, mangaId, chapterId, selector) {
         const pages = [];
         for (const obj of $(selector).toArray()) {
-            const page = await this.getImageSrc($(obj), source);
+            const page = this.getImageSrc($(obj));
             if (!page) {
-                throw new Error(`Could not parse page for postId:${mangaId} chapterId:${chapterId}`);
+                throw new Error(`Could not parse page for ${mangaId}/${chapterId}`);
             }
-            pages.push(encodeURI(page));
+            pages.push(encodeURI(await page));
         }
-        return App.createChapterDetails({
+        return createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
-            pages: pages
+            pages: pages,
+            longStrip: false
         });
     }
     parseTags($, advancedSearch) {
@@ -2091,36 +19935,38 @@ class Parser {
             for (const obj of $('.checkbox-group div label').toArray()) {
                 const label = $(obj).text().trim();
                 const id = $(obj).attr('for') ?? label;
-                genres.push(App.createTag({ label: label, id: id }));
+                genres.push(createTag({ label: label, id: id }));
             }
         }
         else {
             for (const obj of $('.menu-item-object-wp-manga-genre a', $('.second-menu')).toArray()) {
                 const label = $(obj).text().trim();
                 const id = $(obj).attr('href')?.split('/')[4] ?? label;
-                genres.push(App.createTag({ label: label, id: id }));
+                genres.push(createTag({ label: label, id: id }));
             }
         }
-        return [App.createTagSection({ id: '0', label: 'genres', tags: genres })];
+        return [createTagSection({ id: '0', label: 'genres', tags: genres })];
     }
     async parseSearchResults($, source) {
         const results = [];
         for (const obj of $(source.searchMangaSelector).toArray()) {
-            const slug = ($('a', obj).attr('href') ?? '').replace(/\/$/, '').split('/').pop() ?? '';
-            const path = ($('a', obj).attr('href') ?? '').replace(/\/$/, '').split('/').slice(-2).shift() ?? '';
-            if (!slug || !path) {
-                throw new Error(`Unable to parse slug (${slug}) or path (${path})!`);
-            }
+            const id = ($('a', obj).attr('href') ?? '').replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             const title = $('a', obj).attr('title') ?? '';
             const image = encodeURI(await this.getImageSrc($('img', obj), source));
             const subtitle = $('span.font-meta.chapter', obj).text().trim();
-            results.push({
-                slug: slug,
-                path: path,
-                image: image,
-                title: this.decodeHTMLEntity(title),
-                subtitle: this.decodeHTMLEntity(subtitle)
-            });
+            if (!id || !title) {
+                if (id.includes(source.baseUrl.replace(/\/$/, '')))
+                    continue;
+                // Something went wrong with our parsing, return a detailed error
+                console.log(`Failed to parse searchResult for ${source.baseUrl} using ${source.searchMangaSelector} as a loop selector`);
+                continue;
+            }
+            results.push(createMangaTile({
+                id: id,
+                image: image ? image : 'https://i.imgur.com/GYUxEX8.png',
+                title: createIconText({ text: this.decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: this.decodeHTMLEntity(subtitle) })
+            }));
         }
         return results;
     }
@@ -2129,21 +19975,59 @@ class Parser {
         for (const obj of $('div.page-item-detail').toArray()) {
             const image = encodeURI(await this.getImageSrc($('img', obj), source) ?? '');
             const title = $('a', $('h3.h5', obj)).last().text();
-            const slug = this.idCleaner($('a', $('h3.h5', obj)).attr('href') ?? '');
-            const postId = $('div', obj).attr('data-post-id');
+            const id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '');
             const subtitle = $('span.font-meta.chapter', obj).first().text().trim();
-            if (isNaN(Number(postId)) || !title) {
-                console.log(`Failed to parse homepage sections for ${source.baseUrl}`);
+            if (!id || !title) {
+                console.log(`Failed to parse homepage sections for ${source.baseUrl}/`);
                 continue;
             }
-            items.push(App.createPartialSourceManga({
-                mangaId: String(source.usePostIds ? postId : slug),
-                image: image,
-                title: this.decodeHTMLEntity(title),
-                subtitle: this.decodeHTMLEntity(subtitle)
+            items.push(createMangaTile({
+                id: id,
+                image: image ? image : 'https://i.imgur.com/GYUxEX8.png',
+                title: createIconText({ text: this.decodeHTMLEntity(title) }),
+                subtitleText: createIconText({ text: this.decodeHTMLEntity(subtitle) })
             }));
         }
         return items;
+    }
+    filterUpdatedManga($, time, ids, source) {
+        let passedReferenceTimePrior = false;
+        let passedReferenceTimeCurrent = false;
+        const updatedManga = [];
+        for (const obj of $('div.page-item-detail').toArray()) {
+            const id = $('a', $('h3.h5', obj)).attr('href')?.replace(`${source.baseUrl}/${source.sourceTraversalPathName}/`, '').replace(/\/$/, '') ?? '';
+            let mangaTime;
+            const timeSelector = $('span.post-on.font-meta > a, span.post-on.font-meta > span > a', obj).attr('title');
+            if (typeof timeSelector !== 'undefined') {
+                //Firstly check if there is a NEW tag, if so parse the time from this
+                mangaTime = this.parseDate(timeSelector ?? '');
+            }
+            else {
+                //Else get the date from the span
+                mangaTime = this.parseDate($('span.post-on.font-meta', obj).first().text().trim());
+            }
+            //Check if the date is valid, if it isn't we should skip it
+            if (!mangaTime.getTime())
+                continue;
+            passedReferenceTimeCurrent = mangaTime <= time;
+            if (!passedReferenceTimeCurrent || !passedReferenceTimePrior) {
+                if (ids.includes(id)) {
+                    updatedManga.push(id);
+                }
+            }
+            else
+                break;
+            if (typeof id === 'undefined') {
+                throw new Error(`Failed to parse homepage sections for ${source.baseUrl}/`);
+            }
+            passedReferenceTimePrior = passedReferenceTimeCurrent;
+        }
+        if (!passedReferenceTimeCurrent || !passedReferenceTimePrior) {
+            return { updates: updatedManga, loadNextPage: true };
+        }
+        else {
+            return { updates: updatedManga, loadNextPage: false };
+        }
     }
     // UTILITY METHODS
     decodeHTMLEntity(str) {
@@ -2167,10 +20051,10 @@ class Parser {
             image = imageObj?.attr('data-cfsrc');
         }
         else {
-            image = '';
+            image = 'https://i.imgur.com/GYUxEX8.png'; // Fallback image
         }
         if (source?.stateManager) {
-            const HQthumb = await source.stateManager.retrieve('HQthumb') ?? false;
+            const HQthumb = await MadaraSettings_1.getHQThumbnailSetting(source.stateManager);
             if (HQthumb) {
                 image = image?.replace('-110x150', '')
                     .replace('-175x238', '')
@@ -2178,57 +20062,158 @@ class Parser {
                     .replace('-350x476', '');
             }
         }
-        if (image?.startsWith('/')) {
-            image = source.baseUrl + image;
-        }
-        image = image
-            ?.trim()
-            .replace(/(\s{2,})/gi, '');
-        image = image?.replace(/http:\/\/\//g, 'http://'); // only changes urls with http protocol
-        image = image?.replace(/http:\/\//g, 'https://');
         // Malforumed url fix (Turns https:///example.com into https://example.com (or the http:// equivalent))
         image = image?.replace(/https:\/\/\//g, 'https://'); // only changes urls with https protocol
-        return decodeURI(this.decodeHTMLEntity(image ?? ''));
+        image = image?.replace(/http:\/\/\//g, 'http://'); // only changes urls with http protocol
+        return decodeURI(this.decodeHTMLEntity(image?.trim() ?? ''));
     }
-    idCleaner(str) {
-        let cleanId = str;
-        cleanId = cleanId.replace(/\/$/, '');
-        cleanId = cleanId.split('/').pop() ?? null;
-        if (!cleanId)
-            throw new Error(`Unable to parse id for ${str}`); // Log to logger
-        return cleanId;
+    parsePostId($) {
+        let postId;
+        // Step 1: Try to get postId from shortlink
+        postId = Number($('link[rel="shortlink"]')?.attr('href')?.split('/?p=')[1]);
+        // Step 2: If no number has been found, try to parse from data-post
+        if (isNaN(postId)) {
+            postId = Number($('a.wp-manga-action-button').attr('data-post'));
+        }
+        // Step 3: If no number has been found, try to parse from manga script
+        if (isNaN(postId)) {
+            const page = $.root().html();
+            const match = page?.match(/manga_id.*\D(\d+)/);
+            if (match && match[1]) {
+                postId = Number(match[1]?.trim());
+            }
+        }
+        if (!postId || isNaN(postId)) {
+            throw new Error('Unable to fetch numeric postId for this item!\nCheck if path is set correctly!');
+        }
+        return postId.toString();
     }
 }
 exports.Parser = Parser;
 
-},{"entities":69}],73:[function(require,module,exports){
+},{"./MadaraSettings":63,"entities":9,"paperback-extensions-common":14}],63:[function(require,module,exports){
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sourceSettings = exports.getHQThumbnailSetting = void 0;
+const random_useragent_1 = __importDefault(require("random-useragent"));
+const getHQThumbnailSetting = async (stateManager) => {
+    return await stateManager.retrieve('HQthumb') ?? false;
+};
+exports.getHQThumbnailSetting = getHQThumbnailSetting;
+const sourceSettings = (stateManager, requestManager, source) => {
+    return createNavigationButton({
+        id: 'madara_settings',
+        value: '',
+        label: 'Source Settings',
+        form: createForm({
+            onSubmit: (values) => {
+                return Promise.all([
+                    stateManager.store('HQthumb', values.HQthumb)
+                ]).then();
+            },
+            validate: () => {
+                return Promise.resolve(true);
+            },
+            sections: () => {
+                return Promise.resolve([
+                    // User Agent Section
+                    createSection({
+                        id: 'ua_section',
+                        footer: 'If you\'re experiencing issues with CloudFlare, try randomizing your User Agent.\nPlease restart your app after doing so.\nNOTE! You might need to try this a couple of times for it to work!',
+                        rows: async () => [
+                            createLabel({
+                                id: 'current_ua',
+                                value: !source.userAgent ? 'Not allowed to change' :
+                                    (typeof source.userAgent == 'string') ? source.userAgent :
+                                        await stateManager.retrieve('userAgent') ?? 'Default',
+                                label: 'Current User Agent: '
+                            }),
+                            createButton({
+                                id: 'randomise_ua',
+                                label: 'Randomise UserAgent & Clear Cookies',
+                                value: undefined,
+                                onTap: async () => {
+                                    try {
+                                        // Clear Cookies
+                                        // @ts-ignore
+                                        requestManager.cookieStore.getAllCookies().forEach(x => { requestManager.cookieStore.removeCookie(x); });
+                                        // Use set UserAgent unless one is manually set in the source
+                                        if (typeof source.userAgent !== 'string') {
+                                            stateManager.store('userAgent', random_useragent_1.default.getRandom());
+                                        }
+                                    }
+                                    catch (error) {
+                                        console.log(error);
+                                    }
+                                }
+                            })
+                        ]
+                    }),
+                    // HQ Thumbnail Section
+                    createSection({
+                        id: 'content',
+                        footer: 'Enabling HQ thumbnails will use more bandwidth and will load thumbnails slightly slower.',
+                        rows: () => {
+                            return Promise.all([
+                                exports.getHQThumbnailSetting(stateManager)
+                            ]).then(async (values) => {
+                                return [
+                                    createSwitch({
+                                        id: 'HQthumb',
+                                        label: 'HQ Thumbnails',
+                                        value: values[0]
+                                    }),
+                                ];
+                            });
+                        }
+                    })
+                ]);
+            }
+        })
+    });
+};
+exports.sourceSettings = sourceSettings;
+
+},{"random-useragent":58}],64:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Shinigami = exports.ShinigamiInfo = void 0;
-const types_1 = require("@paperback/types");
+const paperback_extensions_common_1 = require("paperback-extensions-common");
 const Madara_1 = require("../Madara");
 const DOMAIN = 'https://shinigami.id';
 exports.ShinigamiInfo = {
-    version: (0, Madara_1.getExportVersion)('0.0.0'),
+    version: Madara_1.getExportVersion('0.0.0'),
     name: 'Shinigami',
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: 'NaufalJCT48',
-    authorWebsite: 'http://github.com/naufaljct48',
+    authorWebsite: 'http://github.com/NaufalJCT48',
     icon: 'icon.png',
-    contentRating: types_1.ContentRating.EVERYONE,
+    contentRating: paperback_extensions_common_1.ContentRating.EVERYONE,
     websiteBaseURL: DOMAIN,
-    sourceTags: [],
-    intents: types_1.SourceIntents.MANGA_CHAPTERS | types_1.SourceIntents.HOMEPAGE_SECTIONS | types_1.SourceIntents.CLOUDFLARE_BYPASS_REQUIRED | types_1.SourceIntents.SETTINGS_UI
+    sourceTags: [
+        {
+            text: 'Notifications',
+            type: paperback_extensions_common_1.TagType.GREEN
+        },
+        {
+            text: 'Indonesian',
+            type: paperback_extensions_common_1.TagType.GREY
+        },
+    ]
 };
 class Shinigami extends Madara_1.Madara {
     constructor() {
         super(...arguments);
         this.baseUrl = DOMAIN;
+        this.languageCode = paperback_extensions_common_1.LanguageCode.ENGLISH;
         this.alternativeChapterAjaxEndpoint = true;
         this.hasAdvancedSearchPage = true;
     }
 }
 exports.Shinigami = Shinigami;
 
-},{"../Madara":70,"@paperback/types":61}]},{},[73])(73)
+},{"../Madara":60,"paperback-extensions-common":14}]},{},[64])(64)
 });
