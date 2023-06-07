@@ -42,4 +42,6 @@ export class Shinigami extends Madara {
     override alternativeChapterAjaxEndpoint = true
     
     override hasAdvancedSearchPage = true
+
+    override sourceTraversalPathName = 'series'
 }
