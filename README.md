@@ -13,4 +13,4 @@ Indonesian Paperback Sources:
 
 | Source Type  | Description                                   | Link                                                                 |
 | ------------ | --------------------------------------------- | -------------------------------------------------------------------  |
-| Stable (0.8) | Stable versions of the sources. (Recommended) | [Click me!](https://naufaljct48.github.io/madara-extensions/madara/) |
+|     Madara   | Stable versions of the sources. (Recommended) | [Click me!](https://naufaljct48.github.io/madara-extensions/madara/) |
