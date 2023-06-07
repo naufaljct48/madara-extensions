@@ -1,13 +1,14 @@
 import {
     ContentRating,
+    LanguageCode,
     SourceInfo,
-    SourceIntents
-} from '@paperback/types'
-
+    TagType
+} from 'paperback-extensions-common'
 import {
     getExportVersion,
     Madara
 } from '../Madara'
+
 
 const DOMAIN = 'https://shinigami.id'
 
@@ -16,19 +17,29 @@ export const ShinigamiInfo: SourceInfo = {
     name: 'Shinigami',
     description: `Extension that pulls manga from ${DOMAIN}`,
     author: 'NaufalJCT48',
-    authorWebsite: 'http://github.com/naufaljct48',
+    authorWebsite: 'http://github.com/NaufalJCT48',
     icon: 'icon.png',
     contentRating: ContentRating.EVERYONE,
     websiteBaseURL: DOMAIN,
-    sourceTags: [],
-    intents: SourceIntents.MANGA_CHAPTERS | SourceIntents.HOMEPAGE_SECTIONS | SourceIntents.CLOUDFLARE_BYPASS_REQUIRED | SourceIntents.SETTINGS_UI
+    sourceTags: [
+        {
+            text: 'Notifications',
+            type: TagType.GREEN
+        },
+        {
+            text: 'Indonesian',
+            type: TagType.GREY
+        },
+    ]
 }
 
 export class Shinigami extends Madara {
 
     baseUrl: string = DOMAIN
 
-    override alternativeChapterAjaxEndpoint = true
+    languageCode: LanguageCode = LanguageCode.ENGLISH
 
+    override alternativeChapterAjaxEndpoint = true
+    
     override hasAdvancedSearchPage = true
 }
